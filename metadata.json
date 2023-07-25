@@ -1,0 +1,43 @@
+{
+  "name": "rjd1-kafka_connect",
+  "version": "0.1.0",
+  "author": "rjd1",
+  "summary": "Module to manage Kafka Connect",
+  "license": "Apache-2.0",
+  "source": "git://github.com/rjd1/puppet-kafka_connect",
+  "project_page": "https://github.com/rjd1/puppet-kafka_connect",
+  "issues_url": "https://github.com/rjd1/puppet-kafka_connect/issues",
+  "dependencies": [
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">= 4.0.0"
+    },
+    {
+      "name": "fiddyspence/hash_file",
+      "version_requirement": ">= 1.0.3"
+    }
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "Amazon",
+      "operatingsystemrelease": [
+        "2"
+      ]
+    },
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [
+        "7"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": ">= 4.10.0"
+    }
+  ],
+  "pdk-version": "3.0.0",
+  "template-url": "pdk-default#3.0.0",
+  "template-ref": "tags/3.0.0-0-g056e50d"
+}
