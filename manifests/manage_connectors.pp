@@ -2,9 +2,6 @@
 #
 # Class to manage individual kafka-connect connectors.
 #
-# @example
-#   include kafka_connect::manage_connectors
-#
 # @param connectors_absent
 #   List of connectors to ensure absent.
 # @param connectors_paused
@@ -28,6 +25,8 @@
 # @author https://github.com/rjd1/puppet-kafka_connect/graphs/contributors
 #
 # @api private
+#
+# @see https://github.com/rjd1/puppet-kafka_connect#managing-connectors-through-the-helper-class
 #
 class kafka_connect::manage_connectors (
   Optional[Array] $connectors_absent       = $::kafka_connect::connectors_absent,
