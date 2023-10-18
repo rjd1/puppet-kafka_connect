@@ -35,15 +35,15 @@
 # @author https://github.com/rjd1/puppet-kafka_connect/graphs/contributors
 #
 class kafka_connect (
-  Optional[Array] $connectors_absent         = undef,
-  Optional[Array] $connectors_paused         = undef,
-  String          $connector_config_dir      = '/etc/kafka-connect',
-  String          $owner                     = 'cp-kafka-connect',
-  String          $group                     = 'confluent',
-  String          $hostname                  = 'localhost',
-  Integer         $rest_port                 = 8083,
-  Boolean         $enable_delete             = false,
-  Boolean         $restart_on_failed_state   = false,
+  Optional[Array] $connectors_absent       = undef,
+  Optional[Array] $connectors_paused       = undef,
+  String          $connector_config_dir    = '/etc/kafka-connect',
+  String          $owner                   = 'cp-kafka-connect',
+  String          $group                   = 'confluent',
+  String          $hostname                = 'localhost',
+  Integer         $rest_port               = 8083,
+  Boolean         $enable_delete           = false,
+  Boolean         $restart_on_failed_state = false,
 ){
 
   include 'kafka_connect::manage_connectors'
