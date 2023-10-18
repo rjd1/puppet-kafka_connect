@@ -1,6 +1,6 @@
 {
   "name": "rjd1-kafka_connect",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "rjd1",
   "summary": "Module to manage Kafka Connect",
   "license": "Apache-2.0",
@@ -10,11 +10,7 @@
   "dependencies": [
     {
       "name": "puppetlabs/stdlib",
-      "version_requirement": ">= 4.0.0"
-    },
-    {
-      "name": "fiddyspence/hash_file",
-      "version_requirement": ">= 1.0.3"
+      "version_requirement": ">= 4.20.0"
     }
   ],
   "operatingsystem_support": [
