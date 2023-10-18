@@ -7,6 +7,7 @@ Release notes for the rjd1-kafka_connect module.
 2023-10-18 - elimination of old dependency
 
 * Removed hash_file resource in favor of to_json() content function
+* Some minor manifest cleanup
 
 ## Release 0.1.0
 
