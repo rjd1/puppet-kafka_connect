@@ -1,9 +1,6 @@
 # @summary Manage KC connectors
 #
-# Class to manage individual kafka-connect connectors.
-#
-# @example
-#   include kafka_connect::manage_connectors
+# Private class to manage individual kafka-connect connectors.
 #
 # @param connectors_absent
 #   List of connectors to ensure absent.
@@ -72,20 +69,12 @@ class kafka_connect::manage_connectors (
       }
 
       file { "${config_dir}/${connector_file_name}" :
-        ensure => $connector_ensure,
-        owner  => $owner,
-        group  => $group,
-        mode   => '0640',
-        before => Manage_connector[$connector_name],
-      }
-
-      if $connector_ensure != 'absent' {
-        hash_file { "${config_dir}/${connector_file_name}" :
-          value    => $connector_full_config,
-          provider => 'json',
-          before   => Manage_connector[$connector_name],
-          require  => File["${config_dir}/${connector_file_name}"],
-        }
+        ensure  => $connector_ensure,
+        owner   => $owner,
+        group   => $group,
+        mode    => '0640',
+        content => to_json($connector_full_config),
+        before  => Manage_connector[$connector_name],
       }
 
       manage_connector { $connector_name :

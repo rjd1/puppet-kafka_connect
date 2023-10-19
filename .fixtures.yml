@@ -3,10 +3,7 @@
 ---
 fixtures:
   forge_modules:
-    hash_file:
-       repo: "fiddyspence/hash_file"
-       ref: "1.0.3"
     kafka_connect:
        repo: "rjd1/kafka_connect"
-       ref: "0.1.0"
+       ref: "0.2.0"
     stdlib: "puppetlabs/stdlib"
