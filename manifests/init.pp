@@ -3,24 +3,24 @@
 # Main kafka_connect class
 #
 # @param connectors_absent
-#   List of connectors to ensure absent. 
+#   List of connectors to ensure absent.
 # @param connectors_paused
-#   List of connectors to ensure paused. 
+#   List of connectors to ensure paused.
 # @param connector_config_dir
-#   Configuration directory for connector properties files. 
+#   Configuration directory for connector properties files.
 # @param owner
-#   Owner to set on connector and secret file permissions. 
+#   Owner to set on connector and secret file permissions.
 # @param group
-#   Group to set on connector and secret file permissions. 
+#   Group to set on connector and secret file permissions.
 # @param hostname
 #   The hostname or IP of the KC service.
 # @param rest_port
-#   Port to connect to for the REST API. 
+#   Port to connect to for the REST API.
 # @param enable_delete
 #   Enable delete of running connectors.
 #   Required for the provider to actually remove when set to absent.
 # @param restart_on_failed_state
-#   Allow the provider to auto restart on FAILED connector state. 
+#   Allow the provider to auto restart on FAILED connector state.
 #
 # @example
 #   include kafka_connect
