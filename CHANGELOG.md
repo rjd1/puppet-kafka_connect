@@ -2,6 +2,12 @@
 
 Release notes for the rjd1-kafka_connect module.
 
+## Release 0.2.1
+
+2023-10-19 - removal of private class params
+
+* Removed private class parameters, replaced with direct scoping
+
 ## Release 0.2.0
 
 2023-10-18 - elimination of old dependency
