@@ -2,6 +2,12 @@
 
 Release notes for the rjd1-kafka_connect module.
 
+## Release 0.2.2
+
+2023-10-30 - update to provider restart
+
+* Updated provider restart POST to include failed tasks
+
 ## Release 0.2.1
 
 2023-10-19 - removal of private class params
