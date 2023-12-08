@@ -2,6 +2,12 @@
 
 Release notes for the rjd1-kafka_connect module.
 
+## Release 0.2.3
+
+2023-12-08 - documentation updates
+
+* Updated various portions of the docs
+
 ## Release 0.2.2
 
 2023-10-30 - update to provider restart
