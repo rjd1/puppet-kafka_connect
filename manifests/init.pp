@@ -1,6 +1,4 @@
-# @summary Manages kafka-connect
-#
-# Main kafka_connect class
+# Main kafka_connect class.
 #
 # @param connectors_absent
 #   List of connectors to ensure absent.
