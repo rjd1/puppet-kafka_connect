@@ -5,9 +5,9 @@ Welcome to the kafka_connect Puppet module!
 ## Table of Contents
 
 1. [Description](#description)
-1. [Setup - The basics of getting started with kafka_connect](#setup)
+2. [Setup - The basics of getting started with kafka_connect](#setup)
     * [What kafka_connect affects](#what-kafka_connect-affects)
-1. [Usage - Configuration options and additional functionality](#usage)
+3. [Usage - Configuration options and additional functionality](#usage)
     * [Using the provider directly](#using-the-provider-directly)
     * * [Examples](#examples)
     * [Managing connectors through the helper class](#managing-connectors-through-the-helper-class)
@@ -16,9 +16,10 @@ Welcome to the kafka_connect Puppet module!
     * * [Remove a Connector](#remove-a-connector)
     * * [Pause a Connector](#pause-a-connector)
     * * [Add Secrets Config Data](#add-secrets-config-data)
-1. [Limitations - OS compatibility, etc.](#limitations)
+4. [Reference - An under-the-hood peek at what the module is doing and how](REFERENCE.md)
+5. [Limitations - OS compatibility, etc.](#limitations)
     * [Known Issues](#known-issues)
-1. [Development - Guide for contributing to the module](#development)
+6. [Development - Guide for contributing to the module](#development)
 
 ## Description
 
