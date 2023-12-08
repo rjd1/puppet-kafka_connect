@@ -1,8 +1,8 @@
 {
   "name": "rjd1-kafka_connect",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "author": "rjd1",
-  "summary": "Module to manage Kafka Connect",
+  "summary": "Provides management of Kafka Connect connectors.",
   "license": "Apache-2.0",
   "source": "git://github.com/rjd1/puppet-kafka_connect",
   "project_page": "https://github.com/rjd1/puppet-kafka_connect",

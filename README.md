@@ -5,9 +5,9 @@ Welcome to the kafka_connect Puppet module!
 ## Table of Contents
 
 1. [Description](#description)
-1. [Setup - The basics of getting started with kafka_connect](#setup)
+2. [Setup - The basics of getting started with kafka_connect](#setup)
     * [What kafka_connect affects](#what-kafka_connect-affects)
-1. [Usage - Configuration options and additional functionality](#usage)
+3. [Usage - Configuration options and additional functionality](#usage)
     * [Using the provider directly](#using-the-provider-directly)
     * * [Examples](#examples)
     * [Managing connectors through the helper class](#managing-connectors-through-the-helper-class)
@@ -16,14 +16,14 @@ Welcome to the kafka_connect Puppet module!
     * * [Remove a Connector](#remove-a-connector)
     * * [Pause a Connector](#pause-a-connector)
     * * [Add Secrets Config Data](#add-secrets-config-data)
-1. [Limitations - OS compatibility, etc.](#limitations)
-1. [Development - Guide for contributing to the module](#development)
+4. [Reference - An under-the-hood peek at what the module is doing and how](REFERENCE.md)
+5. [Limitations - OS compatibility, etc.](#limitations)
+    * [Known Issues](#known-issues)
+6. [Development - Guide for contributing to the module](#development)
 
 ## Description
 
 Type, Provider, and helper class for management of individual Kafka Connect connectors.
-
-Note that this module *does not* (at present) manage the actual KC installation and service setup.
 
 ## Setup
 
@@ -52,8 +52,6 @@ To pause:
 
 ```puppet
   manage_connector { 'some-kc-connector' :
-    ensure                 => 'present',
-    config_file            => '/etc/kafka-connect/some-kc-connector.properties.json',
     connector_state_ensure => 'PAUSED',
   }
 ```
@@ -80,7 +78,7 @@ include kafka_connect
 
 The connector config data should be added to hiera with the following layout.
 
-**NOTE:** boolean and integer values must be quoted. This is important in order to avoid a situation where Puppet wants to constantly update the connector, due to the comparison done between file config & live connector.
+NOTE: boolean and integer values *must be quoted*. This is important in order to avoid a situation where Puppet wants to constantly update the connector, due to the comparison done between file config & live connector.
 
 ```yaml
 kafka_connect::connectors:
@@ -166,16 +164,20 @@ The `connectors` array should contain a list of connector names that reference i
 
 Tested with Confluent 7.1.1 on Amazon Linux 2.
 
+Each secrets file should contain only one key-value pair.
+
+### Known Issues
+
 In order to remove a connector thru hiera, the config put in place during the add step must remain. This is necessary for the config file to be removed along with the live connector.
 
-When the `enable_delete` parameter is set to false and a connector is set to absent, Puppet still says there is a removal (i.e., lies). There is a warning output along with the notice, however.
+If numeric or boolean config values in hiera are not quoted, it will result in the connector being updated on every Puppet run (config_updated changed 'no' to 'yes').
 
-Each secrets file should contain only one key-value pair.
+When the `enable_delete` parameter is set to false and a connector is set to absent, Puppet still says there is a removal (i.e., lies). A similar situation occurs with the `config_updated` property when both it and `config_file` are not specified. There are warnings output along with the notices in these scenarios.
 
 ## Development
 
-The project is held at github:
+The project is held at GitHub:
  
 * [https://github.com/rjd1/puppet-kafka_connect](https://github.com/rjd1/puppet-kafka_connect)
  
-Issue reports, patches, pull requests are welcome!
+Issue reports and pull requests are welcome.

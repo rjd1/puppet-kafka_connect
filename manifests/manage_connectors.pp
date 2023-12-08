@@ -1,6 +1,4 @@
-# @summary Manage KC connectors
-#
-# Private class to manage individual kafka-connect connectors.
+# Private class to manage individual Kafka Connect connectors.
 #
 # @author https://github.com/rjd1/puppet-kafka_connect/graphs/contributors
 #

@@ -8,11 +8,11 @@
 
 #### Public Classes
 
-* [`kafka_connect`](#kafka_connect): Manages kafka-connect
+* [`kafka_connect`](#kafka_connect): Main kafka_connect class.
 
 #### Private Classes
 
-* `kafka_connect::manage_connectors`: Manage KC connectors
+* `kafka_connect::manage_connectors`: Private class to manage individual Kafka Connect connectors.
 
 ### Resource types
 
@@ -22,7 +22,7 @@
 
 ### <a name="kafka_connect"></a>`kafka_connect`
 
-Main kafka_connect class
+Main kafka_connect class.
 
 #### Examples
 
