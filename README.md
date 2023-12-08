@@ -77,7 +77,7 @@ include kafka_connect
 
 The connector config data should be added to hiera with the following layout.
 
-**NOTE:** boolean and integer values *must be quoted*. This is important in order to avoid a situation where Puppet wants to constantly update the connector, due to the comparison done between file config & live connector.
+NOTE: boolean and integer values *must be quoted*. This is important in order to avoid a situation where Puppet wants to constantly update the connector, due to the comparison done between file config & live connector.
 
 ```yaml
 kafka_connect::connectors:
