@@ -33,7 +33,7 @@ class kafka_connect::install {
       command => "confluent-hub install ${plugin} --no-prompt",
       creates => "${kafka_connect::confluent_hub_plugin_path}/${author}-${name}",
       path    => ['/bin','/sbin','/usr/bin','/usr/sbin','/usr/local/bin'],
-      require => Package[$kafka_connect::confluent_hub_client_package_name],
+      require => Package[$kafka_connect::package_name,$kafka_connect::confluent_hub_client_package_name],
     }
   }
 
