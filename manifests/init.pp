@@ -1,39 +1,79 @@
 # Main kafka_connect class.
 #
-# TO-DO: add remaining params to Strings here...
+# @param manage_connectors_only
+# @param manage_confluent_repo
+# @param include_java
+# @param repo_ensure
+# @param repo_enabled
+# @param repo_version
+# @param package_name
+# @param package_ensure
+# @param manage_schema_registry_package
+# @param schema_registry_package_name
+# @param confluent_hub_plugin_path
+# @param confluent_hub_plugins
+# @param confluent_hub_client_package_name
+# @param confluent_common_package_name
+# @param kafka_heap_options
+# @param config_storage_replication_factor
+# @param config_storage_topic
+# @param group_id
+# @param bootstrap_servers
+# @param key_converter
+# @param key_converter_schemas_enable
+# @param listeners
+# @param log4j_appender_file_path
+# @param log4j_appender_max_file_size
+# @param log4j_appender_max_backup_index
+# @param log4j_loglevel_rootlogger
+# @param offset_flush_interval_ms
+# @param offset_storage_topic
+# @param offset_storage_replication_factor
+# @param offset_storage_partitions
+# @param plugin_path
+# @param status_storage_topic
+# @param status_storage_replication_factor
+# @param status_storage_partitions
+# @param value_converter
+# @param value_converter_schema_registry_url
+# @param value_converter_schemas_enable
+# @param service_name
+# @param service_ensure
+# @param service_enable
 # @param connectors_absent
-#   List of connectors to ensure absent.
 # @param connectors_paused
-#   List of connectors to ensure paused.
 # @param connector_config_dir
-#   Configuration directory for connector properties files.
 # @param owner
-#   Owner to set on connector and secret file permissions.
 # @param group
-#   Group to set on connector and secret file permissions.
 # @param hostname
-#   The hostname or IP of the KC service.
 # @param rest_port
-#   Port to connect to for the REST API.
 # @param enable_delete
-#   Enable delete of running connectors.
-#   Required for the provider to actually remove when set to absent.
 # @param restart_on_failed_state
-#   Allow the provider to auto restart on FAILED connector state.
 #
 # @example
 #   include kafka_connect
 #
 # @example
 #   class { 'kafka_connect':
-#     connector_config_dir => '/etc/kafka-connect-jdbc',
-#     rest_port            => 8084,
-#     enable_delete        => true,
+#     config_storage_replication_factor   => 3,
+#     offset_storage_replication_factor   => 3,
+#     status_storage_replication_factor   => 3,
+#     bootstrap_servers                   => [ 'kafka-01:9092', kafka-02:9092', 'kafka-03:9092' ],
+#     value_converter_schema_registry_url => "http://schemaregistry-elb.${facts['networking']['domain']}:8081",
+#   }
+#
+# @example
+#   class { 'kafka_connect':
+#     manage_connectors_only => true,
+#     connector_config_dir   => '/opt/kafka-connect/etc',
+#     rest_port              => 8084,
+#     enable_delete          => true,
 #   }
 #
 # @author https://github.com/rjd1/puppet-kafka_connect/graphs/contributors
 #
 class kafka_connect (
+  # kafka_connect
   Boolean $manage_connectors_only = false,
   Boolean $manage_confluent_repo  = true,
   Boolean $include_java           = false,
@@ -55,7 +95,7 @@ class kafka_connect (
 
   # kafka_connect::config
   String           $kafka_heap_options                  = '-Xms256M -Xmx2G',
-  String           $config_storage_replication_factor   = '1',
+  Integer          $config_storage_replication_factor   = 1,
   String           $config_storage_topic                = 'connect-configs',
   String           $group_id                            = 'connect-cluster',
   Array[String]    $bootstrap_servers                   = [ 'localhost:9092' ],
@@ -68,8 +108,8 @@ class kafka_connect (
   String           $log4j_loglevel_rootlogger           = 'INFO',
   String           $offset_flush_interval_ms            = '10000',
   String           $offset_storage_topic                = 'connect-offsets',
-  String           $offset_storage_replication_factor   = '1',
-  String           $offset_storage_partitions           = '25',
+  Integer          $offset_storage_replication_factor   = 1,
+  Integer          $offset_storage_partitions           = 25,
   String           $plugin_path                         = '/usr/share/java,/usr/share/confluent-hub-components',
   String           $status_storage_topic                = 'connect-status',
   String           $status_storage_replication_factor   = '1',
