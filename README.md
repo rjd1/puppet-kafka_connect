@@ -49,7 +49,7 @@ class { 'kafka_connect': }
 
 ### Typical deployment
 
-For a typical distributed mode deployment, most of the default settings should be fine. However, a normal setup will involve connecting to a cluster of Kafka brokers and the replication factor config values for storage topics should be increased. Here is a real-world example that also includes the Confluent JDBC plugin:
+For a typical distributed mode deployment, most of the default settings should be fine. However, a normal setup will involve connecting to a cluster of Kafka brokers and the replication factor config values for storage topics should be increased. Here is a real-world example that also specifies version and includes the Confluent JDBC plugin:
 
 ```puppet
   class { 'kafka_connect':
@@ -64,6 +64,7 @@ For a typical distributed mode deployment, most of the default settings should b
       "kafka-05.${facts['networking']['domain']}:9092"
     ],
     confluent_hub_plugins             => [ 'confluentinc/kafka-connect-jdbc:10.7.4' ],
+    package_ensure                    => '7.5.2-1',
   }
 ```
 
@@ -199,7 +200,7 @@ To remove:
 
 ## Limitations
 
-Tested with Confluent 7.1.1 on Amazon Linux 2. Should also work on other Redhat as well as Debian-based systems.
+Tested with Confluent 7.1.1 & 7.5.1 on Amazon Linux 2. Should also work on other Redhat as well as Debian-based systems.
 
 Each secrets file should contain only one key-value pair.
 

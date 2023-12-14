@@ -82,13 +82,14 @@ class kafka_connect (
   # kafka_connect::confluent_repo
   Enum['present', 'absent'] $repo_ensure  = 'present',
   Boolean                   $repo_enabled = true,
-  String                    $repo_version = '7.1',
+  String                    $repo_version = '7.5',
 
   # kafka_connect::install
   String          $package_name                      = 'confluent-kafka',
-  String          $package_ensure                    = '7.1.1-1',
+  String          $package_ensure                    = '7.5.1-1',
   Boolean         $manage_schema_registry_package    = true,
   String          $schema_registry_package_name      = 'confluent-schema-registry',
+  String          $confluent_rest_utils_package_name = 'confluent-rest-utils',
   String          $confluent_hub_plugin_path         = '/usr/share/confluent-hub-components',
   Array[String]   $confluent_hub_plugins             = [],
   String          $confluent_hub_client_package_name = 'confluent-hub-client',
@@ -113,7 +114,7 @@ class kafka_connect (
   Integer          $offset_storage_partitions           = 25,
   String           $plugin_path                         = '/usr/share/java,/usr/share/confluent-hub-components',
   String           $status_storage_topic                = 'connect-status',
-  String           $status_storage_replication_factor   = '1',
+  Integer          $status_storage_replication_factor   = 1,
   String           $status_storage_partitions           = '5',
   String           $value_converter                     = 'org.apache.kafka.connect.json.JsonConverter',
   Optional[String] $value_converter_schema_registry_url = undef,

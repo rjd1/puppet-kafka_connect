@@ -113,6 +113,7 @@ The following parameters are available in the `kafka_connect` class:
 * [`rest_port`](#rest_port)
 * [`enable_delete`](#enable_delete)
 * [`restart_on_failed_state`](#restart_on_failed_state)
+* [`confluent_rest_utils_package_name`](#confluent_rest_utils_package_name)
 
 ##### <a name="manage_connectors_only"></a>`manage_connectors_only`
 
@@ -160,7 +161,7 @@ Data type: `String`
 
 
 
-Default value: `'7.1'`
+Default value: `'7.5'`
 
 ##### <a name="package_name"></a>`package_name`
 
@@ -176,7 +177,7 @@ Data type: `String`
 
 
 
-Default value: `'7.1.1-1'`
+Default value: `'7.5.1-1'`
 
 ##### <a name="manage_schema_registry_package"></a>`manage_schema_registry_package`
 
@@ -372,11 +373,11 @@ Default value: `'connect-status'`
 
 ##### <a name="status_storage_replication_factor"></a>`status_storage_replication_factor`
 
-Data type: `String`
+Data type: `Integer`
 
 
 
-Default value: `'1'`
+Default value: `1`
 
 ##### <a name="status_storage_partitions"></a>`status_storage_partitions`
 
@@ -505,6 +506,14 @@ Data type: `Boolean`
 
 
 Default value: ``false``
+
+##### <a name="confluent_rest_utils_package_name"></a>`confluent_rest_utils_package_name`
+
+Data type: `String`
+
+
+
+Default value: `'confluent-rest-utils'`
 
 ## Resource types
 

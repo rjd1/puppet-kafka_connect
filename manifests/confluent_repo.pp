@@ -9,7 +9,7 @@ class kafka_connect::confluent_repo {
     yumrepo { 'confluent':
       ensure              => $kafka_connect::repo_ensure,
       baseurl             => "http://packages.confluent.io/rpm/${kafka_connect::repo_version}",
-      name                => 'Confluent',
+      name                => 'confluent',
       descr               => 'Confluent repository',
       enabled             => $kafka_connect::repo_enabled,
       gpgcheck            => '1',
