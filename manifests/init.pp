@@ -146,7 +146,7 @@ class kafka_connect (
   } else {
     if $manage_confluent_repo {
       class { 'kafka_connect::confluent_repo':
-        before  => Class['kafka_connect::install'],
+        before => Class['kafka_connect::install'],
       }
     }
 
