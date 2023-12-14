@@ -16,14 +16,14 @@ class kafka_connect::config {
     mode    => '0755',
   }
 
-  file { '/etc/kafka/connect-distributed.properties':                                                              
+  file { '/etc/kafka/connect-distributed.properties':
     ensure  => 'present',
     content => template('kafka_connect/connect-distributed.properties.erb'),
-    owner   => $owner,
-    group   => $group,
+    owner   => $kafka_connect::owner,
+    group   => $kafka_connect::group,
     mode    => '0640',
   }
-   
+
   file { '/etc/kafka/connect-log4j.properties':
     ensure  => 'present',
     content => template('kafka_connect/connect-log4j.properties.erb'),
