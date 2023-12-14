@@ -37,7 +37,7 @@ describe Puppet::Type.type(:manage_connector).provider(:manage_connector) do
     stub_request(:post, "http://localhost/connectors").
       with(body: "{\"name\":\"foo-connector\",\"config\":{\"foo.setting\":\"bar\"}}",
          headers: {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'Host'=>'localhost', 'User-Agent'=>'Ruby'})
-    stub_request(:post, "http://localhost/connectors/foo-connector/restart").
+    stub_request(:post, "http://localhost/connectors/foo-connector/restart?includeTasks=true&onlyFailed=true").
       with(headers: {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'})
   end
 

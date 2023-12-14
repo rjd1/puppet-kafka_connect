@@ -1,16 +1,28 @@
 {
   "name": "rjd1-kafka_connect",
-  "version": "0.2.3",
+  "version": "1.0.0",
   "author": "rjd1",
-  "summary": "Provides management of Kafka Connect connectors.",
+  "summary": "Puppet module to manage Kafka Connect.",
   "license": "Apache-2.0",
   "source": "git://github.com/rjd1/puppet-kafka_connect",
   "project_page": "https://github.com/rjd1/puppet-kafka_connect",
   "issues_url": "https://github.com/rjd1/puppet-kafka_connect/issues",
   "dependencies": [
     {
-      "name": "puppetlabs/stdlib",
+      "name": "puppetlabs-apt",
+      "version_requirement": ">= 4.5.1"
+    },
+    {
+      "name": "puppetlabs-java",
+      "version_requirement": ">= 1.4.2"
+    },
+    {
+      "name": "puppetlabs-stdlib",
       "version_requirement": ">= 4.20.0"
+    },
+    {
+      "name": "puppetlabs-yumrepo_core",
+      "version_requirement": ">= 1.0.3"
     }
   ],
   "operatingsystem_support": [

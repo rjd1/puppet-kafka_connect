@@ -1,6 +1,4 @@
-# Private class to manage individual Kafka Connect connectors.
-#
-# @author https://github.com/rjd1/puppet-kafka_connect/graphs/contributors
+# Class to manage individual Kafka Connect connectors.
 #
 # @api private
 #

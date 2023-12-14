@@ -7,15 +7,17 @@ Welcome to the kafka_connect Puppet module!
 1. [Description](#description)
 2. [Setup - The basics of getting started with kafka_connect](#setup)
     * [What kafka_connect affects](#what-kafka_connect-affects)
+    * [Getting started with_kafka_connect](#getting-started-with-kafka_connect)
 3. [Usage - Configuration options and additional functionality](#usage)
-    * [Using the provider directly](#using-the-provider-directly)
-    * * [Examples](#examples)
+    * [Typical deployment](#typical-deployment)
     * [Managing connectors through the helper class](#managing-connectors-through-the-helper-class)
     * * [Add a Connector](#add-a-connector)
     * * [Update an existing Connector](#update-an-existing-connector)
     * * [Remove a Connector](#remove-a-connector)
     * * [Pause a Connector](#pause-a-connector)
     * * [Add Secrets Config Data](#add-secrets-config-data)
+    * [Managing connectors directly through the provider](#managing-connectors-directly-through-the-provider)
+    * * [Examples](#examples)
 4. [Reference - An under-the-hood peek at what the module is doing and how](REFERENCE.md)
 5. [Limitations - OS compatibility, etc.](#limitations)
     * [Known Issues](#known-issues)
@@ -23,44 +25,46 @@ Welcome to the kafka_connect Puppet module!
 
 ## Description
 
-Type, Provider, and helper class for management of individual Kafka Connect connectors.
+Manages the setup of Kafka Connect.
+
+Includes a Type, Provider, and helper class for management of individual Kafka Connect connectors.
 
 ## Setup
 
 ### What kafka_connect affects
 
+* Manages KC installation, configuration, and system service.
 * Manages the individual state of running connectors.
 * Optionally manages connector config & secret files.
 
+### Getting started with kafka_connect
+
+For a basic Kafka Connect system setup with the default settings, declare the `kafka_connect` class.
+
+```puppet
+class { 'kafka_connect': }
+```
+
 ## Usage
 
-### Using the provider directly
+### Typical deployment
 
-#### Examples
-
-Ensure a connector exists and the running config matches the file config:
+For a typical distributed mode deployment, most of the default settings should be fine. However, a normal setup will involve connecting to a cluster of Kafka brokers and the replication factor config values for storage topics should be increased. Here is a real-world example that also specifies version and includes the Confluent JDBC plugin:
 
 ```puppet
-  manage_connector { 'some-kc-connector' :
-    ensure      => 'present',
-    config_file => '/etc/kafka-connect/some-kc-connector.properties.json',
-    port        => 8084,
-  }
-```
-
-To pause:
-
-```puppet
-  manage_connector { 'some-kc-connector' :
-    connector_state_ensure => 'PAUSED',
-  }
-```
-To remove:
-
-```puppet
-  manage_connector { 'some-kc-connector' :
-    ensure        => 'absent',
-    enable_delete => true,
+  class { 'kafka_connect':
+    config_storage_replication_factor => 3,
+    offset_storage_replication_factor => 3,
+    status_storage_replication_factor => 3,
+    bootstrap_servers                 => [
+      "kafka-01.${facts['networking']['domain']}:9092",
+      "kafka-02.${facts['networking']['domain']}:9092",
+      "kafka-03.${facts['networking']['domain']}:9092",
+      "kafka-04.${facts['networking']['domain']}:9092",
+      "kafka-05.${facts['networking']['domain']}:9092"
+    ],
+    confluent_hub_plugins             => [ 'confluentinc/kafka-connect-jdbc:10.7.4' ],
+    package_ensure                    => '7.5.2-1',
   }
 ```
 
@@ -68,11 +72,15 @@ To remove:
 
 The helper class is designed to work with connector data defined in hiera.
 
-First include the main class. The following sections provide examples of specific functionality thru hiera data.
+The main class needs to be included/declared. If only the connector management functionality is desired, there's a flag to exclude the standard setup stuff:
 
 ```puppet
-include kafka_connect
+  class { 'kafka_connect':
+    manage_connectors_only => true,
+  }
 ```
+
+The following sections provide examples of specific functionality through hiera data.
 
 #### Add a Connector
 
@@ -118,7 +126,7 @@ kafka_connect::connectors:
       my.other.config: "other_value"
 ```
 
-**NOTE:** be sure to remove it from the secrets array list as well, if present.
+NOTE: be sure to remove it from the secrets array list as well, if present.
 
 #### Pause a Connector
 
@@ -133,7 +141,7 @@ Remove from the list to unpause/resume.
 
 #### Add Secrets Config Data
 
-Support for [Externalizing Secrets](https://docs.confluent.io/platform/current/connect/security.html#externalizing-secrets) is provided through `kafka_connect::secrets`. This enables things like database passwords, etc., to be separated from the normal config and just loaded into memory when the connector starts.
+Support for [Externalized Secrets](https://docs.confluent.io/platform/current/connect/security.html#externalize-secrets) is provided through `kafka_connect::secrets`. This enables things like database passwords, etc., to be separated from the normal config and just loaded into memory when the connector starts.
 
 The following is a basic DB connection example defined in YAML.
 
@@ -160,17 +168,49 @@ kafka_connect::secrets:
 
 The `connectors` array should contain a list of connector names that reference it in the config. This allows for automatic update/refresh (via REST API restart POST) if the password value is changed.
 
+### Managing connectors directly through the provider
+
+#### Examples
+
+Ensure a connector exists and the running config matches the file config:
+
+```puppet
+  manage_connector { 'some-kc-connector' :
+    ensure      => 'present',
+    config_file => '/etc/kafka-connect/some-kc-connector.properties.json',
+    port        => 8084,
+  }
+```
+
+To pause:
+
+```puppet
+  manage_connector { 'some-kc-connector' :
+    connector_state_ensure => 'PAUSED',
+  }
+```
+To remove:
+
+```puppet
+  manage_connector { 'some-kc-connector' :
+    ensure        => 'absent',
+    enable_delete => true,
+  }
+```
+
 ## Limitations
 
-Tested with Confluent 7.1.1 on Amazon Linux 2.
+Tested with Confluent 7.1.1 & 7.5.1 on Amazon Linux 2. Should also work on other Redhat as well as Debian-based systems.
 
 Each secrets file should contain only one key-value pair.
 
+Currently only distributed mode setup is supported.
+
 ### Known Issues
 
-In order to remove a connector thru hiera, the config put in place during the add step must remain. This is necessary for the config file to be removed along with the live connector.
+In order to remove a connector through hiera, the config put in place during the add step must remain. This is necessary for the config file to be removed along with the live connector.
 
-If numeric or boolean config values in hiera are not quoted, it will result in the connector being updated on every Puppet run (config_updated changed 'no' to 'yes').
+If numeric or boolean connector config values in hiera are not quoted, it will result in the connector being updated on every Puppet run (config_updated changed 'no' to 'yes').
 
 When the `enable_delete` parameter is set to false and a connector is set to absent, Puppet still says there is a removal (i.e., lies). A similar situation occurs with the `config_updated` property when both it and `config_file` are not specified. There are warnings output along with the notices in these scenarios.
 
