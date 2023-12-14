@@ -12,7 +12,11 @@
 
 #### Private Classes
 
-* `kafka_connect::manage_connectors`: Private class to manage individual Kafka Connect connectors.
+* `kafka_connect::config`: Manages the Kafka Connect configuration.
+* `kafka_connect::confluent_repo`: Manages the Confluent Package Repository.
+* `kafka_connect::install`: Manages the Kafka Connect installation.
+* `kafka_connect::manage_connectors`: Class to manage individual Kafka Connect connectors.
+* `kafka_connect::service`: Manages the Kafka Connect service.
 
 ### Resource types
 
@@ -36,9 +40,23 @@ include kafka_connect
 
 ```puppet
 class { 'kafka_connect':
-  connector_config_dir => '/etc/kafka-connect-jdbc',
-  rest_port            => 8084,
-  enable_delete        => true,
+  config_storage_replication_factor   => 3,
+  offset_storage_replication_factor   => 3,
+  status_storage_replication_factor   => 3,
+  bootstrap_servers                   => [ 'kafka-01:9092', kafka-02:9092', 'kafka-03:9092' ],
+  confluent_hub_plugins               => [ 'confluentinc/kafka-connect-s3:10.5.7' ],
+  value_converter_schema_registry_url => "http://schemaregistry-elb.${facts['networking']['domain']}:8081",
+}
+```
+
+#####
+
+```puppet
+class { 'kafka_connect':
+  manage_connectors_only => true,
+  connector_config_dir   => '/opt/kafka-connect/etc',
+  rest_port              => 8084,
+  enable_delete          => true,
 }
 ```
 
@@ -46,6 +64,46 @@ class { 'kafka_connect':
 
 The following parameters are available in the `kafka_connect` class:
 
+* [`manage_connectors_only`](#manage_connectors_only)
+* [`manage_confluent_repo`](#manage_confluent_repo)
+* [`include_java`](#include_java)
+* [`repo_ensure`](#repo_ensure)
+* [`repo_enabled`](#repo_enabled)
+* [`repo_version`](#repo_version)
+* [`package_name`](#package_name)
+* [`package_ensure`](#package_ensure)
+* [`manage_schema_registry_package`](#manage_schema_registry_package)
+* [`schema_registry_package_name`](#schema_registry_package_name)
+* [`confluent_hub_plugin_path`](#confluent_hub_plugin_path)
+* [`confluent_hub_plugins`](#confluent_hub_plugins)
+* [`confluent_hub_client_package_name`](#confluent_hub_client_package_name)
+* [`confluent_common_package_name`](#confluent_common_package_name)
+* [`kafka_heap_options`](#kafka_heap_options)
+* [`config_storage_replication_factor`](#config_storage_replication_factor)
+* [`config_storage_topic`](#config_storage_topic)
+* [`group_id`](#group_id)
+* [`bootstrap_servers`](#bootstrap_servers)
+* [`key_converter`](#key_converter)
+* [`key_converter_schemas_enable`](#key_converter_schemas_enable)
+* [`listeners`](#listeners)
+* [`log4j_appender_file_path`](#log4j_appender_file_path)
+* [`log4j_appender_max_file_size`](#log4j_appender_max_file_size)
+* [`log4j_appender_max_backup_index`](#log4j_appender_max_backup_index)
+* [`log4j_loglevel_rootlogger`](#log4j_loglevel_rootlogger)
+* [`offset_flush_interval_ms`](#offset_flush_interval_ms)
+* [`offset_storage_topic`](#offset_storage_topic)
+* [`offset_storage_replication_factor`](#offset_storage_replication_factor)
+* [`offset_storage_partitions`](#offset_storage_partitions)
+* [`plugin_path`](#plugin_path)
+* [`status_storage_topic`](#status_storage_topic)
+* [`status_storage_replication_factor`](#status_storage_replication_factor)
+* [`status_storage_partitions`](#status_storage_partitions)
+* [`value_converter`](#value_converter)
+* [`value_converter_schema_registry_url`](#value_converter_schema_registry_url)
+* [`value_converter_schemas_enable`](#value_converter_schemas_enable)
+* [`service_name`](#service_name)
+* [`service_ensure`](#service_ensure)
+* [`service_enable`](#service_enable)
 * [`connectors_absent`](#connectors_absent)
 * [`connectors_paused`](#connectors_paused)
 * [`connector_config_dir`](#connector_config_dir)
@@ -56,11 +114,331 @@ The following parameters are available in the `kafka_connect` class:
 * [`enable_delete`](#enable_delete)
 * [`restart_on_failed_state`](#restart_on_failed_state)
 
+##### <a name="manage_connectors_only"></a>`manage_connectors_only`
+
+Data type: `Boolean`
+
+
+
+Default value: ``false``
+
+##### <a name="manage_confluent_repo"></a>`manage_confluent_repo`
+
+Data type: `Boolean`
+
+
+
+Default value: ``true``
+
+##### <a name="include_java"></a>`include_java`
+
+Data type: `Boolean`
+
+
+
+Default value: ``false``
+
+##### <a name="repo_ensure"></a>`repo_ensure`
+
+Data type: `Enum['present', 'absent']`
+
+
+
+Default value: `'present'`
+
+##### <a name="repo_enabled"></a>`repo_enabled`
+
+Data type: `Boolean`
+
+
+
+Default value: ``true``
+
+##### <a name="repo_version"></a>`repo_version`
+
+Data type: `String`
+
+
+
+Default value: `'7.1'`
+
+##### <a name="package_name"></a>`package_name`
+
+Data type: `String`
+
+
+
+Default value: `'confluent-kafka'`
+
+##### <a name="package_ensure"></a>`package_ensure`
+
+Data type: `String`
+
+
+
+Default value: `'7.1.1-1'`
+
+##### <a name="manage_schema_registry_package"></a>`manage_schema_registry_package`
+
+Data type: `Boolean`
+
+
+
+Default value: ``true``
+
+##### <a name="schema_registry_package_name"></a>`schema_registry_package_name`
+
+Data type: `String`
+
+
+
+Default value: `'confluent-schema-registry'`
+
+##### <a name="confluent_hub_plugin_path"></a>`confluent_hub_plugin_path`
+
+Data type: `String`
+
+
+
+Default value: `'/usr/share/confluent-hub-components'`
+
+##### <a name="confluent_hub_plugins"></a>`confluent_hub_plugins`
+
+Data type: `Array[String]`
+
+
+
+Default value: `[]`
+
+##### <a name="confluent_hub_client_package_name"></a>`confluent_hub_client_package_name`
+
+Data type: `String`
+
+
+
+Default value: `'confluent-hub-client'`
+
+##### <a name="confluent_common_package_name"></a>`confluent_common_package_name`
+
+Data type: `String`
+
+
+
+Default value: `'confluent-common'`
+
+##### <a name="kafka_heap_options"></a>`kafka_heap_options`
+
+Data type: `String`
+
+
+
+Default value: `'-Xms256M -Xmx2G'`
+
+##### <a name="config_storage_replication_factor"></a>`config_storage_replication_factor`
+
+Data type: `Integer`
+
+
+
+Default value: `1`
+
+##### <a name="config_storage_topic"></a>`config_storage_topic`
+
+Data type: `String`
+
+
+
+Default value: `'connect-configs'`
+
+##### <a name="group_id"></a>`group_id`
+
+Data type: `String`
+
+
+
+Default value: `'connect-cluster'`
+
+##### <a name="bootstrap_servers"></a>`bootstrap_servers`
+
+Data type: `Array[String]`
+
+
+
+Default value: `[ 'localhost:9092' ]`
+
+##### <a name="key_converter"></a>`key_converter`
+
+Data type: `String`
+
+
+
+Default value: `'org.apache.kafka.connect.json.JsonConverter'`
+
+##### <a name="key_converter_schemas_enable"></a>`key_converter_schemas_enable`
+
+Data type: `Boolean`
+
+
+
+Default value: ``true``
+
+##### <a name="listeners"></a>`listeners`
+
+Data type: `String`
+
+
+
+Default value: `'HTTP://:8083'`
+
+##### <a name="log4j_appender_file_path"></a>`log4j_appender_file_path`
+
+Data type: `String`
+
+
+
+Default value: `'/var/log/confluent/connect.log'`
+
+##### <a name="log4j_appender_max_file_size"></a>`log4j_appender_max_file_size`
+
+Data type: `String`
+
+
+
+Default value: `'100MB'`
+
+##### <a name="log4j_appender_max_backup_index"></a>`log4j_appender_max_backup_index`
+
+Data type: `Integer`
+
+
+
+Default value: `10`
+
+##### <a name="log4j_loglevel_rootlogger"></a>`log4j_loglevel_rootlogger`
+
+Data type: `String`
+
+
+
+Default value: `'INFO'`
+
+##### <a name="offset_flush_interval_ms"></a>`offset_flush_interval_ms`
+
+Data type: `String`
+
+
+
+Default value: `'10000'`
+
+##### <a name="offset_storage_topic"></a>`offset_storage_topic`
+
+Data type: `String`
+
+
+
+Default value: `'connect-offsets'`
+
+##### <a name="offset_storage_replication_factor"></a>`offset_storage_replication_factor`
+
+Data type: `Integer`
+
+
+
+Default value: `1`
+
+##### <a name="offset_storage_partitions"></a>`offset_storage_partitions`
+
+Data type: `Integer`
+
+
+
+Default value: `25`
+
+##### <a name="plugin_path"></a>`plugin_path`
+
+Data type: `String`
+
+
+
+Default value: `'/usr/share/java,/usr/share/confluent-hub-components'`
+
+##### <a name="status_storage_topic"></a>`status_storage_topic`
+
+Data type: `String`
+
+
+
+Default value: `'connect-status'`
+
+##### <a name="status_storage_replication_factor"></a>`status_storage_replication_factor`
+
+Data type: `String`
+
+
+
+Default value: `'1'`
+
+##### <a name="status_storage_partitions"></a>`status_storage_partitions`
+
+Data type: `String`
+
+
+
+Default value: `'5'`
+
+##### <a name="value_converter"></a>`value_converter`
+
+Data type: `String`
+
+
+
+Default value: `'org.apache.kafka.connect.json.JsonConverter'`
+
+##### <a name="value_converter_schema_registry_url"></a>`value_converter_schema_registry_url`
+
+Data type: `Optional[String]`
+
+
+
+Default value: ``undef``
+
+##### <a name="value_converter_schemas_enable"></a>`value_converter_schemas_enable`
+
+Data type: `Boolean`
+
+
+
+Default value: ``true``
+
+##### <a name="service_name"></a>`service_name`
+
+Data type: `String`
+
+
+
+Default value: `'confluent-kafka-connect'`
+
+##### <a name="service_ensure"></a>`service_ensure`
+
+Data type: `String`
+
+
+
+Default value: `'running'`
+
+##### <a name="service_enable"></a>`service_enable`
+
+Data type: `Boolean`
+
+
+
+Default value: ``true``
+
 ##### <a name="connectors_absent"></a>`connectors_absent`
 
 Data type: `Optional[Array]`
 
-List of connectors to ensure absent.
+
 
 Default value: ``undef``
 
@@ -68,7 +446,7 @@ Default value: ``undef``
 
 Data type: `Optional[Array]`
 
-List of connectors to ensure paused.
+
 
 Default value: ``undef``
 
@@ -76,7 +454,7 @@ Default value: ``undef``
 
 Data type: `String`
 
-Configuration directory for connector properties files.
+
 
 Default value: `'/etc/kafka-connect'`
 
@@ -84,7 +462,7 @@ Default value: `'/etc/kafka-connect'`
 
 Data type: `String`
 
-Owner to set on connector and secret file permissions.
+
 
 Default value: `'cp-kafka-connect'`
 
@@ -92,7 +470,7 @@ Default value: `'cp-kafka-connect'`
 
 Data type: `String`
 
-Group to set on connector and secret file permissions.
+
 
 Default value: `'confluent'`
 
@@ -100,7 +478,7 @@ Default value: `'confluent'`
 
 Data type: `String`
 
-The hostname or IP of the KC service.
+
 
 Default value: `'localhost'`
 
@@ -108,7 +486,7 @@ Default value: `'localhost'`
 
 Data type: `Integer`
 
-Port to connect to for the REST API.
+
 
 Default value: `8083`
 
@@ -116,8 +494,7 @@ Default value: `8083`
 
 Data type: `Boolean`
 
-Enable delete of running connectors.
-Required for the provider to actually remove when set to absent.
+
 
 Default value: ``false``
 
@@ -125,7 +502,7 @@ Default value: ``false``
 
 Data type: `Boolean`
 
-Allow the provider to auto restart on FAILED connector state.
+
 
 Default value: ``false``
 
