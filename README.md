@@ -140,7 +140,7 @@ Remove from the list to unpause/resume.
 
 #### Add Secrets Config Data
 
-Support for [Externalizing Secrets](https://docs.confluent.io/platform/current/connect/security.html#externalizing-secrets) is provided through `kafka_connect::secrets`. This enables things like database passwords, etc., to be separated from the normal config and just loaded into memory when the connector starts.
+Support for [Externalized Secrets](https://docs.confluent.io/platform/current/connect/security.html#externalize-secrets) is provided through `kafka_connect::secrets`. This enables things like database passwords, etc., to be separated from the normal config and just loaded into memory when the connector starts.
 
 The following is a basic DB connection example defined in YAML.
 
