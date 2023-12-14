@@ -13,7 +13,7 @@
 #### Private Classes
 
 * `kafka_connect::config`: Manages the Kafka Connect configuration.
-* `kafka_connect::confluent_repo`: Manages the Confluent Package Repository.
+* `kafka_connect::confluent_repo`: Manages the Confluent package repository.
 * `kafka_connect::install`: Manages the Kafka Connect installation.
 * `kafka_connect::manage_connectors`: Class to manage individual Kafka Connect connectors.
 * `kafka_connect::service`: Manages the Kafka Connect service.

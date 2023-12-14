@@ -1,4 +1,4 @@
-# Manages the Confluent Package Repository.
+# Manages the Confluent package repository.
 #
 # @api private
 #
