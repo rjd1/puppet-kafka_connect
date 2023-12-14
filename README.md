@@ -10,14 +10,14 @@ Welcome to the kafka_connect Puppet module!
     * [Getting started with_kafka_connect](#getting-started-with-kafka_connect)
 3. [Usage - Configuration options and additional functionality](#usage)
     * [Typical deployment](#typical-deployment)
-    * [Managing connectors directly through the provider](#managing-connectors-directly-through-the-provider)
-    * * [Examples](#examples)
     * [Managing connectors through the helper class](#managing-connectors-through-the-helper-class)
     * * [Add a Connector](#add-a-connector)
     * * [Update an existing Connector](#update-an-existing-connector)
     * * [Remove a Connector](#remove-a-connector)
     * * [Pause a Connector](#pause-a-connector)
     * * [Add Secrets Config Data](#add-secrets-config-data)
+    * [Managing connectors directly through the provider](#managing-connectors-directly-through-the-provider)
+    * * [Examples](#examples)
 4. [Reference - An under-the-hood peek at what the module is doing and how](REFERENCE.md)
 5. [Limitations - OS compatibility, etc.](#limitations)
     * [Known Issues](#known-issues)
@@ -64,36 +64,6 @@ For a typical distributed mode deployment, most of the default settings should b
       "kafka-05.${facts['networking']['domain']}:9092"
     ],
     confluent_hub_plugins             => [ 'confluentinc/kafka-connect-jdbc:10.7.4' ],
-  }
-```
-
-### Managing connectors directly through the provider
-
-#### Examples
-
-Ensure a connector exists and the running config matches the file config:
-
-```puppet
-  manage_connector { 'some-kc-connector' :
-    ensure      => 'present',
-    config_file => '/etc/kafka-connect/some-kc-connector.properties.json',
-    port        => 8084,
-  }
-```
-
-To pause:
-
-```puppet
-  manage_connector { 'some-kc-connector' :
-    connector_state_ensure => 'PAUSED',
-  }
-```
-To remove:
-
-```puppet
-  manage_connector { 'some-kc-connector' :
-    ensure        => 'absent',
-    enable_delete => true,
   }
 ```
 
@@ -196,6 +166,36 @@ kafka_connect::secrets:
 ```
 
 The `connectors` array should contain a list of connector names that reference it in the config. This allows for automatic update/refresh (via REST API restart POST) if the password value is changed.
+
+### Managing connectors directly through the provider
+
+#### Examples
+
+Ensure a connector exists and the running config matches the file config:
+
+```puppet
+  manage_connector { 'some-kc-connector' :
+    ensure      => 'present',
+    config_file => '/etc/kafka-connect/some-kc-connector.properties.json',
+    port        => 8084,
+  }
+```
+
+To pause:
+
+```puppet
+  manage_connector { 'some-kc-connector' :
+    connector_state_ensure => 'PAUSED',
+  }
+```
+To remove:
+
+```puppet
+  manage_connector { 'some-kc-connector' :
+    ensure        => 'absent',
+    enable_delete => true,
+  }
+```
 
 ## Limitations
 
