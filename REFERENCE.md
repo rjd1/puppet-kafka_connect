@@ -43,7 +43,7 @@ class { 'kafka_connect':
   config_storage_replication_factor   => 3,
   offset_storage_replication_factor   => 3,
   status_storage_replication_factor   => 3,
-  bootstrap_servers                   => [ 'kafka-01:9092', kafka-02:9092', 'kafka-03:9092' ],
+  bootstrap_servers                   => [ 'kafka-01:9092', 'kafka-02:9092', 'kafka-03:9092' ],
   confluent_hub_plugins               => [ 'confluentinc/kafka-connect-s3:10.5.7' ],
   value_converter_schema_registry_url => "http://schemaregistry-elb.${facts['networking']['domain']}:8081",
 }
