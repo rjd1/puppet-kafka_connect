@@ -3,13 +3,13 @@
 # @api private
 #
 class kafka_connect::config {
+
   assert_private()
 
   $kafka_servers = join( $kafka_connect::bootstrap_servers, ',')
 
-  file { 'connect-distributed':
+  file { '/usr/bin/connect-distributed':
     ensure  => 'present',
-    path    => '/usr/bin/connect-distributed',
     content => template('kafka_connect/connect-distributed.erb'),
     owner   => 'root',
     group   => 'root',
