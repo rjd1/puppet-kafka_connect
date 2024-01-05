@@ -27,15 +27,14 @@ Welcome to the kafka_connect Puppet module!
 
 Manages the setup of Kafka Connect.
 
-Includes a Type, Provider, and helper class for management of individual Kafka Connect connectors.
+Includes a Type, Provider, and helper class for management of individual KC connectors.
 
 ## Setup
 
 ### What kafka_connect affects
 
-* Manages KC installation, configuration, and system service.
-* Manages the individual state of running connectors.
-* Optionally manages connector config & secret files.
+* Manages the KC installation, configuration, and system service.
+* Manages the individual state of running connectors, + their config & secret files.
 
 ### Getting started with kafka_connect
 
@@ -207,8 +206,6 @@ Each secrets file should contain only one key-value pair.
 Currently only distributed mode setup is supported.
 
 ### Known Issues
-
-In order to remove a connector through hiera, the config put in place during the add step must remain. This is necessary for the config file to be removed along with the live connector.
 
 If numeric or boolean connector config values in hiera are not quoted, it will result in the connector being updated on every Puppet run (config_updated changed 'no' to 'yes').
 

@@ -2,6 +2,14 @@
 
 Release notes for the rjd1-kafka_connect module.
 
+## Release 1.0.1
+
+2024-01-05 - Doc updates
+
+* Fixed syntax error in class example
+* A few updates to the README
+* Some minor class cleanup
+
 ## Release 1.0.0
 
 2023-12-14 - Support for distributed mode setup
