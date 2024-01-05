@@ -3,6 +3,7 @@
 # @api private
 #
 class kafka_connect::install {
+
   assert_private()
 
   package { $kafka_connect::package_name :
@@ -35,6 +36,7 @@ class kafka_connect::install {
       fail("Unexpected plugin value encountered: ${plugin}. \
         This should be in the format author/name:semantic-version, e.g. acme/fancy-plugin:0.1.0")
     }
+
     $author = regsubst($plugin,'^(\w+)\/.+:.+$','\1')
     $name   = regsubst($plugin,'^(\w+)\/([a-zA-z0-9]{1,}[a-zA-z0-9\-]{0,}):.+$','\2')
 

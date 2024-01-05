@@ -3,6 +3,7 @@
 # @api private
 #
 class kafka_connect::manage_connectors {
+
   assert_private()
 
   ensure_resource('file', $kafka_connect::connector_config_dir, {'ensure' => 'directory'})

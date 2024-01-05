@@ -3,6 +3,7 @@
 # @api private
 #
 class kafka_connect::confluent_repo {
+
   assert_private()
 
   if $facts['os']['family'] == 'RedHat' {
