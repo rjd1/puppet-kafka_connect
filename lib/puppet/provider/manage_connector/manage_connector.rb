@@ -226,7 +226,7 @@ Puppet::Type.type(:manage_connector).provide(:manage_connector) do
       #response = http.send_request('POST', "/connectors/#{@resource[:name]}/restart")
       response = http.send_request('POST', "/connectors/#{@resource[:name]}/restart?includeTasks=true&onlyFailed=true")
 
-      if !response.kind_of?(Net::HTTPNoContent)
+      unless response.kind_of?(Net::HTTPNoContent) || response.kind_of?(Net::HTTPAccepted)
         Puppet.warning("Unexpected response encountered on restart attempt: #{response}\n ")
       end
   end
