@@ -2,6 +2,13 @@
 
 Release notes for the rjd1-kafka_connect module.
 
+## Release 1.1.0
+
+2024-01-15 - Support removing secrets files
+
+* Added ability to set secrets files to absent via ensure hash key
+* Fixed a bug where the provider would improperly warn on restart
+
 ## Release 1.0.1
 
 2024-01-05 - Doc updates

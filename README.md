@@ -11,11 +11,11 @@ Welcome to the kafka_connect Puppet module!
 3. [Usage - Configuration options and additional functionality](#usage)
     * [Typical deployment](#typical-deployment)
     * [Managing connectors through the helper class](#managing-connectors-through-the-helper-class)
-    * * [Add a Connector](#add-a-connector)
-    * * [Update an existing Connector](#update-an-existing-connector)
-    * * [Remove a Connector](#remove-a-connector)
-    * * [Pause a Connector](#pause-a-connector)
-    * * [Add Secrets Config Data](#add-secrets-config-data)
+    * * [Add a connector](#add-a-connector)
+    * * [Update an existing connector](#update-an-existing-connector)
+    * * [Remove a connector](#remove-a-connector)
+    * * [Pause a connector](#pause-a-connector)
+    * * [Managing secrets config data](#managing-secrets-config-data)
     * [Managing connectors directly through the provider](#managing-connectors-directly-through-the-provider)
     * * [Examples](#examples)
 4. [Reference - An under-the-hood peek at what the module is doing and how](REFERENCE.md)
@@ -138,7 +138,7 @@ kafka_connect::connectors_paused:
 
 Remove from the list to unpause/resume.
 
-#### Add Secrets Config Data
+#### Managing Secrets Config Data
 
 Support for [Externalized Secrets](https://docs.confluent.io/platform/current/connect/security.html#externalize-secrets) is provided through `kafka_connect::secrets`. This enables things like database passwords, etc., to be separated from the normal config and just loaded into memory when the connector starts.
 
@@ -166,6 +166,14 @@ kafka_connect::secrets:
 ```
 
 The `connectors` array should contain a list of connector names that reference it in the config. This allows for automatic update/refresh (via REST API restart POST) if the password value is changed.
+
+To later remove unused files, use the optional `ensure` hash key.
+
+```yaml
+kafka_connect::secrets:
+  my-old-jdbc-secrets-file.properties:
+    ensure: 'absent'
+```
 
 ### Managing connectors directly through the provider
 
