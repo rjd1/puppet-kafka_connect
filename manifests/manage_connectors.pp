@@ -38,7 +38,7 @@ class kafka_connect::manage_connectors {
         ensure  => $connector_ensure,
         owner   => $kafka_connect::owner,
         group   => $kafka_connect::group,
-        mode    => '0640',
+        mode    => $kafka_connect::connector_config_file_mode,
         content => to_json($connector_full_config),
         before  => Manage_connector[$connector_name],
       }
@@ -90,7 +90,7 @@ class kafka_connect::manage_connectors {
         content => $secret_content,
         owner   => $kafka_connect::owner,
         group   => $kafka_connect::group,
-        mode    => '0600',
+        mode    => $kafka_connect::connector_secret_file_mode,
         notify  => Manage_connector[$secret_connectors],
       }
 
