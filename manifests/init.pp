@@ -213,7 +213,7 @@ class kafka_connect (
   Stdlib::Absolutepath          $log4j_appender_file_path            = '/var/log/confluent/connect.log',
   String[1]                     $log4j_appender_max_file_size        = '100MB',
   Integer                       $log4j_appender_max_backup_index     = 10,
-  String[1]                     $log4j_loglevel_rootlogger           = 'INFO',
+  Kafka_connect::Loglevel       $log4j_loglevel_rootlogger           = 'INFO',
   Integer                       $offset_flush_interval_ms            = 10000,
   String[1]                     $offset_storage_topic                = 'connect-offsets',
   Integer                       $offset_storage_replication_factor   = 1,
