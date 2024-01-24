@@ -1,4 +1,4 @@
-# Class to manage individual Kafka Connect connectors.
+# @summary Class to manage individual Kafka Connect connectors.
 #
 # @api private
 #

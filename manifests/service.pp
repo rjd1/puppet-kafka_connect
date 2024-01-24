@@ -1,4 +1,4 @@
-# Manages the Kafka Connect service.
+# @summary Manages the Kafka Connect service.
 #
 # @api private
 #

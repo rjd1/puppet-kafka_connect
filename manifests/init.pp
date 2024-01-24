@@ -1,56 +1,160 @@
-# Main kafka_connect class.
+# @summary Main kafka_connect class.
 #
 # @param manage_connectors_only
+#   Flag for including the connector management class only.
+#
 # @param manage_confluent_repo
+#   Flag for including the confluent repo class.
+#
 # @param include_java
+#   Flag for including class java.
+#
 # @param repo_ensure
+#   Ensure value for the Confluent package repo resource.
+#
 # @param repo_enabled
+#   Eabled value for the Confluent package repo resource.
+#
 # @param repo_version
+#   Version of the Confluent repo to configure.
+#
 # @param package_name
+#   Name of the main KC package to manage.
+#
 # @param package_ensure
+#   State of the package to ensure.
+#   Note that this may be used by more than one resource, depending on the setup.
+#
 # @param manage_schema_registry_package
+#   Flag for managing the Schema Registry package.
+#
 # @param schema_registry_package_name
+#   Name of the Schema Registry package.
+#
 # @param confluent_hub_plugin_path
+#   Installation path for Confluent Hub plugins.
+#
 # @param confluent_hub_plugins
+#   List of Confluent Hub plugins to install.
+#   Each should be in the format author/name:semantic-version, e.g. 'acme/fancy-plugin:0.1.0'
+#
 # @param confluent_hub_client_package_name
+#   Name of the Confluent Hub Client package.
+#
 # @param confluent_common_package_name
+#   Name of the Confluent Common package.
+#
 # @param kafka_heap_options
+#   Value to set for 'KAFKA_HEAP_OPTS' export.
+#
 # @param config_storage_replication_factor
+#   Config value to set for 'config.storage.replication.factor'.
+#
 # @param config_storage_topic
+#   Config value to set for 'config.storage.topic'.
+#
 # @param group_id
+#   Config value to set for 'group.id'.
+#
 # @param bootstrap_servers
+#   Config value to set for 'bootstrap.servers'.
+#
 # @param key_converter
+#   Config value to set for 'key.converter'.
+#
 # @param key_converter_schemas_enable
+#   Config value to set for 'key.converter.schemas.enable'.
+#
 # @param listeners
+#   Config value to set for 'listeners'.
+#
 # @param log4j_appender_file_path
+#   Config value to set for 'log4j.appender.file.File'.
+#
 # @param log4j_appender_max_file_size
+#   Config value to set for 'log4j.appender.file.MaxFileSize'.
+#
 # @param log4j_appender_max_backup_index
+#   Config value to set for 'log4j.appender.file.MaxBackupIndex'.
+#
 # @param log4j_loglevel_rootlogger
+#   Config value to set for 'log4j.rootLogger'.
+#
 # @param offset_flush_interval_ms
+#   Config value to set for 'offset.flush.interval.ms'.
+#
 # @param offset_storage_topic
+#   Config value to set for 'offset.storage.topic'.
+#
 # @param offset_storage_replication_factor
+#   Config value to set for 'offset.storage.replication.factor'.
+#
 # @param offset_storage_partitions
+#   Config value to set for 'offset.storage.partitions'.
+#
 # @param plugin_path
+#   Config value to set for 'plugin.path'.
+#
 # @param status_storage_topic
+#   Config value to set for 'status.storage.topic'.
+#
 # @param status_storage_replication_factor
+#   Config value to set for 'status.storage.replication.factor'.
+#
 # @param status_storage_partitions
+#   Config value to set for 'status.storage.partitions'.
+#
 # @param value_converter
+#   Config value to set for 'value.converter'.
+#
 # @param value_converter_schema_registry_url
+#   Config value to set for 'value.converter.schema.registry.url', if defined.
+#
 # @param value_converter_schemas_enable
+#   Config value to set for 'value.converter.schemas.enable'.
+#
 # @param service_name
+#   Name of the service to manage.
+#
 # @param service_ensure
+#   State of the service to ensure.
+#
 # @param service_enable
+#   Value for enabling the service at boot.
+#
 # @param connectors_absent
+#   List of connectors to ensure absent.
+#
 # @param connectors_paused
+#   List of connectors to ensure paused.
+#
 # @param connector_config_dir
+#   Configuration directory for connector properties files.
+#
 # @param owner
+#   Owner to set on connector and secret file permissions.
+#
 # @param group
+#   Group to set on connector and secret file permissions.
+#
 # @param connector_config_file_mode
+#   Mode to set on connector config file.
+#
 # @param connector_secret_file_mode
+#   Mode to set on connector secret file.
+#
 # @param hostname
+#   The hostname or IP of the KC service.
+#
 # @param rest_port
+#   Port to connect to for the REST API.
+#
 # @param enable_delete
+#   Enable delete of running connectors.
+#   Required for the provider to actually remove when set to absent.
+#
 # @param restart_on_failed_state
+#   Allow the provider to auto restart on FAILED connector state.
 #
 # @example
 #   include kafka_connect

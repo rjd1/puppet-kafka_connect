@@ -1,4 +1,4 @@
-# Manages the Kafka Connect configuration.
+# @summary Manages the Kafka Connect configuration.
 #
 # @api private
 #
