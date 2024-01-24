@@ -250,18 +250,24 @@ class kafka_connect (
   }
 
   if $manage_connectors_only {
-    include 'kafka_connect::manage_connectors'
+    contain kafka_connect::manage_connectors
   } else {
     if $manage_confluent_repo {
-      class { 'kafka_connect::confluent_repo':
-        before => Class['kafka_connect::install'],
-      }
+      contain kafka_connect::confluent_repo
+
+      Class['kafka_connect::confluent_repo']
+      -> Class['kafka_connect::install']
     }
 
-    class { 'kafka_connect::install': }
-    -> class { 'kafka_connect::config': }
-    ~> class { 'kafka_connect::service': }
-    -> class { 'kafka_connect::manage_connectors': }
+    contain kafka_connect::install
+    contain kafka_connect::config
+    contain kafka_connect::service
+    contain kafka_connect::manage_connectors
+
+    Class['kafka_connect::install']
+    -> Class['kafka_connect::config']
+    ~> Class['kafka_connect::service']
+    -> Class['kafka_connect::manage_connectors']
 
     exec { 'wait_30s_for_service_start':
       command     => 'sleep 30',
