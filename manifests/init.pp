@@ -13,7 +13,7 @@
 #   Ensure value for the Confluent package repo resource.
 #
 # @param repo_enabled
-#   Eabled value for the Confluent package repo resource.
+#   Enabled value for the Confluent package repo resource.
 #
 # @param repo_version
 #   Version of the Confluent repo to configure.
@@ -132,10 +132,10 @@
 #   Configuration directory for connector properties files.
 #
 # @param owner
-#   Owner to set on connector and secret file permissions.
+#   Owner to set on config files.
 #
 # @param group
-#   Group to set on connector and secret file permissions.
+#   Group to set on config files.
 #
 # @param connector_config_file_mode
 #   Mode to set on connector config file.
