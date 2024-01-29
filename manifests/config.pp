@@ -1,4 +1,4 @@
-# Manages the Kafka Connect configuration.
+# @summary Manages the Kafka Connect configuration.
 #
 # @api private
 #
@@ -8,8 +8,13 @@ class kafka_connect::config {
 
   $kafka_servers = join( $kafka_connect::bootstrap_servers, ',')
 
+  $file_ensure = $kafka_connect::package_ensure ? {
+    /^(absent|purged)$/ => 'absent',
+    default             => 'present',
+  }
+
   file { '/usr/bin/connect-distributed':
-    ensure  => 'present',
+    ensure  => $file_ensure,
     content => template('kafka_connect/connect-distributed.erb'),
     owner   => 'root',
     group   => 'root',
@@ -17,7 +22,7 @@ class kafka_connect::config {
   }
 
   file { '/etc/kafka/connect-distributed.properties':
-    ensure  => 'present',
+    ensure  => $file_ensure,
     content => template('kafka_connect/connect-distributed.properties.erb'),
     owner   => $kafka_connect::owner,
     group   => $kafka_connect::group,
@@ -25,7 +30,7 @@ class kafka_connect::config {
   }
 
   file { '/etc/kafka/connect-log4j.properties':
-    ensure  => 'present',
+    ensure  => $file_ensure,
     content => template('kafka_connect/connect-log4j.properties.erb'),
     owner   => 'root',
     group   => 'root',

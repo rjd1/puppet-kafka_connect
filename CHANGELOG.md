@@ -2,6 +2,17 @@
 
 Release notes for the rjd1-kafka_connect module.
 
+## Release 1.2.0
+
+2024-01-29 - Parameter updates & class enhancements
+
+ - Updated a bunch of data types to be more strict
+ - Converted a couple config params from String to Integer
+ - Added a pair of new params for setting file modes
+ - Added logic to set config file ensures dynamically
+ - Added use of contain()
+ - Updated Strings docs
+
 ## Release 1.1.0
 
 2024-01-15 - Support removing secrets files

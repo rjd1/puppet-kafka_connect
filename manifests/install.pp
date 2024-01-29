@@ -1,4 +1,4 @@
-# Manages the Kafka Connect installation.
+# @summary Manages the Kafka Connect installation.
 #
 # @api private
 #
