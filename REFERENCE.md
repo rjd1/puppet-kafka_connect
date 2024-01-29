@@ -157,7 +157,7 @@ Default value: `'present'`
 
 Data type: `Boolean`
 
-Eabled value for the Confluent package repo resource.
+Enabled value for the Confluent package repo resource.
 
 Default value: ``true``
 
@@ -471,7 +471,7 @@ Default value: `'/etc/kafka-connect'`
 
 Data type: `String[1]`
 
-Owner to set on connector and secret file permissions.
+Owner to set on config files.
 
 Default value: `'cp-kafka-connect'`
 
@@ -479,7 +479,7 @@ Default value: `'cp-kafka-connect'`
 
 Data type: `String[1]`
 
-Group to set on connector and secret file permissions.
+Group to set on config files.
 
 Default value: `'confluent'`
 
