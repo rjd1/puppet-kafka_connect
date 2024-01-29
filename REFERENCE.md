@@ -22,6 +22,10 @@
 
 * [`manage_connector`](#manage_connector): Manage running Kafka Connect connectors.
 
+### Data types
+
+* [`Kafka_connect::Loglevel`](#kafka_connectloglevel): Matches all valid log4j loglevels.
+
 ## Classes
 
 ### <a name="kafka_connect"></a>`kafka_connect`
@@ -49,7 +53,7 @@ class { 'kafka_connect':
 }
 ```
 
-#####
+##### 
 
 ```puppet
 class { 'kafka_connect':
@@ -109,6 +113,8 @@ The following parameters are available in the `kafka_connect` class:
 * [`connector_config_dir`](#connector_config_dir)
 * [`owner`](#owner)
 * [`group`](#group)
+* [`connector_config_file_mode`](#connector_config_file_mode)
+* [`connector_secret_file_mode`](#connector_secret_file_mode)
 * [`hostname`](#hostname)
 * [`rest_port`](#rest_port)
 * [`enable_delete`](#enable_delete)
@@ -119,7 +125,7 @@ The following parameters are available in the `kafka_connect` class:
 
 Data type: `Boolean`
 
-
+Flag for including the connector management class only.
 
 Default value: ``false``
 
@@ -127,7 +133,7 @@ Default value: ``false``
 
 Data type: `Boolean`
 
-
+Flag for including the confluent repo class.
 
 Default value: ``true``
 
@@ -135,7 +141,7 @@ Default value: ``true``
 
 Data type: `Boolean`
 
-
+Flag for including class java.
 
 Default value: ``false``
 
@@ -143,7 +149,7 @@ Default value: ``false``
 
 Data type: `Enum['present', 'absent']`
 
-
+Ensure value for the Confluent package repo resource.
 
 Default value: `'present'`
 
@@ -151,31 +157,32 @@ Default value: `'present'`
 
 Data type: `Boolean`
 
-
+Eabled value for the Confluent package repo resource.
 
 Default value: ``true``
 
 ##### <a name="repo_version"></a>`repo_version`
 
-Data type: `String`
+Data type: `Pattern[/^(\d+\.\d+|\d+)$/]`
 
-
+Version of the Confluent repo to configure.
 
 Default value: `'7.5'`
 
 ##### <a name="package_name"></a>`package_name`
 
-Data type: `String`
+Data type: `String[1]`
 
-
+Name of the main KC package to manage.
 
 Default value: `'confluent-kafka'`
 
 ##### <a name="package_ensure"></a>`package_ensure`
 
-Data type: `String`
+Data type: `String[1]`
 
-
+State of the package to ensure.
+Note that this may be used by more than one resource, depending on the setup.
 
 Default value: `'7.5.1-1'`
 
@@ -183,23 +190,23 @@ Default value: `'7.5.1-1'`
 
 Data type: `Boolean`
 
-
+Flag for managing the Schema Registry package.
 
 Default value: ``true``
 
 ##### <a name="schema_registry_package_name"></a>`schema_registry_package_name`
 
-Data type: `String`
+Data type: `String[1]`
 
-
+Name of the Schema Registry package.
 
 Default value: `'confluent-schema-registry'`
 
 ##### <a name="confluent_hub_plugin_path"></a>`confluent_hub_plugin_path`
 
-Data type: `String`
+Data type: `Stdlib::Absolutepath`
 
-
+Installation path for Confluent Hub plugins.
 
 Default value: `'/usr/share/confluent-hub-components'`
 
@@ -207,31 +214,32 @@ Default value: `'/usr/share/confluent-hub-components'`
 
 Data type: `Array[String]`
 
-
+List of Confluent Hub plugins to install.
+Each should be in the format author/name:semantic-version, e.g. 'acme/fancy-plugin:0.1.0'
 
 Default value: `[]`
 
 ##### <a name="confluent_hub_client_package_name"></a>`confluent_hub_client_package_name`
 
-Data type: `String`
+Data type: `String[1]`
 
-
+Name of the Confluent Hub Client package.
 
 Default value: `'confluent-hub-client'`
 
 ##### <a name="confluent_common_package_name"></a>`confluent_common_package_name`
 
-Data type: `String`
+Data type: `String[1]`
 
-
+Name of the Confluent Common package.
 
 Default value: `'confluent-common'`
 
 ##### <a name="kafka_heap_options"></a>`kafka_heap_options`
 
-Data type: `String`
+Data type: `String[1]`
 
-
+Value to set for 'KAFKA_HEAP_OPTS' export.
 
 Default value: `'-Xms256M -Xmx2G'`
 
@@ -239,39 +247,39 @@ Default value: `'-Xms256M -Xmx2G'`
 
 Data type: `Integer`
 
-
+Config value to set for 'config.storage.replication.factor'.
 
 Default value: `1`
 
 ##### <a name="config_storage_topic"></a>`config_storage_topic`
 
-Data type: `String`
+Data type: `String[1]`
 
-
+Config value to set for 'config.storage.topic'.
 
 Default value: `'connect-configs'`
 
 ##### <a name="group_id"></a>`group_id`
 
-Data type: `String`
+Data type: `String[1]`
 
-
+Config value to set for 'group.id'.
 
 Default value: `'connect-cluster'`
 
 ##### <a name="bootstrap_servers"></a>`bootstrap_servers`
 
-Data type: `Array[String]`
+Data type: `Array[String[1]]`
 
-
+Config value to set for 'bootstrap.servers'.
 
 Default value: `[ 'localhost:9092' ]`
 
 ##### <a name="key_converter"></a>`key_converter`
 
-Data type: `String`
+Data type: `String[1]`
 
-
+Config value to set for 'key.converter'.
 
 Default value: `'org.apache.kafka.connect.json.JsonConverter'`
 
@@ -279,31 +287,31 @@ Default value: `'org.apache.kafka.connect.json.JsonConverter'`
 
 Data type: `Boolean`
 
-
+Config value to set for 'key.converter.schemas.enable'.
 
 Default value: ``true``
 
 ##### <a name="listeners"></a>`listeners`
 
-Data type: `String`
+Data type: `Stdlib::HTTPUrl`
 
-
+Config value to set for 'listeners'.
 
 Default value: `'HTTP://:8083'`
 
 ##### <a name="log4j_appender_file_path"></a>`log4j_appender_file_path`
 
-Data type: `String`
+Data type: `Stdlib::Absolutepath`
 
-
+Config value to set for 'log4j.appender.file.File'.
 
 Default value: `'/var/log/confluent/connect.log'`
 
 ##### <a name="log4j_appender_max_file_size"></a>`log4j_appender_max_file_size`
 
-Data type: `String`
+Data type: `String[1]`
 
-
+Config value to set for 'log4j.appender.file.MaxFileSize'.
 
 Default value: `'100MB'`
 
@@ -311,31 +319,31 @@ Default value: `'100MB'`
 
 Data type: `Integer`
 
-
+Config value to set for 'log4j.appender.file.MaxBackupIndex'.
 
 Default value: `10`
 
 ##### <a name="log4j_loglevel_rootlogger"></a>`log4j_loglevel_rootlogger`
 
-Data type: `String`
+Data type: `Kafka_connect::Loglevel`
 
-
+Config value to set for 'log4j.rootLogger'.
 
 Default value: `'INFO'`
 
 ##### <a name="offset_flush_interval_ms"></a>`offset_flush_interval_ms`
 
-Data type: `String`
+Data type: `Integer`
 
+Config value to set for 'offset.flush.interval.ms'.
 
-
-Default value: `'10000'`
+Default value: `10000`
 
 ##### <a name="offset_storage_topic"></a>`offset_storage_topic`
 
-Data type: `String`
+Data type: `String[1]`
 
-
+Config value to set for 'offset.storage.topic'.
 
 Default value: `'connect-offsets'`
 
@@ -343,7 +351,7 @@ Default value: `'connect-offsets'`
 
 Data type: `Integer`
 
-
+Config value to set for 'offset.storage.replication.factor'.
 
 Default value: `1`
 
@@ -351,23 +359,23 @@ Default value: `1`
 
 Data type: `Integer`
 
-
+Config value to set for 'offset.storage.partitions'.
 
 Default value: `25`
 
 ##### <a name="plugin_path"></a>`plugin_path`
 
-Data type: `String`
+Data type: `Stdlib::Absolutepath`
 
-
+Config value to set for 'plugin.path'.
 
 Default value: `'/usr/share/java,/usr/share/confluent-hub-components'`
 
 ##### <a name="status_storage_topic"></a>`status_storage_topic`
 
-Data type: `String`
+Data type: `String[1]`
 
-
+Config value to set for 'status.storage.topic'.
 
 Default value: `'connect-status'`
 
@@ -375,31 +383,31 @@ Default value: `'connect-status'`
 
 Data type: `Integer`
 
-
+Config value to set for 'status.storage.replication.factor'.
 
 Default value: `1`
 
 ##### <a name="status_storage_partitions"></a>`status_storage_partitions`
 
-Data type: `String`
+Data type: `Integer`
 
+Config value to set for 'status.storage.partitions'.
 
-
-Default value: `'5'`
+Default value: `5`
 
 ##### <a name="value_converter"></a>`value_converter`
 
-Data type: `String`
+Data type: `String[1]`
 
-
+Config value to set for 'value.converter'.
 
 Default value: `'org.apache.kafka.connect.json.JsonConverter'`
 
 ##### <a name="value_converter_schema_registry_url"></a>`value_converter_schema_registry_url`
 
-Data type: `Optional[String]`
+Data type: `Optional[Stdlib::HTTPUrl]`
 
-
+Config value to set for 'value.converter.schema.registry.url', if defined.
 
 Default value: ``undef``
 
@@ -407,23 +415,23 @@ Default value: ``undef``
 
 Data type: `Boolean`
 
-
+Config value to set for 'value.converter.schemas.enable'.
 
 Default value: ``true``
 
 ##### <a name="service_name"></a>`service_name`
 
-Data type: `String`
+Data type: `String[1]`
 
-
+Name of the service to manage.
 
 Default value: `'confluent-kafka-connect'`
 
 ##### <a name="service_ensure"></a>`service_ensure`
 
-Data type: `String`
+Data type: `Stdlib::Ensure::Service`
 
-
+State of the service to ensure.
 
 Default value: `'running'`
 
@@ -431,63 +439,79 @@ Default value: `'running'`
 
 Data type: `Boolean`
 
-
+Value for enabling the service at boot.
 
 Default value: ``true``
 
 ##### <a name="connectors_absent"></a>`connectors_absent`
 
-Data type: `Optional[Array]`
+Data type: `Optional[Array[String[1]]]`
 
-
+List of connectors to ensure absent.
 
 Default value: ``undef``
 
 ##### <a name="connectors_paused"></a>`connectors_paused`
 
-Data type: `Optional[Array]`
+Data type: `Optional[Array[String[1]]]`
 
-
+List of connectors to ensure paused.
 
 Default value: ``undef``
 
 ##### <a name="connector_config_dir"></a>`connector_config_dir`
 
-Data type: `String`
+Data type: `Stdlib::Absolutepath`
 
-
+Configuration directory for connector properties files.
 
 Default value: `'/etc/kafka-connect'`
 
 ##### <a name="owner"></a>`owner`
 
-Data type: `String`
+Data type: `String[1]`
 
-
+Owner to set on connector and secret file permissions.
 
 Default value: `'cp-kafka-connect'`
 
 ##### <a name="group"></a>`group`
 
-Data type: `String`
+Data type: `String[1]`
 
-
+Group to set on connector and secret file permissions.
 
 Default value: `'confluent'`
 
+##### <a name="connector_config_file_mode"></a>`connector_config_file_mode`
+
+Data type: `Stdlib::Filemode`
+
+Mode to set on connector config file.
+
+Default value: `'0640'`
+
+##### <a name="connector_secret_file_mode"></a>`connector_secret_file_mode`
+
+Data type: `Stdlib::Filemode`
+
+Mode to set on connector secret file.
+
+Default value: `'0600'`
+
 ##### <a name="hostname"></a>`hostname`
 
-Data type: `String`
+Data type: `String[1]`
 
-
+The hostname or IP of the KC service.
 
 Default value: `'localhost'`
 
 ##### <a name="rest_port"></a>`rest_port`
 
-Data type: `Integer`
+Data type: `Stdlib::Port`
 
-
+Port to connect to for the REST API.
 
 Default value: `8083`
 
@@ -495,7 +519,8 @@ Default value: `8083`
 
 Data type: `Boolean`
 
-
+Enable delete of running connectors.
+Required for the provider to actually remove when set to absent.
 
 Default value: ``false``
 
@@ -503,13 +528,13 @@ Default value: ``false``
 
 Data type: `Boolean`
 
-
+Allow the provider to auto restart on FAILED connector state.
 
 Default value: ``false``
 
 ##### <a name="confluent_rest_utils_package_name"></a>`confluent_rest_utils_package_name`
 
-Data type: `String`
+Data type: `String[1]`
 
 
 
@@ -603,4 +628,16 @@ Valid values: ``true``, ``false``, `yes`, `no`
 Flag to enable auto restart on FAILED connector state.
 
 Default value: ``false``
+
+## Data types
+
+### <a name="kafka_connectloglevel"></a>`Kafka_connect::Loglevel`
+
+Matches all valid log4j loglevels.
+
+Alias of
+
+```puppet
+Enum['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL']
+```
 
