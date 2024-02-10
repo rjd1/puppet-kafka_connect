@@ -97,7 +97,7 @@ describe 'kafka_connect' do
         it { is_expected.to contain_exec('install_plugin_acme-fancy-plugin')
           .with_command('confluent-hub install acme/fancy-plugin:0.1.0 --no-prompt')
           .with_creates('/usr/share/confluent-hub-components/acme-fancy-plugin')
-          .with_path(['/bin','/sbin','/usr/bin','/usr/sbin','/usr/local/bin'])
+          .with_path(['/bin','/usr/bin','/usr/local/bin'])
         }
       end
 
