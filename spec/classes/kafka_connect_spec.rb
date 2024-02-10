@@ -26,12 +26,14 @@ describe 'kafka_connect' do
         it { is_expected.to contain_file('/etc/kafka/connect-log4j.properties') }
         it { is_expected.to contain_file('/usr/bin/connect-distributed') }
 
-        it { is_expected.to contain_package 'confluent-kafka' }
-        it { is_expected.to contain_package 'confluent-common' }
-        it { is_expected.to contain_package 'confluent-rest-utils' }
-        it { is_expected.to contain_package 'confluent-schema-registry' }
+        it { is_expected.to contain_package('confluent-kafka') }
+        it { is_expected.to contain_package('confluent-common') }
+        it { is_expected.to contain_package('confluent-rest-utils') }
+        it { is_expected.to contain_package('confluent-schema-registry') }
 
-        it { is_expected.to contain_service 'confluent-kafka-connect' }
+        it { is_expected.not_to contain_package('confluent-hub-client') }
+
+        it { is_expected.to contain_service('confluent-kafka-connect') }
 
         case os_facts[:osfamily]
         when 'RedHat'
@@ -63,13 +65,61 @@ describe 'kafka_connect' do
       describe 'without managed repo' do
         let(:params) { { manage_confluent_repo: false } }
 
-        it { is_expected.to_not contain_class('kafka_connect::manage_confluent_repo') }
+        it { is_expected.to_not contain_class 'kafka_connect::manage_confluent_repo'  }
       end
 
       describe 'without schema reg package' do
         let(:params) { { manage_schema_registry_package: false } }
 
+        it { is_expected.not_to contain_package('confluent-rest-utils') }
         it { is_expected.not_to contain_package('confluent-schema-registry') }
+      end
+
+      describe 'without schema reg package or plugins' do
+        let :params do {
+          :manage_schema_registry_package => false,
+          :confluent_hub_plugins => [],
+        }
+        end
+
+        it { is_expected.not_to contain_package('confluent-common') }
+        it { is_expected.not_to contain_package('confluent-rest-utils') }
+        it { is_expected.not_to contain_package('confluent-schema-registry') }
+        it { is_expected.not_to contain_package('confluent-hub-client') }
+      end
+
+      describe 'with plugin install' do
+        let(:params) { { confluent_hub_plugins: ['acme/fancy-plugin:0.1.0'] } }
+
+        it { is_expected.to contain_package('confluent-common') }
+        it { is_expected.to contain_package('confluent-hub-client') }
+
+        it { is_expected.to contain_exec('install_plugin_acme-fancy-plugin')
+          .with_command('confluent-hub install acme/fancy-plugin:0.1.0 --no-prompt')
+          .with_creates('/usr/share/confluent-hub-components/acme-fancy-plugin')
+          .with_path(['/bin','/sbin','/usr/bin','/usr/sbin','/usr/local/bin'])
+        }
+      end
+
+      describe 'with service ensure stopped' do
+        let(:params) { { service_ensure: 'stopped' } }
+
+        it { is_expected.to contain_service('confluent-kafka-connect').with_ensure('stopped') }
+      end
+
+      describe 'with package ensure absent' do
+        let(:params) { { package_ensure: 'absent' } }
+
+        it { is_expected.to contain_package('confluent-kafka').with_ensure('absent') }
+        it { is_expected.to contain_package('confluent-common').with_ensure('absent') }
+        it { is_expected.to contain_package('confluent-rest-utils').with_ensure('absent') }
+        it { is_expected.to contain_package('confluent-schema-registry').with_ensure('absent') }
+
+        it { is_expected.to contain_file('/etc/kafka/connect-distributed.properties').with_ensure('absent') }
+        it { is_expected.to contain_file('/etc/kafka/connect-log4j.properties').with_ensure('absent') }
+        it { is_expected.to contain_file('/usr/bin/connect-distributed').with_ensure('absent') }
+
+        it { is_expected.to contain_service('confluent-kafka-connect').with_ensure('stopped') }
       end
     end
   end
