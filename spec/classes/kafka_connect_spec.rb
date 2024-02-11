@@ -68,6 +68,57 @@ describe 'kafka_connect' do
         it { is_expected.to_not contain_class 'kafka_connect::manage_confluent_repo'  }
       end
 
+      describe 'with owner set to valid string value' do
+        let(:params) { { owner: 'test-owner' } }
+
+        it { is_expected.to contain_file('/etc/kafka/connect-distributed.properties').with_owner('test-owner') }
+      end
+
+      describe 'with owner set to valid integer value' do
+        let(:params) { { owner: 555 } }
+
+        it { is_expected.to contain_file('/etc/kafka/connect-distributed.properties').with_owner(555) }
+      end
+
+      describe 'with group set to valid string value' do
+        let(:params) { { group: 'test-group' } }
+
+        it { is_expected.to contain_file('/etc/kafka/connect-distributed.properties').with_group('test-group') }
+      end
+
+      describe 'with group set to valid integer value' do
+        let(:params) { { group: 555 } }
+
+        it { is_expected.to contain_file('/etc/kafka/connect-distributed.properties').with_group(555) }
+      end
+
+      describe 'with package_name set to valid value' do
+        let(:params) { { package_name: 'testing-pkg-name' } }
+
+        it { is_expected.to contain_package('testing-pkg-name') }
+      end
+
+      describe 'with package_ensure set to custom version' do
+        let(:params) { { package_ensure: '8.0.0' } }
+
+        it { is_expected.to contain_package('confluent-kafka').with_ensure('8.0.0') }
+      end
+
+      describe 'with package_ensure absent' do
+        let(:params) { { package_ensure: 'absent' } }
+
+        it { is_expected.to contain_package('confluent-kafka').with_ensure('absent') }
+        it { is_expected.to contain_package('confluent-common').with_ensure('absent') }
+        it { is_expected.to contain_package('confluent-rest-utils').with_ensure('absent') }
+        it { is_expected.to contain_package('confluent-schema-registry').with_ensure('absent') }
+
+        it { is_expected.to contain_file('/etc/kafka/connect-distributed.properties').with_ensure('absent') }
+        it { is_expected.to contain_file('/etc/kafka/connect-log4j.properties').with_ensure('absent') }
+        it { is_expected.to contain_file('/usr/bin/connect-distributed').with_ensure('absent') }
+
+        it { is_expected.to contain_service('confluent-kafka-connect').with_ensure('stopped') }
+      end
+
       describe 'without schema reg package' do
         let(:params) { { manage_schema_registry_package: false } }
 
@@ -88,6 +139,24 @@ describe 'kafka_connect' do
         it { is_expected.not_to contain_package('confluent-hub-client') }
       end
 
+      describe 'with service_name set to valid value' do
+        let(:params) { { service_name: 'testing-svc-name' } }
+
+        it { is_expected.to contain_service('testing-svc-name') }
+      end
+
+      describe 'with service_enable false' do
+        let(:params) { { service_enable: false } }
+
+        it { is_expected.to contain_service('confluent-kafka-connect').with_enable(false) }
+      end
+
+      describe 'with service ensure stopped' do
+        let(:params) { { service_ensure: 'stopped' } }
+
+        it { is_expected.to contain_service('confluent-kafka-connect').with_ensure('stopped') }
+      end
+
       describe 'with plugin install' do
         let(:params) { { confluent_hub_plugins: ['acme/fancy-plugin:0.1.0'] } }
 
@@ -99,27 +168,6 @@ describe 'kafka_connect' do
           .with_creates('/usr/share/confluent-hub-components/acme-fancy-plugin')
           .with_path(['/bin','/usr/bin','/usr/local/bin'])
         }
-      end
-
-      describe 'with service ensure stopped' do
-        let(:params) { { service_ensure: 'stopped' } }
-
-        it { is_expected.to contain_service('confluent-kafka-connect').with_ensure('stopped') }
-      end
-
-      describe 'with package ensure absent' do
-        let(:params) { { package_ensure: 'absent' } }
-
-        it { is_expected.to contain_package('confluent-kafka').with_ensure('absent') }
-        it { is_expected.to contain_package('confluent-common').with_ensure('absent') }
-        it { is_expected.to contain_package('confluent-rest-utils').with_ensure('absent') }
-        it { is_expected.to contain_package('confluent-schema-registry').with_ensure('absent') }
-
-        it { is_expected.to contain_file('/etc/kafka/connect-distributed.properties').with_ensure('absent') }
-        it { is_expected.to contain_file('/etc/kafka/connect-log4j.properties').with_ensure('absent') }
-        it { is_expected.to contain_file('/usr/bin/connect-distributed').with_ensure('absent') }
-
-        it { is_expected.to contain_service('confluent-kafka-connect').with_ensure('stopped') }
       end
     end
   end
