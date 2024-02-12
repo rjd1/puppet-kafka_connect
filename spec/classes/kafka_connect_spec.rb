@@ -65,7 +65,7 @@ describe 'kafka_connect' do
       describe 'without managed repo' do
         let(:params) { { manage_confluent_repo: false } }
 
-        it { is_expected.to_not contain_class 'kafka_connect::manage_confluent_repo'  }
+        it { is_expected.to_not contain_class 'kafka_connect::confluent_repo'  }
       end
 
       describe 'with owner set to valid string value' do
