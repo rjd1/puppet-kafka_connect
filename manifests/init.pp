@@ -68,14 +68,31 @@
 # @param listeners
 #   Config value to set for 'listeners'.
 #
+# @param log4j_file_appender
+#   Log4j file appender type to use (RollingFileAppender or DailyRollingFileAppender).
+#
 # @param log4j_appender_file_path
 #   Config value to set for 'log4j.appender.file.File'.
 #
 # @param log4j_appender_max_file_size
 #   Config value to set for 'log4j.appender.file.MaxFileSize'.
+#   Only used if log4j_file_appender = 'RollingFileAppender'.
 #
 # @param log4j_appender_max_backup_index
 #   Config value to set for 'log4j.appender.file.MaxBackupIndex'.
+#   Only used if log4j_file_appender = 'RollingFileAppender'.
+#
+# @param log4j_appender_date_pattern
+#   Config value to set for 'log4j.appender.file.DatePattern'.
+#   Only used if log4j_file_appender = 'DailyRollingFileAppender'.
+#
+# @param log4j_enable_stdout
+#   Option to enable logging to stdout/console.
+#
+# @param log4j_custom_config_lines
+#   Option to provide additional customized configuration.
+#   Can be used, for example, to adjust the log level for a specific connector type.
+#   See: https://docs.confluent.io/platform/current/connect/logging.html#use-the-kconnect-log4j-properties-file
 #
 # @param log4j_loglevel_rootlogger
 #   Config value to set for 'log4j.rootLogger'.
@@ -171,6 +188,13 @@
 #
 # @example
 #   class { 'kafka_connect':
+#     log4j_enable_stdout       => true,
+#     log4j_custom_config_lines => [ 'log4j.logger.io.confluent.connect.elasticsearch=DEBUG' ],
+#     confluent_hub_plugins     => [ 'confluentinc/kafka-connect-elasticsearch:14.0.12' ],
+#   }
+#
+# @example
+#   class { 'kafka_connect':
 #     manage_connectors_only => true,
 #     connector_config_dir   => '/opt/kafka-connect/etc',
 #     rest_port              => 8084,
@@ -210,9 +234,13 @@ class kafka_connect (
   String[1]                   $key_converter                       = 'org.apache.kafka.connect.json.JsonConverter',
   Boolean                     $key_converter_schemas_enable        = true,
   Stdlib::HTTPUrl             $listeners                           = 'HTTP://:8083',
+  Kafka_connect::LogAppender  $log4j_file_appender                 = 'RollingFileAppender',
   Stdlib::Absolutepath        $log4j_appender_file_path            = '/var/log/confluent/connect.log',
   String[1]                   $log4j_appender_max_file_size        = '100MB',
   Integer                     $log4j_appender_max_backup_index     = 10,
+  String[1]                   $log4j_appender_date_pattern         = '\'.\'yyyy-MM-dd-HH',
+  Boolean                     $log4j_enable_stdout                 = false,
+  Optional[Array[String[1]]]  $log4j_custom_config_lines           = undef,
   Kafka_connect::Loglevel     $log4j_loglevel_rootlogger           = 'INFO',
   Integer                     $offset_flush_interval_ms            = 10000,
   String[1]                   $offset_storage_topic                = 'connect-offsets',
