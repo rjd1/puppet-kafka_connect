@@ -37,6 +37,7 @@
 # @param confluent_hub_plugins
 #   List of Confluent Hub plugins to install.
 #   Each should be in the format author/name:semantic-version, e.g. 'acme/fancy-plugin:0.1.0'
+#   Also accepts 'latest' in place of a specific version.
 #
 # @param confluent_hub_client_package_name
 #   Name of the Confluent Hub Client package.
@@ -90,7 +91,7 @@
 #   Option to enable logging to stdout/console.
 #
 # @param log4j_custom_config_lines
-#   Option to provide additional customized configuration.
+#   Option to provide additional custom logging configuration.
 #   Can be used, for example, to adjust the log level for a specific connector type.
 #   See: https://docs.confluent.io/platform/current/connect/logging.html#use-the-kconnect-log4j-properties-file
 #
@@ -190,7 +191,7 @@
 #   class { 'kafka_connect':
 #     log4j_enable_stdout       => true,
 #     log4j_custom_config_lines => [ 'log4j.logger.io.confluent.connect.elasticsearch=DEBUG' ],
-#     confluent_hub_plugins     => [ 'confluentinc/kafka-connect-elasticsearch:14.0.12' ],
+#     confluent_hub_plugins     => [ 'confluentinc/kafka-connect-elasticsearch:latest' ],
 #   }
 #
 # @example
@@ -221,7 +222,7 @@ class kafka_connect (
   String[1]                   $schema_registry_package_name        = 'confluent-schema-registry',
   String[1]                   $confluent_rest_utils_package_name   = 'confluent-rest-utils',
   Stdlib::Absolutepath        $confluent_hub_plugin_path           = '/usr/share/confluent-hub-components',
-  Array[String]               $confluent_hub_plugins               = [],
+  Kafka_connect::HubPlugins   $confluent_hub_plugins               = [],
   String[1]                   $confluent_hub_client_package_name   = 'confluent-hub-client',
   String[1]                   $confluent_common_package_name       = 'confluent-common',
 
