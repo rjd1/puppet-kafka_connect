@@ -24,6 +24,8 @@
 
 ### Data types
 
+* [`Kafka_connect::HubPlugins`](#kafka_connecthubplugins): Validate the Confluent Hub plugins list.
+* [`Kafka_connect::LogAppender`](#kafka_connectlogappender): Validate the log4j file appender.
 * [`Kafka_connect::Loglevel`](#kafka_connectloglevel): Matches all valid log4j loglevels.
 
 ## Classes
@@ -50,6 +52,16 @@ class { 'kafka_connect':
   bootstrap_servers                   => [ 'kafka-01:9092', 'kafka-02:9092', 'kafka-03:9092' ],
   confluent_hub_plugins               => [ 'confluentinc/kafka-connect-s3:10.5.7' ],
   value_converter_schema_registry_url => "http://schemaregistry-elb.${facts['networking']['domain']}:8081",
+}
+```
+
+##### 
+
+```puppet
+class { 'kafka_connect':
+  log4j_enable_stdout       => true,
+  log4j_custom_config_lines => [ 'log4j.logger.io.confluent.connect.elasticsearch=DEBUG' ],
+  confluent_hub_plugins     => [ 'confluentinc/kafka-connect-elasticsearch:latest' ],
 }
 ```
 
@@ -90,9 +102,13 @@ The following parameters are available in the `kafka_connect` class:
 * [`key_converter`](#key_converter)
 * [`key_converter_schemas_enable`](#key_converter_schemas_enable)
 * [`listeners`](#listeners)
+* [`log4j_file_appender`](#log4j_file_appender)
 * [`log4j_appender_file_path`](#log4j_appender_file_path)
 * [`log4j_appender_max_file_size`](#log4j_appender_max_file_size)
 * [`log4j_appender_max_backup_index`](#log4j_appender_max_backup_index)
+* [`log4j_appender_date_pattern`](#log4j_appender_date_pattern)
+* [`log4j_enable_stdout`](#log4j_enable_stdout)
+* [`log4j_custom_config_lines`](#log4j_custom_config_lines)
 * [`log4j_loglevel_rootlogger`](#log4j_loglevel_rootlogger)
 * [`offset_flush_interval_ms`](#offset_flush_interval_ms)
 * [`offset_storage_topic`](#offset_storage_topic)
@@ -212,10 +228,11 @@ Default value: `'/usr/share/confluent-hub-components'`
 
 ##### <a name="confluent_hub_plugins"></a>`confluent_hub_plugins`
 
-Data type: `Array[String]`
+Data type: `Kafka_connect::HubPlugins`
 
 List of Confluent Hub plugins to install.
 Each should be in the format author/name:semantic-version, e.g. 'acme/fancy-plugin:0.1.0'
+Also accepts 'latest' in place of a specific version.
 
 Default value: `[]`
 
@@ -299,6 +316,14 @@ Config value to set for 'listeners'.
 
 Default value: `'HTTP://:8083'`
 
+##### <a name="log4j_file_appender"></a>`log4j_file_appender`
+
+Data type: `Kafka_connect::LogAppender`
+
+Log4j file appender type to use (RollingFileAppender or DailyRollingFileAppender).
+
+Default value: `'RollingFileAppender'`
+
 ##### <a name="log4j_appender_file_path"></a>`log4j_appender_file_path`
 
 Data type: `Stdlib::Absolutepath`
@@ -312,6 +337,7 @@ Default value: `'/var/log/confluent/connect.log'`
 Data type: `String[1]`
 
 Config value to set for 'log4j.appender.file.MaxFileSize'.
+Only used if log4j_file_appender = 'RollingFileAppender'.
 
 Default value: `'100MB'`
 
@@ -320,8 +346,36 @@ Default value: `'100MB'`
 Data type: `Integer`
 
 Config value to set for 'log4j.appender.file.MaxBackupIndex'.
+Only used if log4j_file_appender = 'RollingFileAppender'.
 
 Default value: `10`
+
+##### <a name="log4j_appender_date_pattern"></a>`log4j_appender_date_pattern`
+
+Data type: `String[1]`
+
+Config value to set for 'log4j.appender.file.DatePattern'.
+Only used if log4j_file_appender = 'DailyRollingFileAppender'.
+
+Default value: `'\'.\'yyyy-MM-dd-HH'`
+
+##### <a name="log4j_enable_stdout"></a>`log4j_enable_stdout`
+
+Data type: `Boolean`
+
+Option to enable logging to stdout/console.
+
+Default value: ``false``
+
+##### <a name="log4j_custom_config_lines"></a>`log4j_custom_config_lines`
+
+Data type: `Optional[Array[String[1]]]`
+
+Option to provide additional custom logging configuration.
+Can be used, for example, to adjust the log level for a specific connector type.
+See: https://docs.confluent.io/platform/current/connect/logging.html#use-the-kconnect-log4j-properties-file
+
+Default value: ``undef``
 
 ##### <a name="log4j_loglevel_rootlogger"></a>`log4j_loglevel_rootlogger`
 
@@ -469,7 +523,7 @@ Default value: `'/etc/kafka-connect'`
 
 ##### <a name="owner"></a>`owner`
 
-Data type: `String[1]`
+Data type: `Variant[String[1], Integer]`
 
 Owner to set on config files.
 
@@ -477,7 +531,7 @@ Default value: `'cp-kafka-connect'`
 
 ##### <a name="group"></a>`group`
 
-Data type: `String[1]`
+Data type: `Variant[String[1], Integer]`
 
 Group to set on config files.
 
@@ -630,6 +684,26 @@ Flag to enable auto restart on FAILED connector state.
 Default value: ``false``
 
 ## Data types
+
+### <a name="kafka_connecthubplugins"></a>`Kafka_connect::HubPlugins`
+
+Validate the Confluent Hub plugins list.
+
+Alias of
+
+```puppet
+Array[Optional[Pattern[/^\w+\/[a-zA-z0-9]{1,}[a-zA-z0-9\-]{0,}:(\d+\.\d+\.\d+|latest)$/]]]
+```
+
+### <a name="kafka_connectlogappender"></a>`Kafka_connect::LogAppender`
+
+Validate the log4j file appender.
+
+Alias of
+
+```puppet
+Enum['DailyRollingFileAppender', 'RollingFileAppender']
+```
 
 ### <a name="kafka_connectloglevel"></a>`Kafka_connect::Loglevel`
 
