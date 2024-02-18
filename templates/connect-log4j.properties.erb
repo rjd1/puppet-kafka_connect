@@ -37,8 +37,7 @@ log4j.appender.file.DatePattern=<%= scope['kafka_connect::log4j_appender_date_pa
 log4j.appender.file.File=<%= scope['kafka_connect::log4j_appender_file_path'] %>
 
 <% elsif scope['kafka_connect::log4j_file_appender'] == 'RollingFileAppender' -%>
-# Send the logs to a file, rolling the file using size-based rotation with a max retention count (i.e., backup index)
-# in order to facilitate managing disk usage effectively.
+# Send the logs to a file, rolling the file using size-based rotation with a max retention count (i.e., backup index).
 #
 log4j.appender.file=org.apache.log4j.RollingFileAppender
 log4j.appender.file.layout=org.apache.log4j.PatternLayout
