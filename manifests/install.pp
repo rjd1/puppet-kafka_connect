@@ -32,11 +32,6 @@ class kafka_connect::install {
   }
 
   $kafka_connect::confluent_hub_plugins.each |$plugin| {
-    unless $plugin =~ /^\w+\/[a-zA-z0-9]{1,}[a-zA-z0-9\-]{0,}:\d+\.\d+\.\d+$/ {
-      fail("Unexpected plugin value encountered: ${plugin} \
-        \n This should be in the format author/name:semantic-version, e.g. acme/fancy-plugin:0.1.0 \n")
-    }
-
     $author = regsubst($plugin,'^(\w+)\/.+:.+$','\1')
     $name   = regsubst($plugin,'^(\w+)\/([a-zA-z0-9]{1,}[a-zA-z0-9\-]{0,}):.+$','\2')
 

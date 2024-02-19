@@ -19,6 +19,8 @@ class kafka_connect::confluent_repo {
     }
 
   } elsif $facts['os']['family'] == 'Debian' {
+    include apt
+
     apt::source { 'confluent':
       ensure   => $kafka_connect::repo_ensure,
       comment  => 'Confluent repository',

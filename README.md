@@ -20,7 +20,7 @@ Welcome to the kafka_connect Puppet module!
     * * [Remove a connector](#remove-a-connector)
     * * [Pause a connector](#pause-a-connector)
     * * [Managing secrets config data](#managing-secrets-config-data)
-    * [Managing connectors directly through the provider](#managing-connectors-directly-through-the-provider)
+    * [Managing connectors directly through the resource type](#managing-connectors-directly-through-the-resource-type)
     * * [Examples](#examples)
 4. [Reference - An under-the-hood peek at what the module is doing and how](REFERENCE.md)
 5. [Limitations - OS compatibility, etc.](#limitations)
@@ -179,7 +179,7 @@ kafka_connect::secrets:
     ensure: 'absent'
 ```
 
-### Managing connectors directly through the provider
+### Managing connectors directly through the resource type
 
 #### Examples
 
@@ -200,6 +200,7 @@ To pause:
     connector_state_ensure => 'PAUSED',
   }
 ```
+
 To remove:
 
 ```puppet
@@ -209,9 +210,15 @@ To remove:
   }
 ```
 
+Command to remove through the Puppet RAL:
+
+```bash
+$ puppet resource manage_connector some-kc-connector ensure=absent enable_delete=true
+```
+
 ## Limitations
 
-Tested with Confluent 7.1.1 & 7.5.1 on Amazon Linux 2. Should also work on other Redhat as well as Debian-based systems.
+Tested with Confluent 7.x on Amazon Linux 2. Should also work on other RedHat as well as Debian-based systems.
 
 Each secrets file should contain only one key-value pair.
 
