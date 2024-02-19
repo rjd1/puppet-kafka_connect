@@ -2,6 +2,15 @@
 
 Release notes for the rjd1-kafka_connect module.
 
+## Release 1.3.0
+
+2024-02-19 - Improved logging support
+
+ - Added support for time-based log rotation
+ - Added ability to enable sending logs to stdout/console
+ - Added support for setting custom log4j config lines
+ - Some various class updates
+
 ## Release 1.2.0
 
 2024-01-29 - Parameter updates & class enhancements
