@@ -8,7 +8,7 @@ class kafka_connect::manage_connectors {
 
   ensure_resource('file', $kafka_connect::connector_config_dir, {'ensure' => 'directory'})
 
-  $connectors_data = lookup(kafka_connect::connectors, Optional[Hash[String[1],Any]], deep, undef)
+  $connectors_data = lookup(kafka_connect::connectors, Optional[Kafka_connect::Connectors], deep, undef)
 
   if $connectors_data != undef {
     $connectors_data.each |$connector| {
@@ -56,7 +56,7 @@ class kafka_connect::manage_connectors {
     }
   }
 
-  $secrets_data = lookup(kafka_connect::secrets, Optional[Hash[String[1],Any]], deep, undef)
+  $secrets_data = lookup(kafka_connect::secrets, Optional[Kafka_connect::Secrets], deep, undef)
 
   if $secrets_data != undef {
     $secrets_data.each |$secret| {
@@ -68,11 +68,6 @@ class kafka_connect::manage_connectors {
       $secret_value      = $secret[1]['value']
 
       if $secret_ensure {
-        unless $secret_ensure =~ /^(absent|present|file)$/ {
-          fail("Unexpected ensure value encountered for ${secret_file_name}: ${secret_ensure} \
-            \n This should be one of 'absent', 'present', or 'file' \n")
-        }
-
         $secret_file_ensure = $secret_ensure
       } else {
         $secret_file_ensure = 'present'
