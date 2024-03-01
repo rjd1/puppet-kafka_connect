@@ -21,7 +21,7 @@ class kafka_connect::config {
     mode    => '0755',
   }
 
-  file { '/etc/kafka/connect-distributed.properties':
+  file { "${kafka_connect::kc_config_dir}/connect-distributed.properties":
     ensure  => $file_ensure,
     content => template('kafka_connect/connect-distributed.properties.erb'),
     owner   => $kafka_connect::owner,
@@ -29,7 +29,7 @@ class kafka_connect::config {
     mode    => '0640',
   }
 
-  file { '/etc/kafka/connect-log4j.properties':
+  file { "${kafka_connect::kc_config_dir}/connect-log4j.properties":
     ensure  => $file_ensure,
     content => template('kafka_connect/connect-log4j.properties.erb'),
     owner   => 'root',
