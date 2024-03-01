@@ -145,9 +145,11 @@
 #
 # @param connectors_absent
 #   List of connectors to ensure absent.
+#   *Deprecated*: use the 'ensure' hash key in the connector data instead.
 #
 # @param connectors_paused
 #   List of connectors to ensure paused.
+#   *Deprecated*: use the 'ensure' hash key in the connector data instead.
 #
 # @param connector_config_dir
 #   Configuration directory for connector properties files.

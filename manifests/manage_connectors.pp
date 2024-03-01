@@ -22,20 +22,45 @@ class kafka_connect::manage_connectors {
         config => $connector_config
       }
 
+      $connector_ensure = $connector[1]['ensure'] ? {
+        /^(present|running|paused)$/ => 'present',
+        'absent'                     => 'absent',
+        default                      => 'present',
+      }
+
+      $connector_state_ensure = $connector[1]['ensure'] ? {
+        /^(present|running)$/ => 'RUNNING',
+        'paused'              => 'PAUSED',
+        'absent'              => undef,
+        default               => undef,
+      }
+
       if ($kafka_connect::connectors_absent and $connector_name in $kafka_connect::connectors_absent) {
-        $connector_ensure = 'absent'
-      } else {
-        $connector_ensure = 'present'
+        deprecation('kafka_connect::connectors_absent',
+          'Removing through $connectors_absent is deprecated, please use the \'ensure\' hash key in the connector data instead.')
+        $legacy_connector_ensure = 'absent'
       }
 
       if ($kafka_connect::connectors_paused and $connector_name in $kafka_connect::connectors_paused) {
-        $connector_state_ensure = 'PAUSED'
+        deprecation('kafka_connect::connectors_paused',
+          'Pausing through $connectors_paused is deprecated, please use the \'ensure\' hash key in the connector data instead.')
+        $legacy_connector_state_ensure = 'PAUSED'
+      }
+
+      if defined('$legacy_connector_ensure') {
+        $_connector_ensure = $legacy_connector_ensure
       } else {
-        $connector_state_ensure = undef
+        $_connector_ensure = $connector_ensure
+      }
+
+      if defined('$legacy_connector_state_ensure') {
+        $_connector_state_ensure = $legacy_connector_state_ensure
+      } else {
+        $_connector_state_ensure = $connector_state_ensure
       }
 
       file { "${kafka_connect::connector_config_dir}/${connector_file_name}" :
-        ensure  => $connector_ensure,
+        ensure  => $_connector_ensure,
         owner   => $kafka_connect::owner,
         group   => $kafka_connect::group,
         mode    => $kafka_connect::connector_config_file_mode,
@@ -44,9 +69,9 @@ class kafka_connect::manage_connectors {
       }
 
       manage_connector { $connector_name :
-        ensure                  => $connector_ensure,
+        ensure                  => $_connector_ensure,
         config_file             => "${kafka_connect::connector_config_dir}/${connector_file_name}",
-        connector_state_ensure  => $connector_state_ensure,
+        connector_state_ensure  => $_connector_state_ensure,
         hostname                => $kafka_connect::hostname,
         port                    => $kafka_connect::rest_port,
         enable_delete           => $kafka_connect::enable_delete,
