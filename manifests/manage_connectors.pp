@@ -59,6 +59,13 @@ class kafka_connect::manage_connectors {
         $_connector_state_ensure = $connector_state_ensure
       }
 
+      if ($_connector_ensure == 'present' and $_connector_state_ensure != 'PAUSED') {
+        unless $connector_config {
+          fail("Config data required, unless connector is being paused or removed. \
+            \n Validation error on ${connector_name} data, please correct. \n")
+        }
+      }
+
       file { "${kafka_connect::connector_config_dir}/${connector_file_name}" :
         ensure  => $_connector_ensure,
         owner   => $kafka_connect::owner,
@@ -101,6 +108,11 @@ class kafka_connect::manage_connectors {
       if $secret_file_ensure == 'absent' {
         $secret_content = undef
       } else {
+        unless ($secret_key and $secret_value) {
+          fail("Secret key and value are required, unless ensure is set to absent. \
+            \n Validation error on ${secret_file_name} data, please correct. \n")
+        }
+
         $secret_content = Sensitive("${secret_key}=${secret_value}\n")
       }
 
