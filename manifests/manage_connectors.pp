@@ -107,7 +107,14 @@ class kafka_connect::manage_connectors {
 
       if $secret_file_ensure == 'absent' {
         $secret_content = undef
+        $secret_notify  = undef
+      } elsif !$secret_connectors {
+        $secret_notify  = undef
       } else {
+        $secret_notify  = Manage_connector[$secret_connectors]
+      }
+
+      if $secret_file_ensure =~ /^(present|file)$/ {
         unless ($secret_key and $secret_value) {
           fail("Secret key and value are required, unless ensure is set to absent. \
             \n Validation error on ${secret_file_name} data, please correct. \n")
@@ -123,7 +130,7 @@ class kafka_connect::manage_connectors {
         owner   => $kafka_connect::owner,
         group   => $kafka_connect::group,
         mode    => $kafka_connect::connector_secret_file_mode,
-        notify  => Manage_connector[$secret_connectors],
+        notify  => $secret_notify,
       }
 
     }
