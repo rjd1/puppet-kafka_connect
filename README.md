@@ -100,7 +100,7 @@ kafka_connect::connectors:
 
 #### Update an existing Connector
 
-Simply make changes to the connector config hash, as needed.
+Simply make changes to the connector `config` hash, as needed.
 
 ```yaml
 kafka_connect::connectors:
@@ -170,7 +170,7 @@ kafka_connect::secrets:
 
 The `connectors` array should contain a list of connector names that reference it in the config. This allows for automatic update/refresh (via REST API restart POST) if the password value is changed.
 
-To later remove unused files, use the optional `ensure` hash key.
+To later remove unused files, use the optional `ensure` hash key and set it to 'absent'.
 
 ```yaml
 kafka_connect::secrets:
