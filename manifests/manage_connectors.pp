@@ -59,11 +59,9 @@ class kafka_connect::manage_connectors {
         $_connector_state_ensure = $connector_state_ensure
       }
 
-      if ($_connector_ensure == 'present' and $_connector_state_ensure != 'PAUSED') {
-        unless $connector_config {
-          fail("Config data required, unless connector is being paused or removed. \
-            \n Validation error on ${connector_name} data, please correct. \n")
-        }
+      if ($_connector_ensure == 'present' and !$connector_config) {
+        fail("Connector config required, unless ensure is set to absent. \
+          \n Validation error on ${connector_name} data, please correct. \n")
       }
 
       file { "${kafka_connect::connector_config_dir}/${connector_file_name}" :
