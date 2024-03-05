@@ -24,9 +24,13 @@
 
 ### Data types
 
+* [`Kafka_connect::Connector`](#kafka_connectconnector): Validate the individual connector data.
+* [`Kafka_connect::Connectors`](#kafka_connectconnectors): Validate the connectors data.
 * [`Kafka_connect::HubPlugins`](#kafka_connecthubplugins): Validate the Confluent Hub plugins list.
 * [`Kafka_connect::LogAppender`](#kafka_connectlogappender): Validate the log4j file appender.
 * [`Kafka_connect::Loglevel`](#kafka_connectloglevel): Matches all valid log4j loglevels.
+* [`Kafka_connect::Secret`](#kafka_connectsecret): Validate the individual secret data.
+* [`Kafka_connect::Secrets`](#kafka_connectsecrets): Validate the secrets data.
 
 ## Classes
 
@@ -95,6 +99,7 @@ The following parameters are available in the `kafka_connect` class:
 * [`confluent_hub_client_package_name`](#confluent_hub_client_package_name)
 * [`confluent_common_package_name`](#confluent_common_package_name)
 * [`kafka_heap_options`](#kafka_heap_options)
+* [`kc_config_dir`](#kc_config_dir)
 * [`config_storage_replication_factor`](#config_storage_replication_factor)
 * [`config_storage_topic`](#config_storage_topic)
 * [`group_id`](#group_id)
@@ -259,6 +264,14 @@ Data type: `String[1]`
 Value to set for 'KAFKA_HEAP_OPTS' export.
 
 Default value: `'-Xms256M -Xmx2G'`
+
+##### <a name="kc_config_dir"></a>`kc_config_dir`
+
+Data type: `Stdlib::Absolutepath`
+
+Configuration directory for KC properties files.
+
+Default value: `'/etc/kafka'`
 
 ##### <a name="config_storage_replication_factor"></a>`config_storage_replication_factor`
 
@@ -502,6 +515,7 @@ Default value: ``true``
 Data type: `Optional[Array[String[1]]]`
 
 List of connectors to ensure absent.
+*Deprecated*: use the 'ensure' hash key in the connector data instead.
 
 Default value: ``undef``
 
@@ -510,6 +524,7 @@ Default value: ``undef``
 Data type: `Optional[Array[String[1]]]`
 
 List of connectors to ensure paused.
+*Deprecated*: use the 'ensure' hash key in the connector data instead.
 
 Default value: ``undef``
 
@@ -685,6 +700,30 @@ Default value: ``false``
 
 ## Data types
 
+### <a name="kafka_connectconnector"></a>`Kafka_connect::Connector`
+
+Validate the individual connector data.
+
+Alias of
+
+```puppet
+Struct[{
+    Optional['ensure'] => Enum['absent', 'present', 'running', 'paused'],
+    'name'             => String[1],
+    Optional['config'] => Hash[String[1], String],
+  }]
+```
+
+### <a name="kafka_connectconnectors"></a>`Kafka_connect::Connectors`
+
+Validate the connectors data.
+
+Alias of
+
+```puppet
+Hash[String[1], Kafka_connect::Connector]
+```
+
 ### <a name="kafka_connecthubplugins"></a>`Kafka_connect::HubPlugins`
 
 Validate the Confluent Hub plugins list.
@@ -713,5 +752,30 @@ Alias of
 
 ```puppet
 Enum['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL']
+```
+
+### <a name="kafka_connectsecret"></a>`Kafka_connect::Secret`
+
+Validate the individual secret data.
+
+Alias of
+
+```puppet
+Struct[{
+    Optional['ensure']     => Enum['absent', 'present', 'file'],
+    Optional['connectors'] => Array[String[1]],
+    Optional['key']        => String[1],
+    Optional['value']      => String[1],
+  }]
+```
+
+### <a name="kafka_connectsecrets"></a>`Kafka_connect::Secrets`
+
+Validate the secrets data.
+
+Alias of
+
+```puppet
+Hash[String[1], Kafka_connect::Secret]
 ```
 

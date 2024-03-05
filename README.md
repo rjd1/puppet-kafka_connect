@@ -89,8 +89,6 @@ The following sections provide examples of specific functionality through hiera 
 
 The connector config data should be added to hiera with the following layout.
 
-NOTE: boolean and integer values *must be quoted*. This is important in order to avoid a situation where Puppet wants to constantly update the connector, due to the comparison done between file config & live connector.
-
 ```yaml
 kafka_connect::connectors:
   my-connector.json:
@@ -102,7 +100,7 @@ kafka_connect::connectors:
 
 #### Update an existing Connector
 
-Simply make changes to the connector config hash, as needed.
+Simply make changes to the connector `config` hash, as needed.
 
 ```yaml
 kafka_connect::connectors:
@@ -115,32 +113,33 @@ kafka_connect::connectors:
 
 #### Remove a Connector
 
-There's a parameter, `enable_delete`, that by default is set to false and must first be overwritten to support this. Then add the connector(s) to remove to the `connectors_absent` array (leave the previously added config data in place, in order for the file to be removed effectively).
+There's a parameter, `enable_delete`, that by default is set to false and must first be overwritten to support this. Then use the optional `ensure` key in the connector data hash and set it to 'absent'.
 
 ```yaml
 kafka_connect::enable_delete: true
-kafka_connect::connectors_absent:
-  - 'my-kc-connector'
 kafka_connect::connectors:
   my-connector.json:
-    name: 'my-kc-connector'
-    config:
-      my.config.key: "value"
-      my.other.config: "other_value"
+    name: 'my-jdbc-connector'
+    ensure: 'absent'
 ```
 
 NOTE: be sure to remove it from the secrets array list as well, if present.
 
 #### Pause a Connector
 
-The provider supports ensuring the connector state is either running (default) or paused. Similar to removing, provide a list of connector(s) to pause to the parameter array `connectors_paused`.
+The provider supports ensuring the connector state is either running (default) or paused. Similar to removing, use the `ensure` key in the connector data hash and set it to 'paused'.
 
 ```yaml
-kafka_connect::connectors_paused:
-  - 'some-connector-name'
+kafka_connect::connectors:
+  my-connector.json:
+    name: 'my-jdbc-connector'
+    ensure: 'paused'
+    config:
+      my.config.key: "value"
+      my.other.config: "other_value"
 ```
 
-Remove from the list to unpause/resume.
+Remove the ensure line or set it to 'running' to unpause/resume.
 
 #### Managing Secrets Config Data
 
@@ -155,14 +154,14 @@ kafka_connect::connectors:
     config:
       connection.url: "jdbc:postgresql://some-host.example.com:5432/db"
       connection.user: "my-user"
-      connection.password: "${file:/etc/kafka-connect/my-jdbc-secrets-file.properties:jdbc-sink-connection-password}"
+      connection.password: "${file:/etc/kafka-connect/my-jdbc-secret-file.properties:jdbc-sink-connection-password}"
 ```
 
 The password is then added, preferably via [EYAML](https://github.com/voxpupuli/hiera-eyaml), with the file and var names used in the config.
 
 ```yaml
 kafka_connect::secrets:
-  my-jdbc-secrets-file.properties:
+  my-jdbc-secret-file.properties:
     connectors:
       - 'my-jdbc-connector'
     key: 'jdbc-sink-connection-password'
@@ -171,11 +170,11 @@ kafka_connect::secrets:
 
 The `connectors` array should contain a list of connector names that reference it in the config. This allows for automatic update/refresh (via REST API restart POST) if the password value is changed.
 
-To later remove unused files, use the optional `ensure` hash key.
+To later remove unused files, use the optional `ensure` hash key and set it to 'absent'.
 
 ```yaml
 kafka_connect::secrets:
-  my-old-jdbc-secrets-file.properties:
+  my-old-jdbc-secret-file.properties:
     ensure: 'absent'
 ```
 
@@ -225,8 +224,6 @@ Each secrets file should contain only one key-value pair.
 Currently only distributed mode setup is supported.
 
 ### Known Issues
-
-If numeric or boolean connector config values in hiera are not quoted, it will result in the connector being updated on every Puppet run (config_updated changed 'no' to 'yes').
 
 When the `enable_delete` parameter is set to false and a connector is set to absent, Puppet still says there is a removal (i.e., lies). A similar situation occurs with the `config_updated` property when both it and `config_file` are not specified. There are warnings output along with the notices in these scenarios.
 

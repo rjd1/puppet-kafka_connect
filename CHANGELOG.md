@@ -2,6 +2,16 @@
 
 Release notes for the rjd1-kafka_connect module.
 
+## Release 1.4.0
+
+2024-03-05 - Functionality & usage enhancements
+
+ - Added support for 'ensure' key in connector data
+ - Added data types aliases for connectors & secrets
+ - Improved logic with error checking and notifies
+ - Deprecated use of $kafka_connect::connectors_absent
+ - Deprecated use of $kafka_connect::connectors_paused
+
 ## Release 1.3.0
 
 2024-02-19 - Improved logging support
@@ -24,9 +34,9 @@ Release notes for the rjd1-kafka_connect module.
 
 ## Release 1.1.0
 
-2024-01-15 - Support removing secrets files
+2024-01-15 - Support removing secret files
 
- - Added ability to set secrets files to absent via ensure hash key
+ - Added ability to set secret files to absent via 'ensure' hash key
  - Fixed a bug where the provider would improperly warn on restart
 
 ## Release 1.0.1

@@ -48,6 +48,9 @@
 # @param kafka_heap_options
 #   Value to set for 'KAFKA_HEAP_OPTS' export.
 #
+# @param kc_config_dir
+#   Configuration directory for KC properties files.
+#
 # @param config_storage_replication_factor
 #   Config value to set for 'config.storage.replication.factor'.
 #
@@ -142,9 +145,11 @@
 #
 # @param connectors_absent
 #   List of connectors to ensure absent.
+#   *Deprecated*: use the 'ensure' hash key in the connector data instead.
 #
 # @param connectors_paused
 #   List of connectors to ensure paused.
+#   *Deprecated*: use the 'ensure' hash key in the connector data instead.
 #
 # @param connector_config_dir
 #   Configuration directory for connector properties files.
@@ -228,6 +233,7 @@ class kafka_connect (
 
   # kafka_connect::config
   String[1]                   $kafka_heap_options                  = '-Xms256M -Xmx2G',
+  Stdlib::Absolutepath        $kc_config_dir                       = '/etc/kafka',
   Integer                     $config_storage_replication_factor   = 1,
   String[1]                   $config_storage_topic                = 'connect-configs',
   String[1]                   $group_id                            = 'connect-cluster',
