@@ -3,23 +3,21 @@
 # @api private
 #
 class kafka_connect::manage_connectors {
-
   assert_private()
 
-  ensure_resource('file', $kafka_connect::connector_config_dir, {'ensure' => 'directory'})
+  ensure_resource('file', $kafka_connect::connector_config_dir, { 'ensure' => 'directory' })
 
   $connectors_data = lookup(kafka_connect::connectors, Optional[Kafka_connect::Connectors], deep, undef)
 
   if $connectors_data != undef {
     $connectors_data.each |$connector| {
-
       $connector_file_name = $connector[0]
       $connector_name      = $connector[1]['name']
       $connector_config    = $connector[1]['config']
 
       $connector_full_config = {
         name   => $connector_name,
-        config => $connector_config
+        config => $connector_config,
       }
 
       $connector_ensure = $connector[1]['ensure'] ? {
@@ -37,13 +35,15 @@ class kafka_connect::manage_connectors {
 
       if ($kafka_connect::connectors_absent and $connector_name in $kafka_connect::connectors_absent) {
         deprecation('kafka_connect::connectors_absent',
-          'Removing through $connectors_absent is deprecated, please use the \'ensure\' hash key in the connector data instead.')
+        'Removing through $connectors_absent is deprecated, please use the \'ensure\' hash key in the connector data instead.')
+
         $legacy_connector_ensure = 'absent'
       }
 
       if ($kafka_connect::connectors_paused and $connector_name in $kafka_connect::connectors_paused) {
         deprecation('kafka_connect::connectors_paused',
-          'Pausing through $connectors_paused is deprecated, please use the \'ensure\' hash key in the connector data instead.')
+        'Pausing through $connectors_paused is deprecated, please use the \'ensure\' hash key in the connector data instead.')
+
         $legacy_connector_state_ensure = 'PAUSED'
       }
 
@@ -82,7 +82,6 @@ class kafka_connect::manage_connectors {
         enable_delete           => $kafka_connect::enable_delete,
         restart_on_failed_state => $kafka_connect::restart_on_failed_state,
       }
-
     }
   }
 
@@ -90,7 +89,6 @@ class kafka_connect::manage_connectors {
 
   if $secrets_data != undef {
     $secrets_data.each |$secret| {
-
       $secret_file_name  = $secret[0]
       $secret_ensure     = $secret[1]['ensure']
       $secret_connectors = $secret[1]['connectors']
@@ -130,8 +128,6 @@ class kafka_connect::manage_connectors {
         mode    => $kafka_connect::connector_secret_file_mode,
         notify  => $secret_notify,
       }
-
     }
   }
-
 }

@@ -3,7 +3,6 @@
 # @api private
 #
 class kafka_connect::service {
-
   assert_private()
 
   if ($kafka_connect::service_ensure == 'running' and $kafka_connect::package_ensure =~ /^(absent|purged)$/) {
@@ -26,5 +25,4 @@ class kafka_connect::service {
     ensure => $_service_ensure,
     enable => $_service_enable,
   }
-
 }

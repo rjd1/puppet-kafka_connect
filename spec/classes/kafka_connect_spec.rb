@@ -41,7 +41,7 @@ describe 'kafka_connect' do
         when 'Debian'
           it { is_expected.to contain_apt__source('confluent') }
         else
-          it { is_expected.to compile.and_raise_error(/Confluent repository is not supported on/) }
+          it { is_expected.to compile.and_raise_error(%r{Confluent repository is not supported on}) }
         end
       end
 
@@ -65,7 +65,7 @@ describe 'kafka_connect' do
       describe 'without managed repo' do
         let(:params) { { manage_confluent_repo: false } }
 
-        it { is_expected.to_not contain_class 'kafka_connect::confluent_repo'  }
+        it { is_expected.not_to contain_class 'kafka_connect::confluent_repo' }
       end
 
       describe 'with owner set to valid string value' do
@@ -127,11 +127,7 @@ describe 'kafka_connect' do
       end
 
       describe 'without schema reg package or plugins' do
-        let :params do {
-          :manage_schema_registry_package => false,
-          :confluent_hub_plugins => [],
-        }
-        end
+        let(:params) { { manage_schema_registry_package: false, confluent_hub_plugins: [] } }
 
         it { is_expected.not_to contain_package('confluent-common') }
         it { is_expected.not_to contain_package('confluent-rest-utils') }
@@ -163,10 +159,12 @@ describe 'kafka_connect' do
         it { is_expected.to contain_package('confluent-common') }
         it { is_expected.to contain_package('confluent-hub-client') }
 
-        it { is_expected.to contain_exec('install_plugin_acme-fancy-plugin')
-          .with_command('confluent-hub install acme/fancy-plugin:0.1.0 --no-prompt')
-          .with_creates('/usr/share/confluent-hub-components/acme-fancy-plugin')
-          .with_path(['/bin','/usr/bin','/usr/local/bin'])
+        it {
+          is_expected
+            .to contain_exec('install_plugin_acme-fancy-plugin')
+            .with_command('confluent-hub install acme/fancy-plugin:0.1.0 --no-prompt')
+            .with_creates('/usr/share/confluent-hub-components/acme-fancy-plugin')
+            .with_path(['/bin', '/usr/bin', '/usr/local/bin'])
         }
       end
     end
