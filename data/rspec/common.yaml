@@ -1,0 +1,26 @@
+---
+kafka_connect::package_ensure: '7.5.0-1'
+kafka_connect::repo_version: '7.5'
+kafka_connect::connectors:
+  connector-satu.json:
+    name: 'my-cool-connector'
+    config:
+      some.config.key: "value"
+      some.other.config: "other_value"
+      connection.password: "${file:/etc/kafka-connect/my-super-secret-file.properties:some-connection-passwd}"
+  connector-dua.json:
+    name: 'my-uncool-connector'
+    ensure: 'absent'
+  connector-tiga.json:
+    name: 'my-not-yet-cool-connector'
+    ensure: 'paused'
+    config:
+      some.key: "some.value"
+kafka_connect::secrets:
+  my-super-secret-file.properties:
+    connectors:
+      - 'my-cool-connector'
+    key: 'some-connection-passwd'
+    value: 'passwd-value'
+  my-no-longer-a-secret-file.properties:
+    ensure: 'absent'
