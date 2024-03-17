@@ -32,7 +32,7 @@
 #   Name of the Schema Registry package.
 #
 # @param confluent_rest_utils_package_name
-#   Name of the Conflue REST Utils package.
+#   Name of the Confluent REST Utils package.
 #
 # @param confluent_hub_plugin_path
 #   Installation path for Confluent Hub plugins.

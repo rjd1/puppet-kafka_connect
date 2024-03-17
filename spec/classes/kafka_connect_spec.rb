@@ -227,7 +227,7 @@ describe 'kafka_connect' do
       end
 
       describe 'with connector data invalid' do
-        custom_facts = { hostname: 'host1.test.com' }
+        custom_facts = { fqdn: 'host1.test.com' }
         let(:facts) do
           os_facts.merge(custom_facts)
         end
@@ -258,7 +258,7 @@ describe 'kafka_connect' do
       end
 
       describe 'with secret data invalid' do
-        custom_facts = { hostname: 'host2.test.com' }
+        custom_facts = { fqdn: 'host2.test.com' }
         let(:facts) do
           os_facts.merge(custom_facts)
         end
