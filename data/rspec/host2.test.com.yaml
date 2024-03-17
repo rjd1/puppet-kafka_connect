@@ -1,0 +1,4 @@
+---
+kafka_connect::secrets:
+  my-invalid-secret-file.properties:
+    ensure: 'present'

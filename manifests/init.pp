@@ -26,10 +26,13 @@
 #   Note that this may be used by more than one resource, depending on the setup.
 #
 # @param manage_schema_registry_package
-#   Flag for managing the Schema Registry package.
+#   Flag for managing the Schema Registry package (and REST Utils dependency package).
 #
 # @param schema_registry_package_name
 #   Name of the Schema Registry package.
+#
+# @param confluent_rest_utils_package_name
+#   Name of the Confluent REST Utils package.
 #
 # @param confluent_hub_plugin_path
 #   Installation path for Confluent Hub plugins.
@@ -237,7 +240,7 @@ class kafka_connect (
   Integer                     $config_storage_replication_factor   = 1,
   String[1]                   $config_storage_topic                = 'connect-configs',
   String[1]                   $group_id                            = 'connect-cluster',
-  Array[String[1]]            $bootstrap_servers                   = [ 'localhost:9092' ],
+  Array[String[1]]            $bootstrap_servers                   = ['localhost:9092'],
   String[1]                   $key_converter                       = 'org.apache.kafka.connect.json.JsonConverter',
   Boolean                     $key_converter_schemas_enable        = true,
   Stdlib::HTTPUrl             $listeners                           = 'HTTP://:8083',
@@ -278,8 +281,7 @@ class kafka_connect (
   Stdlib::Port                $rest_port                           = 8083,
   Boolean                     $enable_delete                       = false,
   Boolean                     $restart_on_failed_state             = false,
-){
-
+) {
   if $include_java {
     include 'java'
   }
@@ -312,5 +314,4 @@ class kafka_connect (
       before      => Class['kafka_connect::manage_connectors'],
     }
   }
-
 }

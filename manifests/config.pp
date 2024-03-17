@@ -3,7 +3,6 @@
 # @api private
 #
 class kafka_connect::config {
-
   assert_private()
 
   $kafka_servers = join( $kafka_connect::bootstrap_servers, ',')
@@ -36,5 +35,4 @@ class kafka_connect::config {
     group   => 'root',
     mode    => '0644',
   }
-
 }

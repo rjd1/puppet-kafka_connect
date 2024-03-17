@@ -12,7 +12,7 @@ Puppet::Type.newtype(:manage_connector) do
 
   newparam(:config_file) do
     desc 'Config file fully qualified path.'
-    #isrequired
+    # isrequired
     validate do |value|
       unless Puppet::Util.absolute_path? value
         raise ArgumentError, "Config file path must be absolute: #{value}"
@@ -64,5 +64,4 @@ Puppet::Type.newtype(:manage_connector) do
   autorequire(:properties_file) do
     [self[:config_file]]
   end
-
 end

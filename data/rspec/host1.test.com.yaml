@@ -1,0 +1,4 @@
+---
+kafka_connect::connectors:
+  my-invalid-connector-file.json:
+    name: 'my-invalid-connector'

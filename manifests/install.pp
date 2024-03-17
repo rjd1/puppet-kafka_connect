@@ -3,7 +3,6 @@
 # @api private
 #
 class kafka_connect::install {
-
   assert_private()
 
   package { $kafka_connect::package_name :
@@ -18,7 +17,7 @@ class kafka_connect::install {
   }
 
   if $kafka_connect::manage_schema_registry_package {
-    package { [ $kafka_connect::confluent_rest_utils_package_name, $kafka_connect::schema_registry_package_name ] :
+    package { [$kafka_connect::confluent_rest_utils_package_name, $kafka_connect::schema_registry_package_name]:
       ensure  => $kafka_connect::package_ensure,
       require => Package[$kafka_connect::confluent_common_package_name],
     }
@@ -43,5 +42,4 @@ class kafka_connect::install {
       notify  => Class['kafka_connect::service'],
     }
   }
-
 }
