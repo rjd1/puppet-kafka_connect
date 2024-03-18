@@ -3,7 +3,7 @@ require 'json'
 require 'net/http'
 require 'uri'
 
-Puppet::Type.type(:manage_connector).provide(:manage_connector) do
+Puppet::Type.type(:kc_connector).provide(:kc_connector) do
   desc 'Manage live Kafka Connect connectors.'
 
   def self.instances
@@ -23,7 +23,7 @@ Puppet::Type.type(:manage_connector).provide(:manage_connector) do
       resource[:name] = connector
       resource[:ensure] = :present
       resource[:config_updated] = :unknown
-      resource[:provider] = :manage_connector
+      resource[:provider] = :kc_connector
       Puppet.debug("Resource hash for connector #{connector}: #{resource}")
       new(resource)
     end
