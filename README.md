@@ -21,6 +21,7 @@ Welcome to the kafka_connect Puppet module!
     * * [Pause a connector](#pause-a-connector)
     * * [Managing secrets config data](#managing-secrets-config-data)
     * [Managing connectors directly through the resource type](#managing-connectors-directly-through-the-resource-type)
+    * * [WARNING: Breaking change in v2.0.0](#warning-breaking-change-in-v2.0.0)
     * * [Examples](#examples)
 4. [Reference - An under-the-hood peek at what the module is doing and how](REFERENCE.md)
 5. [Limitations - OS compatibility, etc.](#limitations)
@@ -180,12 +181,16 @@ kafka_connect::secrets:
 
 ### Managing connectors directly through the resource type
 
+#### WARNING: Breaking change in v2.0.0
+
+In release v2.0.0 the type and provider were renamed from `manage_connector` to `kc_connector`. Usage and functionality remain the same.
+
 #### Examples
 
 Ensure a connector exists and the running config matches the file config:
 
 ```puppet
-  manage_connector { 'some-kc-connector' :
+  kc_connector { 'some-kc-connector-name' :
     ensure      => 'present',
     config_file => '/etc/kafka-connect/some-kc-connector.properties.json',
     port        => 8084,
@@ -195,7 +200,7 @@ Ensure a connector exists and the running config matches the file config:
 To pause:
 
 ```puppet
-  manage_connector { 'some-kc-connector' :
+  kc_connector { 'some-kc-connector-name' :
     connector_state_ensure => 'PAUSED',
   }
 ```
@@ -203,7 +208,7 @@ To pause:
 To remove:
 
 ```puppet
-  manage_connector { 'some-kc-connector' :
+  kc_connector { 'some-kc-connector-name' :
     ensure        => 'absent',
     enable_delete => true,
   }
@@ -212,7 +217,7 @@ To remove:
 Command to remove through the Puppet RAL:
 
 ```bash
-$ puppet resource manage_connector some-kc-connector ensure=absent enable_delete=true
+$ puppet resource kc_connector some-kc-connector-name ensure=absent enable_delete=true
 ```
 
 ## Limitations

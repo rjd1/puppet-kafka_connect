@@ -2,6 +2,13 @@
 
 Release notes for the rjd1-kafka_connect module.
 
+## Release 2.0.0
+
+2024-03-19 - Renaming libs
+
+- Renamed the type and provider pair
+- Various updates based on 'pdk validate' output
+
 ## Release 1.4.0
 
 2024-03-05 - Functionality & usage enhancements
