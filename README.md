@@ -21,7 +21,7 @@ Welcome to the kafka_connect Puppet module!
     * * [Pause a connector](#pause-a-connector)
     * * [Managing secrets config data](#managing-secrets-config-data)
     * [Managing connectors directly through the resource type](#managing-connectors-directly-through-the-resource-type)
-    * * [WARNING: Breaking change in v2.0.0](#warning-breaking-change-in-v2.0.0)
+    * * [WARNING: Breaking change in v2.0.0](#warning-breaking-change-in-v200)
     * * [Examples](#examples)
 4. [Reference - An under-the-hood peek at what the module is doing and how](REFERENCE.md)
 5. [Limitations - OS compatibility, etc.](#limitations)
