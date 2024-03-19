@@ -3,19 +3,19 @@
 require 'spec_helper'
 require 'webmock/rspec'
 
-ensure_module_defined('Puppet::Provider::ManageConnector')
-require 'puppet/provider/manage_connector/manage_connector'
+ensure_module_defined('Puppet::Provider::KcConnector')
+require 'puppet/provider/kc_connector/kc_connector'
 
-describe Puppet::Type.type(:manage_connector).provider(:manage_connector) do
+describe Puppet::Type.type(:kc_connector).provider(:kc_connector) do
   let :resource do
     Puppet::Type
-      .type(:manage_connector)
+      .type(:kc_connector)
       .new(
         {
           name:        'foo-connector',
           ensure:      :present,
           port:        '80',
-          provider:    :manage_connector,
+          provider:    :kc_connector,
           config_file: '/tmp/config-foo.json',
         },
       )

@@ -20,7 +20,7 @@
 
 ### Resource types
 
-* [`manage_connector`](#manage_connector): Manage running Kafka Connect connectors.
+* [`kc_connector`](#kc_connector): Manage running Kafka Connect connectors.
 
 ### Data types
 
@@ -94,6 +94,7 @@ The following parameters are available in the `kafka_connect` class:
 * [`package_ensure`](#package_ensure)
 * [`manage_schema_registry_package`](#manage_schema_registry_package)
 * [`schema_registry_package_name`](#schema_registry_package_name)
+* [`confluent_rest_utils_package_name`](#confluent_rest_utils_package_name)
 * [`confluent_hub_plugin_path`](#confluent_hub_plugin_path)
 * [`confluent_hub_plugins`](#confluent_hub_plugins)
 * [`confluent_hub_client_package_name`](#confluent_hub_client_package_name)
@@ -140,7 +141,6 @@ The following parameters are available in the `kafka_connect` class:
 * [`rest_port`](#rest_port)
 * [`enable_delete`](#enable_delete)
 * [`restart_on_failed_state`](#restart_on_failed_state)
-* [`confluent_rest_utils_package_name`](#confluent_rest_utils_package_name)
 
 ##### <a name="manage_connectors_only"></a>`manage_connectors_only`
 
@@ -211,7 +211,7 @@ Default value: `'7.5.1-1'`
 
 Data type: `Boolean`
 
-Flag for managing the Schema Registry package.
+Flag for managing the Schema Registry package (and REST Utils dependency package).
 
 Default value: ``true``
 
@@ -222,6 +222,14 @@ Data type: `String[1]`
 Name of the Schema Registry package.
 
 Default value: `'confluent-schema-registry'`
+
+##### <a name="confluent_rest_utils_package_name"></a>`confluent_rest_utils_package_name`
+
+Data type: `String[1]`
+
+Name of the Confluent REST Utils package.
+
+Default value: `'confluent-rest-utils'`
 
 ##### <a name="confluent_hub_plugin_path"></a>`confluent_hub_plugin_path`
 
@@ -303,7 +311,7 @@ Data type: `Array[String[1]]`
 
 Config value to set for 'bootstrap.servers'.
 
-Default value: `[ 'localhost:9092' ]`
+Default value: `['localhost:9092']`
 
 ##### <a name="key_converter"></a>`key_converter`
 
@@ -601,23 +609,15 @@ Allow the provider to auto restart on FAILED connector state.
 
 Default value: ``false``
 
-##### <a name="confluent_rest_utils_package_name"></a>`confluent_rest_utils_package_name`
-
-Data type: `String[1]`
-
-
-
-Default value: `'confluent-rest-utils'`
-
 ## Resource types
 
-### <a name="manage_connector"></a>`manage_connector`
+### <a name="kc_connector"></a>`kc_connector`
 
 Manage running Kafka Connect connectors.
 
 #### Properties
 
-The following properties are available in the `manage_connector` type.
+The following properties are available in the `kc_connector` type.
 
 ##### `config_updated`
 
@@ -645,7 +645,7 @@ Default value: `present`
 
 #### Parameters
 
-The following parameters are available in the `manage_connector` type.
+The following parameters are available in the `kc_connector` type.
 
 * [`config_file`](#config_file)
 * [`enable_delete`](#enable_delete)
@@ -687,7 +687,7 @@ Default value: `8083`
 
 ##### <a name="provider"></a>`provider`
 
-The specific backend to use for this `manage_connector` resource. You will seldom need to specify this --- Puppet will
+The specific backend to use for this `kc_connector` resource. You will seldom need to specify this --- Puppet will
 usually discover the appropriate provider for your platform.
 
 ##### <a name="restart_on_failed_state"></a>`restart_on_failed_state`

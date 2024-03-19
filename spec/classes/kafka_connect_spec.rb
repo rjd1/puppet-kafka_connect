@@ -178,12 +178,12 @@ describe 'kafka_connect' do
             .with_group('confluent')
             .with_mode('0640')
             .with_content('{"name":"my-cool-connector","config":{"some.config.key":"value","some.other.config":"other_value","connection.password":"${file:/etc/kafka-connect/my-super-secret-file.properties:some-connection-passwd}"}}') # rubocop:disable Layout/LineLength
-            .that_comes_before('Manage_connector[my-cool-connector]')
+            .that_comes_before('Kc_connector[my-cool-connector]')
         }
 
         it {
           is_expected
-            .to contain_manage_connector('my-cool-connector')
+            .to contain_kc_connector('my-cool-connector')
             .with_ensure('present')
             .with_config_file('/etc/kafka-connect/connector-satu.json')
             .with_enable_delete(false)
@@ -199,12 +199,12 @@ describe 'kafka_connect' do
           is_expected
             .to contain_file('/etc/kafka-connect/connector-dua.json')
             .with_ensure('absent')
-            .that_comes_before('Manage_connector[my-uncool-connector]')
+            .that_comes_before('Kc_connector[my-uncool-connector]')
         }
 
         it {
           is_expected
-            .to contain_manage_connector('my-uncool-connector')
+            .to contain_kc_connector('my-uncool-connector')
             .with_ensure('absent')
             .with_enable_delete(true)
         }
@@ -215,12 +215,12 @@ describe 'kafka_connect' do
           is_expected
             .to contain_file('/etc/kafka-connect/connector-tiga.json')
             .with_ensure('present')
-            .that_comes_before('Manage_connector[my-not-yet-cool-connector]')
+            .that_comes_before('Kc_connector[my-not-yet-cool-connector]')
         }
 
         it {
           is_expected
-            .to contain_manage_connector('my-not-yet-cool-connector')
+            .to contain_kc_connector('my-not-yet-cool-connector')
             .with_ensure('present')
             .with_connector_state_ensure('PAUSED')
         }

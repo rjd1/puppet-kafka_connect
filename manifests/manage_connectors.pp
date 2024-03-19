@@ -70,10 +70,10 @@ class kafka_connect::manage_connectors {
         group   => $kafka_connect::group,
         mode    => $kafka_connect::connector_config_file_mode,
         content => to_json($connector_full_config),
-        before  => Manage_connector[$connector_name],
+        before  => Kc_connector[$connector_name],
       }
 
-      manage_connector { $connector_name :
+      kc_connector { $connector_name :
         ensure                  => $_connector_ensure,
         config_file             => "${kafka_connect::connector_config_dir}/${connector_file_name}",
         connector_state_ensure  => $_connector_state_ensure,
@@ -107,7 +107,7 @@ class kafka_connect::manage_connectors {
       } elsif !$secret_connectors {
         $secret_notify  = undef
       } else {
-        $secret_notify  = Manage_connector[$secret_connectors]
+        $secret_notify  = Kc_connector[$secret_connectors]
       }
 
       if $secret_file_ensure =~ /^(present|file)$/ {

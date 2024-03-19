@@ -1,7 +1,7 @@
 require 'puppet/util'
 require 'puppet/parameter/boolean'
 
-Puppet::Type.newtype(:manage_connector) do
+Puppet::Type.newtype(:kc_connector) do
   @doc = 'Manage running Kafka Connect connectors.'
 
   ensurable
