@@ -31,7 +31,7 @@ class kafka_connect::confluent_repo {
       },
     }
 
-    Apt::Source['confluent'] -> Class['apt::update'] -> Class[$kafk_connect::install]
+    Apt::Source['confluent'] -> Class['apt::update'] -> Package[$kafka_connect::package_name]
   } else {
     fail(sprintf('Confluent repository is not supported on %s', $facts['os']['family']))
   }
