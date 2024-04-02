@@ -2,6 +2,13 @@
 
 Release notes for the rjd1-kafka_connect module.
 
+## Release 2.1.0
+
+2024-04-02 - Support Ubuntu
+
+- Fixed resource ordering with apt repo
+- Added support for Ubuntu 22.04
+
 ## Release 2.0.0
 
 2024-03-19 - Renaming libs

@@ -222,7 +222,7 @@ $ puppet resource kc_connector some-kc-connector-name ensure=absent enable_delet
 
 ## Limitations
 
-Tested with Confluent 7.x on Amazon Linux 2. Should also work on other RedHat as well as Debian-based systems.
+Tested with Confluent 7.x on Amazon Linux 2 and Ubuntu 22.04.
 
 Each secrets file should contain only one key-value pair.
 
