@@ -226,7 +226,7 @@ describe 'kafka_connect' do
         }
       end
 
-      describe 'with connector data invalid' do
+      describe 'with connector data invalid (host1)' do
         custom_facts = { fqdn: 'host1.test.com' }
         let(:facts) do
           os_facts.merge(custom_facts)
@@ -235,13 +235,26 @@ describe 'kafka_connect' do
         it { is_expected.to compile.and_raise_error(%r{Connector\sconfig\srequired}) }
       end
 
-      describe 'with secret present' do
+      describe 'with secret k/v string pair present' do
         it {
           is_expected
             .to contain_file('my-super-secret-file.properties')
             .with_ensure('present')
             .with_path('/etc/kafka-connect/my-super-secret-file.properties')
             .with_content(sensitive("some-connection-passwd=passwd-value\n"))
+            .with_owner('cp-kafka-connect')
+            .with_group('confluent')
+            .with_mode('0600')
+        }
+      end
+
+      describe 'with secret k/v hash data present' do
+        it {
+          is_expected
+            .to contain_file('my-super-duper-secret-file.properties')
+            .with_ensure('present')
+            .with_path('/etc/kafka-connect/my-super-duper-secret-file.properties')
+            .with_content(sensitive("db-url=my-db.example.com\ndb-user=some-user\ndb-passwd=some-passwd\n"))
             .with_owner('cp-kafka-connect')
             .with_group('confluent')
             .with_mode('0600')
@@ -257,13 +270,22 @@ describe 'kafka_connect' do
         }
       end
 
-      describe 'with secret data invalid' do
+      describe 'with secret data invalid (host2)' do
         custom_facts = { fqdn: 'host2.test.com' }
         let(:facts) do
           os_facts.merge(custom_facts)
         end
 
-        it { is_expected.to compile.and_raise_error(%r{Secret\skey\sand\svalue\sare\srequired}) }
+        it { is_expected.to compile.and_raise_error(%r{Validation\serror}) }
+      end
+
+      describe 'with secret data invalid (host3)' do
+        custom_facts = { fqdn: 'host3.test.com' }
+        let(:facts) do
+          os_facts.merge(custom_facts)
+        end
+
+        it { is_expected.to compile.and_raise_error(%r{Validation\serror}) }
       end
     end
   end
