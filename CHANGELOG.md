@@ -2,6 +2,12 @@
 
 Release notes for the rjd1-kafka_connect module.
 
+## Release 2.2.0
+
+2024-04-16 - Improved secrets support
+
+- Added support for multiple key/value pairs in each secret file
+
 ## Release 2.1.0
 
 2024-04-02 - Support Ubuntu
