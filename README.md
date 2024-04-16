@@ -169,6 +169,19 @@ kafka_connect::secrets:
     value: 'ENC[PKCS7,encrypted-passwd-value]'
 ```
 
+To add multiple secrets to a single file, use the `kv_data` hash. Continuing with the example above, to instead have individual secret vars for each of the connection configs:
+
+```yaml
+kafka_connect::secrets:
+  my-jdbc-secret-file.properties:
+    connectors:
+      - 'my-jdbc-connector'
+    kv_data:
+      jdbc-sink-connection-url: 'ENC[PKCS7,encrypted-url-value]'
+      jdbc-sink-connection-user: 'ENC[PKCS7,encrypted-user-value]'
+      jdbc-sink-connection-password: 'ENC[PKCS7,encrypted-passwd-value]'
+```
+
 The `connectors` array should contain a list of connector names that reference it in the config. This allows for automatic update/refresh (via REST API restart POST) if the password value is changed.
 
 To later remove unused files, use the optional `ensure` hash key and set it to 'absent'.
@@ -223,8 +236,6 @@ $ puppet resource kc_connector some-kc-connector-name ensure=absent enable_delet
 ## Limitations
 
 Tested with Confluent 7.x on Amazon Linux 2 and Ubuntu 22.04.
-
-Each secrets file should contain only one key-value pair.
 
 Currently only distributed mode setup is supported.
 

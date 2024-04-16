@@ -94,6 +94,7 @@ class kafka_connect::manage_connectors {
       $secret_connectors = $secret[1]['connectors']
       $secret_key        = $secret[1]['key']
       $secret_value      = $secret[1]['value']
+      $secret_kv_data    = $secret[1]['kv_data']
 
       if $secret_ensure {
         $secret_file_ensure = $secret_ensure
@@ -111,12 +112,17 @@ class kafka_connect::manage_connectors {
       }
 
       if $secret_file_ensure =~ /^(present|file)$/ {
-        unless ($secret_key and $secret_value) {
-          fail("Secret key and value are required, unless ensure is set to absent. \
+        unless (($secret_key and $secret_value) or $secret_kv_data) and !(($secret_key or $secret_value) and $secret_kv_data) {
+          fail("Either secret key and value or kv_data is required, unless ensure is set to absent. \
             \n Validation error on ${secret_file_name} data, please correct. \n")
         }
 
-        $secret_content = Sensitive("${secret_key}=${secret_value}\n")
+        if $secret_kv_data {
+          $secret_data    = join($secret_kv_data.map |$key,$value| { "${key}=${value}" }, "\n")
+          $secret_content = Sensitive("${secret_data}\n")
+        } else {
+          $secret_content = Sensitive("${secret_key}=${secret_value}\n")
+        }
       }
 
       file { $secret_file_name :

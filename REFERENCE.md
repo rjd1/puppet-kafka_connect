@@ -766,6 +766,7 @@ Struct[{
     Optional['connectors'] => Array[String[1]],
     Optional['key']        => String[1],
     Optional['value']      => String[1],
+    Optional['kv_data']    => Hash[String[1], String[1]],
   }]
 ```
 

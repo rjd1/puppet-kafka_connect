@@ -22,5 +22,10 @@ kafka_connect::secrets:
       - 'my-cool-connector'
     key: 'some-connection-passwd'
     value: 'passwd-value'
+  my-super-duper-secret-file.properties:
+    kv_data:
+      db-url: 'my-db.example.com'
+      db-user: 'some-user'
+      db-passwd: 'some-passwd'
   my-no-longer-a-secret-file.properties:
     ensure: 'absent'

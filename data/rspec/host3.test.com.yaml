@@ -1,0 +1,9 @@
+---
+kafka_connect::secrets:
+  my-other-invalid-secret-file.properties:
+    key: 'some-connection-passwd'
+    value: 'passwd-value'
+    kv_data:
+      db-url: 'my-db.example.com'
+      db-user: 'some-user'
+      db-passwd: 'some-passwd'
