@@ -5,34 +5,15 @@
 class kafka_connect::confluent_repo {
   assert_private()
 
-  if $facts['os']['family'] == 'RedHat' {
-    yumrepo { 'confluent':
-      ensure              => $kafka_connect::repo_ensure,
-      baseurl             => "http://packages.confluent.io/rpm/${kafka_connect::repo_version}",
-      name                => 'confluent',
-      descr               => 'Confluent repository',
-      enabled             => $kafka_connect::repo_enabled,
-      gpgcheck            => '1',
-      gpgkey              => "http://packages.confluent.io/rpm/${kafka_connect::repo_version}/archive.key",
-      skip_if_unavailable => '1',
+  case $facts['os']['family'] {
+    'RedHat': {
+      contain kafka_connect::confluent_repo::yum
     }
-  } elsif $facts['os']['family'] == 'Debian' {
-    include apt
-
-    apt::source { 'confluent':
-      ensure   => $kafka_connect::repo_ensure,
-      comment  => 'Confluent repository',
-      location => "https://packages.confluent.io/deb/${kafka_connect::repo_version}",
-      release  => 'stable',
-      repos    => 'main',
-      key      => {
-        id     => 'CBBB821E8FAF364F79835C438B1DA6120C2BF624',
-        source => "https://packages.confluent.io/deb/${kafka_connect::repo_version}/archive.key",
-      },
+    'Debian': {
+      contain kafka_connect::confluent_repo::apt
     }
-
-    Apt::Source['confluent'] -> Class['apt::update'] -> Package[$kafka_connect::package_name]
-  } else {
-    fail(sprintf('Confluent repository is not supported on %s', $facts['os']['family']))
+    default: {
+      fail(sprintf('Confluent repository is not supported on %s', $facts['os']['family']))
+    }
   }
 }
