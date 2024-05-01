@@ -14,7 +14,7 @@ describe 'kafka_connect::confluent_repo' do
       when 'RedHat'
         it { is_expected.to contain_class('kafka_connect::confluent_repo::yum') }
         it { is_expected.to contain_yumrepo('confluent') }
-        it { is_expected.to contain_exec('flush_yum_cache') }
+        it { is_expected.to contain_exec('kc_flush-yum-cache') }
       when 'Debian'
         it { is_expected.to contain_class('kafka_connect::confluent_repo::apt') }
         it { is_expected.to contain_apt__source('confluent') }
