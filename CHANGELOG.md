@@ -2,25 +2,35 @@
 
 Release notes for the rjd1-kafka_connect module.
 
+## Release 2.3.0
+
+2024-05-02 - Class restructuring
+
+ - Added individual sub-classes for repo resources
+ - Split manage connector stuff into separate sub-classes
+ - Added an exec to flush the yum cache
+ - Added optional $service_provider parameter
+ - Various rspec test updates
+
 ## Release 2.2.0
 
 2024-04-16 - Improved secrets support
 
-- Added support for multiple key/value pairs in each secret file
+ - Added support for multiple key/value pairs in each secret file
 
 ## Release 2.1.0
 
 2024-04-02 - Support Ubuntu
 
-- Fixed resource ordering with apt repo
-- Added support for Ubuntu 22.04
+ - Fixed resource ordering with apt repo
+ - Added support for Ubuntu 22.04
 
 ## Release 2.0.0
 
 2024-03-19 - Renaming libs
 
-- Renamed the type and provider pair
-- Various updates based on 'pdk validate' output
+ - Renamed the type and provider pair
+ - Various updates based on 'pdk validate' output
 
 ## Release 1.4.0
 
