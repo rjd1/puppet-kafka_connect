@@ -8,5 +8,5 @@ defaults:
 hierarchy:
   - name: 'rspec test data'
     paths:
-      - 'rspec/%{::fqdn}.yaml'
+      - 'rspec/%{facts.networking.fqdn}.yaml'
       - 'rspec/common.yaml'

@@ -1,8 +1,9 @@
 # kafka_connect
 
 [![Puppet Forge](https://img.shields.io/puppetforge/v/rjd1/kafka_connect.svg)](https://forge.puppetlabs.com/rjd1/kafka_connect)
-[![puppetmodule.info docs](http://www.puppetmodule.info/images/badge.png)](http://www.puppetmodule.info/m/rjd1-kafka_connect)
+[![Puppet Forge - downloads](https://img.shields.io/puppetforge/dt/rjd1/kafka_connect.svg)](https://forge.puppetlabs.com/rjd1/kafka_connect)
 [![License](https://img.shields.io/github/license/rjd1/puppet-kafka_connect.svg)](https://github.com/rjd1/puppet-kafka_connect/blob/master/LICENSE)
+[![puppetmodule.info docs](http://www.puppetmodule.info/images/badge.png)](http://www.puppetmodule.info/m/rjd1-kafka_connect)
 
 Welcome to the kafka_connect Puppet module!
 

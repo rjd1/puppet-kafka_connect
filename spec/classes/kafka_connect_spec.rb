@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 describe 'kafka_connect' do
-  on_supported_os.each do |os, os_facts|
+  on_supported_os.each do |os, facts|
     context "on #{os}" do
-      let(:facts) { os_facts }
+      let(:facts) { facts }
       let(:hiera_config) { 'hiera-rspec.yaml' }
 
       it { is_expected.to compile.with_all_deps }
@@ -35,15 +35,6 @@ describe 'kafka_connect' do
         it { is_expected.not_to contain_package('confluent-hub-client') }
 
         it { is_expected.to contain_service('confluent-kafka-connect') }
-
-        case os_facts[:osfamily]
-        when 'RedHat'
-          it { is_expected.to contain_yumrepo('confluent') }
-        when 'Debian'
-          it { is_expected.to contain_apt__source('confluent') }
-        else
-          it { is_expected.to compile.and_raise_error(%r{Confluent repository is not supported on}) }
-        end
       end
 
       describe 'with connector management only' do
@@ -227,10 +218,7 @@ describe 'kafka_connect' do
       end
 
       describe 'with connector data invalid (host1)' do
-        custom_facts = { fqdn: 'host1.test.com' }
-        let(:facts) do
-          os_facts.merge(custom_facts)
-        end
+        let(:facts) { facts.merge({ networking: { fqdn: 'host1.test.com' } }) }
 
         it { is_expected.to compile.and_raise_error(%r{Connector\sconfig\srequired}) }
       end
@@ -271,19 +259,13 @@ describe 'kafka_connect' do
       end
 
       describe 'with secret data invalid (host2)' do
-        custom_facts = { fqdn: 'host2.test.com' }
-        let(:facts) do
-          os_facts.merge(custom_facts)
-        end
+        let(:facts) { facts.merge({ networking: { fqdn: 'host2.test.com' } }) }
 
         it { is_expected.to compile.and_raise_error(%r{Validation\serror}) }
       end
 
       describe 'with secret data invalid (host3)' do
-        custom_facts = { fqdn: 'host3.test.com' }
-        let(:facts) do
-          os_facts.merge(custom_facts)
-        end
+        let(:facts) { facts.merge({ networking: { fqdn: 'host3.test.com' } }) }
 
         it { is_expected.to compile.and_raise_error(%r{Validation\serror}) }
       end

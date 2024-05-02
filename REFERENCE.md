@@ -14,8 +14,12 @@
 
 * `kafka_connect::config`: Manages the Kafka Connect configuration.
 * `kafka_connect::confluent_repo`: Manages the Confluent package repository.
+* `kafka_connect::confluent_repo::apt`: Manages the Confluent apt package repository.
+* `kafka_connect::confluent_repo::yum`: Manages the Confluent yum package repository.
 * `kafka_connect::install`: Manages the Kafka Connect installation.
-* `kafka_connect::manage_connectors`: Class to manage individual Kafka Connect connectors.
+* `kafka_connect::manage_connectors`: Class to manage individual Kafka Connect connectors and connector secrets.
+* `kafka_connect::manage_connectors::connector`: Class to manage individual Kafka Connect connectors.
+* `kafka_connect::manage_connectors::secret`: Class to manage individual Kafka Connect connector secrets.
 * `kafka_connect::service`: Manages the Kafka Connect service.
 
 ### Resource types
@@ -130,6 +134,7 @@ The following parameters are available in the `kafka_connect` class:
 * [`service_name`](#service_name)
 * [`service_ensure`](#service_ensure)
 * [`service_enable`](#service_enable)
+* [`service_provider`](#service_provider)
 * [`connectors_absent`](#connectors_absent)
 * [`connectors_paused`](#connectors_paused)
 * [`connector_config_dir`](#connector_config_dir)
@@ -517,6 +522,14 @@ Data type: `Boolean`
 Value for enabling the service at boot.
 
 Default value: ``true``
+
+##### <a name="service_provider"></a>`service_provider`
+
+Data type: `Optional[String[1]]`
+
+Backend provider to use for the service resource.
+
+Default value: ``undef``
 
 ##### <a name="connectors_absent"></a>`connectors_absent`
 

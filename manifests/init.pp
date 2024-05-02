@@ -146,6 +146,9 @@
 # @param service_enable
 #   Value for enabling the service at boot.
 #
+# @param service_provider
+#   Backend provider to use for the service resource.
+#
 # @param connectors_absent
 #   List of connectors to ensure absent.
 #   *Deprecated*: use the 'ensure' hash key in the connector data instead.
@@ -268,6 +271,7 @@ class kafka_connect (
   String[1]                   $service_name                        = 'confluent-kafka-connect',
   Stdlib::Ensure::Service     $service_ensure                      = 'running',
   Boolean                     $service_enable                      = true,
+  Optional[String[1]]         $service_provider                    = undef,
 
   # kafka_connect::manage_connectors
   Optional[Array[String[1]]]  $connectors_absent                   = undef,

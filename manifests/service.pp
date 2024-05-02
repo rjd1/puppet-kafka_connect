@@ -22,7 +22,8 @@ class kafka_connect::service {
   }
 
   service { $kafka_connect::service_name :
-    ensure => $_service_ensure,
-    enable => $_service_enable,
+    ensure   => $_service_ensure,
+    enable   => $_service_enable,
+    provider => $kafka_connect::service_provider,
   }
 }
