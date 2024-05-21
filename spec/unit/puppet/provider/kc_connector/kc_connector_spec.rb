@@ -44,6 +44,8 @@ describe Puppet::Type.type(:kc_connector).provider(:kc_connector) do
          headers: { 'Accept' => '*/*', 'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type' => 'application/json', 'Host' => 'localhost', 'User-Agent' => 'Ruby' })
     stub_request(:post, 'http://localhost/connectors/foo-connector/restart?includeTasks=true&onlyFailed=true')
       .with(headers: { 'Accept' => '*/*', 'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent' => 'Ruby' })
+    stub_request(:post, 'http://localhost/connectors/foo-connector/tasks/0/restart')
+      .with(headers: { 'Accept' => '*/*', 'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent' => 'Ruby' })
   end
 
   it 'is expected to have an exists? method' do
@@ -78,8 +80,20 @@ describe Puppet::Type.type(:kc_connector).provider(:kc_connector) do
     expect(provider).to respond_to(:connector_state_ensure=)
   end
 
+  it 'is expected to have a tasks_state_ensure method' do
+    expect(provider).to respond_to(:tasks_state_ensure)
+  end
+
+  it 'is expected to have a tasks_state_ensure= method' do
+    expect(provider).to respond_to(:tasks_state_ensure=)
+  end
+
   it 'is expected to have a restart method' do
     expect(provider).to respond_to(:restart)
+  end
+
+  it 'is expected to have a restart_task method' do
+    expect(provider).to respond_to(:restart_task)
   end
 
   describe 'checking existence' do
@@ -116,15 +130,33 @@ describe Puppet::Type.type(:kc_connector).provider(:kc_connector) do
     end
   end
 
-  describe 'checking state' do
+  describe 'checking connector state' do
     it 'is expected to check the connector state' do
-      expect(provider.check_connector_state).to eq 'RUNNING'
+      expect(provider.check_connector_state[:connector]).to eq 'RUNNING'
+    end
+  end
+
+  describe 'checking tasks state' do
+    it 'is expected to check the connector tasks state' do
+      expect(provider.check_connector_state[:tasks]).to eq 'RUNNING'
+    end
+  end
+
+  describe 'checking failed task ids' do
+    it 'is expected to check the failed task ids state' do
+      expect(provider.check_connector_state[:failed_task_ids]).to eq []
     end
   end
 
   describe 'restarting' do
     it 'is expected to restart the connector' do
       provider.restart
+    end
+  end
+
+  describe 'restarting task' do
+    it 'is expected to restart the connector task' do
+      provider.restart_task(0)
     end
   end
 
