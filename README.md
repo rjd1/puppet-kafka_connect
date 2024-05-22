@@ -242,7 +242,7 @@ Currently only distributed mode setup is supported.
 
 ### Known Issues
 
-When the `enable_delete` parameter is set to false and a connector is set to absent, Puppet still says there is a removal (i.e., lies). A similar situation occurs with the `config_updated` property when both it and `config_file` are not specified. There are warnings output along with the notices in these scenarios.
+In certain situations, for example when a connector is set to absent and the `enable_delete` parameter is false (the default), Puppet will report a system state change when actually none has occured (i.e., it lies). There are warnings output along with the change notices in these scenarios.
 
 ## Development
 
