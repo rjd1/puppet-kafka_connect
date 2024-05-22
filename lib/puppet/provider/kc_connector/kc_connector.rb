@@ -247,15 +247,15 @@ Puppet::Type.type(:kc_connector).provide(:kc_connector) do
     value = value.to_s
 
     if connector_state == 'FAILED'
-      Puppet.warning("Connector state found to be 'FAILED' on #{@resource[:name]}, so not attempting to restart individual failed task id(s) #{failed_task_ids}. They will be restarted along with the connector (if enabled).") # rubocop:disable Layout/LineLength
+      Puppet.warning("Connector state found to be FAILED on #{@resource[:name]}, so not attempting to restart individual failed task id(s) #{failed_task_ids}. They will be restarted along with the connector (if enabled).") # rubocop:disable Layout/LineLength
       return
     elsif connector_state != 'RUNNING'
-      Puppet.warning("Connector state not found to be 'RUNNING' (instead: #{connector_state}) on #{@resource[:name]}, so not attempting to restart failed task id(s) #{failed_task_ids}.")
+      Puppet.warning("Connector state not found to be RUNNING (instead: #{connector_state}) on #{@resource[:name]}, so not attempting to restart failed task id(s) #{failed_task_ids}.")
       return
     end
 
     unless tasks_state == 'FAILED' && value == 'RUNNING'
-      raise(Puppet::Error, "Expected to ensure 'RUNNING' with tasks state 'FAILED', but got ensure #{value} with tasks state #{tasks_state} for #{@resource[:name]}")
+      raise(Puppet::Error, "Expected to ensure RUNNING with tasks state FAILED, but got ensure #{value} with tasks state #{tasks_state} for #{@resource[:name]}")
     end
 
     if resource[:restart_on_failed_state]
