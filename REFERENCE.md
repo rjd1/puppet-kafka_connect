@@ -656,6 +656,14 @@ The basic property that the resource should be in.
 
 Default value: `present`
 
+##### `tasks_state_ensure`
+
+Valid values: `RUNNING`
+
+State of the connector tasks to ensure. This is just used to catch failed tasks and should not be changed.
+
+Default value: `RUNNING`
+
 #### Parameters
 
 The following parameters are available in the `kc_connector` type.

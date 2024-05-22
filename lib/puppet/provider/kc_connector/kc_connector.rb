@@ -7,7 +7,6 @@ Puppet::Type.type(:kc_connector).provide(:kc_connector) do
   desc 'Manage live Kafka Connect connectors.'
 
   def self.instances
-    # connectors_raw = Net::HTTP.get("#{@resource[:hostname]}", '/connectors', "#{@resource[:port]}")
     connectors_raw = Net::HTTP.get('localhost', '/connectors', '8083')
 
     begin
@@ -75,7 +74,7 @@ Puppet::Type.type(:kc_connector).provide(:kc_connector) do
 
       Puppet.debug("Attempted to delete #{@resource[:name]}...\n net: #{net}\n destroy_response: #{destroy_response}")
     else
-      Puppet.warning("The following connector is set to absent, but not removing since delete is not enabled: #{@resource[:name]}")
+      Puppet.warning("#{@resource[:name]} is set to absent, but not actually removing since enable_delete=false.")
     end
   end
 
@@ -161,20 +160,37 @@ Puppet::Type.type(:kc_connector).provide(:kc_connector) do
 
     connector_state = conn_state_parsed['connector']['state']
 
+    tasks_array = conn_state_parsed['tasks']
+
+    if tasks_array.any? { |t| t['state'] == 'FAILED' }
+      tasks_state = 'FAILED'
+      failed_tasks = tasks_array.select { |t| t['state'] == 'FAILED' }
+      failed_task_ids = failed_tasks.map { |t| t['id'] }
+    else
+      # assume running if not failed
+      tasks_state = 'RUNNING'
+      failed_task_ids = []
+    end
+
     Puppet.debug("Attempted to check connector state for #{@resource[:name]}...\n")
     Puppet.debug(" conn_state_raw: #{conn_state_raw}")
     Puppet.debug(" conn_state_parsed: #{conn_state_parsed}")
     Puppet.debug(" connector_state: #{connector_state}")
+    Puppet.debug(" tasks_array: #{tasks_array}")
+    Puppet.debug(" tasks_state: #{tasks_state}")
+    Puppet.debug(" failed_task_ids: #{failed_task_ids}")
 
-    connector_state
+    state = { connector: connector_state, tasks: tasks_state, failed_task_ids: failed_task_ids }
+
+    state
   end
 
   def connector_state_ensure
-    check_connector_state
+    check_connector_state[:connector]
   end
 
   def connector_state_ensure=(value)
-    current_state = check_connector_state.to_s
+    current_state = check_connector_state[:connector].to_s
     value = value.to_s
 
     Puppet.debug("current_state for #{@resource[:name]}: #{current_state}, setter value: #{value}")
@@ -200,7 +216,7 @@ Puppet::Type.type(:kc_connector).provide(:kc_connector) do
     elsif current_state == 'FAILED' && resource[:restart_on_failed_state]
       restart
     elsif current_state == 'FAILED' && !resource[:restart_on_failed_state]
-      Puppet.warning("Restart on failed state not enabled, so skipping for connector #{@resource[:name]}.")
+      Puppet.warning("restart_on_failed_state not enabled, so skipping for connector #{@resource[:name]}.")
 
       response = nil
     elsif ['RESTARTING', 'UNASSIGNED'].include?(current_state)
@@ -218,15 +234,58 @@ Puppet::Type.type(:kc_connector).provide(:kc_connector) do
     Puppet.debug("response: #{response}")
   end
 
+  def tasks_state_ensure
+    check_connector_state[:tasks]
+  end
+
+  def tasks_state_ensure=(value)
+    check_state_output = check_connector_state
+
+    connector_state = check_state_output[:connector].to_s
+    tasks_state = check_state_output[:tasks].to_s
+    failed_task_ids = check_state_output[:failed_task_ids]
+    value = value.to_s
+
+    if connector_state == 'FAILED'
+      Puppet.warning("Connector state found to be FAILED on #{@resource[:name]}, so not attempting to restart individual failed task id(s) #{failed_task_ids}. They will be restarted along with the connector (if enabled).") # rubocop:disable Layout/LineLength
+      return
+    elsif connector_state != 'RUNNING'
+      Puppet.warning("Connector state not found to be RUNNING (instead: #{connector_state}) on #{@resource[:name]}, so not attempting to restart failed task id(s) #{failed_task_ids}.")
+      return
+    end
+
+    unless tasks_state == 'FAILED' && value == 'RUNNING'
+      raise(Puppet::Error, "Expected to ensure RUNNING with tasks state FAILED, but got ensure #{value} with tasks state #{tasks_state} for #{@resource[:name]}")
+    end
+
+    if resource[:restart_on_failed_state]
+      failed_task_ids.each do |id|
+        restart_task(id)
+      end
+    else
+      Puppet.warning("restart_on_failed_state not enabled, so skipping for failed task id(s) #{failed_task_ids} on connector #{@resource[:name]}.")
+    end
+  end
+
   def restart
-    Puppet.notice("Restarting connector #{@resource[:name]}...")
+    Puppet.notice("Restarting connector #{@resource[:name]} ...")
 
     http = Net::HTTP.new(@resource.value(:hostname).to_s, @resource.value(:port).to_s)
-    # response = http.send_request('POST', "/connectors/#{@resource[:name]}/restart")
     response = http.send_request('POST', "/connectors/#{@resource[:name]}/restart?includeTasks=true&onlyFailed=true")
 
     return if response.is_a?(Net::HTTPNoContent) || response.is_a?(Net::HTTPAccepted)
 
-    Puppet.warning("Unexpected response encountered on restart attempt: #{response}\n ")
+    Puppet.warning("Unexpected response encountered on connector restart attempt: #{response}\n ")
+  end
+
+  def restart_task(id)
+    Puppet.notice("Restarting task id #{id} on connector #{@resource[:name]} ...")
+
+    http = Net::HTTP.new(@resource.value(:hostname).to_s, @resource.value(:port).to_s)
+    response = http.send_request('POST', "/connectors/#{@resource[:name]}/tasks/#{id}/restart")
+
+    return if response.is_a?(Net::HTTPNoContent) || response.is_a?(Net::HTTPAccepted)
+
+    Puppet.warning("Unexpected response encountered on task restart attempt: #{response}\n ")
   end
 end

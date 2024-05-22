@@ -2,6 +2,12 @@
 
 Release notes for the rjd1-kafka_connect module.
 
+## Release 2.4.0
+
+2024-05-22 - Type/Provider enhancement
+
+ - Added tasks_state_ensure property and support for restarting individual failed tasks
+
 ## Release 2.3.0
 
 2024-05-02 - Class restructuring

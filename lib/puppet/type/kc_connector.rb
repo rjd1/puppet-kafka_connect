@@ -57,6 +57,12 @@ Puppet::Type.newtype(:kc_connector) do
     defaultto(:RUNNING)
   end
 
+  newproperty(:tasks_state_ensure) do
+    desc 'State of the connector tasks to ensure. This is just used to catch failed tasks and should not be changed.'
+    newvalues(:RUNNING)
+    defaultto(:RUNNING)
+  end
+
   def refresh
     provider.restart
   end
