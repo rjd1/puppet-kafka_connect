@@ -69,7 +69,7 @@ class kafka_connect::manage_connectors::connector (
       owner   => $kafka_connect::owner,
       group   => $kafka_connect::group,
       mode    => $kafka_connect::connector_config_file_mode,
-      content => to_json($connector_full_config),
+      content => stdlib::to_json($connector_full_config),
       before  => Kc_connector[$connector_name],
     }
 
