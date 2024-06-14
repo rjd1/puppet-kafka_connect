@@ -17,7 +17,7 @@ class kafka_connect::confluent_repo::yum {
   }
 
   exec { 'kc_flush-yum-cache':
-    command     => 'yum clean all',
+    command     => 'yum clean metadata expire-cache --disablerepo="*" --enablerepo="confluent"',
     refreshonly => true,
     path        => ['/bin','/usr/bin','/sbin','/usr/sbin'],
   }

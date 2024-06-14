@@ -26,4 +26,11 @@ class kafka_connect::service {
     enable   => $_service_enable,
     provider => $kafka_connect::service_provider,
   }
+
+  exec { 'wait_30s_for_service_start':
+    command     => 'sleep 30',
+    refreshonly => true,
+    path        => ['/bin','/usr/bin','/usr/local/bin'],
+    subscribe   => Service[$kafka_connect::service_name],
+  }
 }
