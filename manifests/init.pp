@@ -309,13 +309,5 @@ class kafka_connect (
     -> Class['kafka_connect::config']
     ~> Class['kafka_connect::service']
     -> Class['kafka_connect::manage_connectors']
-
-    exec { 'wait_30s_for_service_start':
-      command     => 'sleep 30',
-      refreshonly => true,
-      path        => ['/bin','/usr/bin','/usr/local/bin'],
-      subscribe   => Class['kafka_connect::service'],
-      before      => Class['kafka_connect::manage_connectors'],
-    }
   }
 }

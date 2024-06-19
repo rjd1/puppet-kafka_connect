@@ -1,6 +1,6 @@
 {
   "name": "rjd1-kafka_connect",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "author": "rjd1",
   "summary": "Puppet module to manage Kafka Connect.",
   "license": "Apache-2.0",
@@ -18,7 +18,7 @@
     },
     {
       "name": "puppetlabs-stdlib",
-      "version_requirement": ">= 4.25.0 < 10.0.0"
+      "version_requirement": ">= 9.0.0 < 10.0.0"
     },
     {
       "name": "puppetlabs-yumrepo_core",
