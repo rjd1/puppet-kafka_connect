@@ -1,6 +1,6 @@
 {
   "name": "rjd1-kafka_connect",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "author": "rjd1",
   "summary": "Puppet module to manage Kafka Connect.",
   "license": "Apache-2.0",

@@ -25,7 +25,7 @@ describe 'kafka_connect::confluent_repo' do
         }
         it {
           is_expected.to contain_exec('kc_flush-yum-cache')
-            .with_command('yum clean all')
+            .with_command('yum clean metadata expire-cache --disablerepo="*" --enablerepo="confluent"')
             .with_refreshonly(true)
             .with_path(['/bin', '/usr/bin', '/sbin', '/usr/sbin'])
             .that_comes_before('Package[confluent-kafka]')

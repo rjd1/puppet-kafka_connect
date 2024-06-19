@@ -2,6 +2,15 @@
 
 Release notes for the rjd1-kafka_connect module.
 
+## Release 2.4.1
+
+2024-06-19 - Update deprecated function
+
+ - Changed to_json() to the namespaced stdlib::to_json()
+ - Require puppetlabs-stdlib 9.x
+ - Improved yum clean command
+ - Moved wait exec into the service class
+
 ## Release 2.4.0
 
 2024-05-22 - Type/Provider enhancement
