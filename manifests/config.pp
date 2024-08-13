@@ -12,17 +12,19 @@ class kafka_connect::config {
     default             => 'present',
   }
 
-  file { '/usr/bin/connect-distributed':
-    ensure  => $file_ensure,
-    content => template('kafka_connect/connect-distributed.erb'),
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0755',
+  if $kafka_connect::config_mode == 'distributed' {
+    file { '/usr/bin/connect-distributed':
+      ensure  => $file_ensure,
+      content => template('kafka_connect/connect-distributed.erb'),
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0755',
+    }
   }
 
-  file { "${kafka_connect::kc_config_dir}/connect-distributed.properties":
+  file { "${kafka_connect::kc_config_dir}/connect-${kafka_connect::config_mode}.properties":
     ensure  => $file_ensure,
-    content => template('kafka_connect/connect-distributed.properties.erb'),
+    content => template("kafka_connect/connect-${kafka_connect::config_mode}.properties.erb"),
     owner   => $kafka_connect::owner,
     group   => $kafka_connect::group,
     mode    => '0640',

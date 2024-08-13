@@ -48,6 +48,9 @@
 # @param confluent_common_package_name
 #   Name of the Confluent Common package.
 #
+# @param config_mode
+#   Configuration mode to use for the setup.
+#
 # @param kafka_heap_options
 #   Value to set for 'KAFKA_HEAP_OPTS' export.
 #
@@ -104,6 +107,10 @@
 # @param log4j_loglevel_rootlogger
 #   Config value to set for 'log4j.rootLogger'.
 #
+# @param offset_storage_file_filename
+#   Config value to set for 'offset.storage.file.filename'.
+#   Only used in standalone mode.
+#
 # @param offset_flush_interval_ms
 #   Config value to set for 'offset.flush.interval.ms'.
 #
@@ -136,6 +143,10 @@
 #
 # @param value_converter_schemas_enable
 #   Config value to set for 'value.converter.schemas.enable'.
+#
+# @param run_local_kafka_broker_and_zk
+#   Flag for running local kafka broker and zookeeper services.
+#   Intended only for use with standalone config mode.
 #
 # @param service_name
 #   Name of the service to manage.
@@ -213,78 +224,87 @@
 #     enable_delete          => true,
 #   }
 #
+# @example
+#   class { 'kafka_connect':
+#     config_mode                   => 'standalone',
+#     run_local_kafka_broker_and_zk => true,
+#   }
+#
 # @author https://github.com/rjd1/puppet-kafka_connect/graphs/contributors
 #
 class kafka_connect (
   # kafka_connect
-  Boolean                     $manage_connectors_only              = false,
-  Boolean                     $manage_confluent_repo               = true,
-  Boolean                     $include_java                        = false,
+  Boolean                           $manage_connectors_only              = false,
+  Boolean                           $manage_confluent_repo               = true,
+  Boolean                           $include_java                        = false,
 
   # kafka_connect::confluent_repo
-  Enum['present', 'absent']   $repo_ensure                         = 'present',
-  Boolean                     $repo_enabled                        = true,
-  Pattern[/^(\d+\.\d+|\d+)$/] $repo_version                        = '7.5',
+  Enum['present', 'absent']         $repo_ensure                         = 'present',
+  Boolean                           $repo_enabled                        = true,
+  Pattern[/^(\d+\.\d+|\d+)$/]       $repo_version                        = '7.5',
 
   # kafka_connect::install
-  String[1]                   $package_name                        = 'confluent-kafka',
-  String[1]                   $package_ensure                      = '7.5.1-1',
-  Boolean                     $manage_schema_registry_package      = true,
-  String[1]                   $schema_registry_package_name        = 'confluent-schema-registry',
-  String[1]                   $confluent_rest_utils_package_name   = 'confluent-rest-utils',
-  Stdlib::Absolutepath        $confluent_hub_plugin_path           = '/usr/share/confluent-hub-components',
-  Kafka_connect::HubPlugins   $confluent_hub_plugins               = [],
-  String[1]                   $confluent_hub_client_package_name   = 'confluent-hub-client',
-  String[1]                   $confluent_common_package_name       = 'confluent-common',
+  String[1]                         $package_name                        = 'confluent-kafka',
+  String[1]                         $package_ensure                      = '7.5.1-1',
+  Boolean                           $manage_schema_registry_package      = true,
+  String[1]                         $schema_registry_package_name        = 'confluent-schema-registry',
+  String[1]                         $confluent_rest_utils_package_name   = 'confluent-rest-utils',
+  Stdlib::Absolutepath              $confluent_hub_plugin_path           = '/usr/share/confluent-hub-components',
+  Kafka_connect::HubPlugins         $confluent_hub_plugins               = [],
+  String[1]                         $confluent_hub_client_package_name   = 'confluent-hub-client',
+  String[1]                         $confluent_common_package_name       = 'confluent-common',
 
   # kafka_connect::config
-  String[1]                   $kafka_heap_options                  = '-Xms256M -Xmx2G',
-  Stdlib::Absolutepath        $kc_config_dir                       = '/etc/kafka',
-  Integer                     $config_storage_replication_factor   = 1,
-  String[1]                   $config_storage_topic                = 'connect-configs',
-  String[1]                   $group_id                            = 'connect-cluster',
-  Array[String[1]]            $bootstrap_servers                   = ['localhost:9092'],
-  String[1]                   $key_converter                       = 'org.apache.kafka.connect.json.JsonConverter',
-  Boolean                     $key_converter_schemas_enable        = true,
-  Stdlib::HTTPUrl             $listeners                           = 'HTTP://:8083',
-  Kafka_connect::LogAppender  $log4j_file_appender                 = 'RollingFileAppender',
-  Stdlib::Absolutepath        $log4j_appender_file_path            = '/var/log/confluent/connect.log',
-  String[1]                   $log4j_appender_max_file_size        = '100MB',
-  Integer                     $log4j_appender_max_backup_index     = 10,
-  String[1]                   $log4j_appender_date_pattern         = '\'.\'yyyy-MM-dd-HH',
-  Boolean                     $log4j_enable_stdout                 = false,
-  Optional[Array[String[1]]]  $log4j_custom_config_lines           = undef,
-  Kafka_connect::Loglevel     $log4j_loglevel_rootlogger           = 'INFO',
-  Integer                     $offset_flush_interval_ms            = 10000,
-  String[1]                   $offset_storage_topic                = 'connect-offsets',
-  Integer                     $offset_storage_replication_factor   = 1,
-  Integer                     $offset_storage_partitions           = 25,
-  Stdlib::Absolutepath        $plugin_path                         = '/usr/share/java,/usr/share/confluent-hub-components',
-  String[1]                   $status_storage_topic                = 'connect-status',
-  Integer                     $status_storage_replication_factor   = 1,
-  Integer                     $status_storage_partitions           = 5,
-  String[1]                   $value_converter                     = 'org.apache.kafka.connect.json.JsonConverter',
-  Optional[Stdlib::HTTPUrl]   $value_converter_schema_registry_url = undef,
-  Boolean                     $value_converter_schemas_enable      = true,
+  Enum['distributed', 'standalone'] $config_mode                         = 'distributed',
+  String[1]                         $kafka_heap_options                  = '-Xms256M -Xmx2G',
+  Stdlib::Absolutepath              $kc_config_dir                       = '/etc/kafka',
+  Integer                           $config_storage_replication_factor   = 1,
+  String[1]                         $config_storage_topic                = 'connect-configs',
+  String[1]                         $group_id                            = 'connect-cluster',
+  Array[String[1]]                  $bootstrap_servers                   = ['localhost:9092'],
+  String[1]                         $key_converter                       = 'org.apache.kafka.connect.json.JsonConverter',
+  Boolean                           $key_converter_schemas_enable        = true,
+  Stdlib::HTTPUrl                   $listeners                           = 'HTTP://:8083',
+  Kafka_connect::LogAppender        $log4j_file_appender                 = 'RollingFileAppender',
+  Stdlib::Absolutepath              $log4j_appender_file_path            = '/var/log/confluent/connect.log',
+  String[1]                         $log4j_appender_max_file_size        = '100MB',
+  Integer                           $log4j_appender_max_backup_index     = 10,
+  String[1]                         $log4j_appender_date_pattern         = '\'.\'yyyy-MM-dd-HH',
+  Boolean                           $log4j_enable_stdout                 = false,
+  Optional[Array[String[1]]]        $log4j_custom_config_lines           = undef,
+  Kafka_connect::Loglevel           $log4j_loglevel_rootlogger           = 'INFO',
+  String[1]                         $offset_storage_file_filename        = '/tmp/connect.offsets',
+  Integer                           $offset_flush_interval_ms            = 10000,
+  String[1]                         $offset_storage_topic                = 'connect-offsets',
+  Integer                           $offset_storage_replication_factor   = 1,
+  Integer                           $offset_storage_partitions           = 25,
+  Stdlib::Absolutepath              $plugin_path                         = '/usr/share/java,/usr/share/confluent-hub-components',
+  String[1]                         $status_storage_topic                = 'connect-status',
+  Integer                           $status_storage_replication_factor   = 1,
+  Integer                           $status_storage_partitions           = 5,
+  String[1]                         $value_converter                     = 'org.apache.kafka.connect.json.JsonConverter',
+  Optional[Stdlib::HTTPUrl]         $value_converter_schema_registry_url = undef,
+  Boolean                           $value_converter_schemas_enable      = true,
 
   # kafka_connect::service
-  String[1]                   $service_name                        = 'confluent-kafka-connect',
-  Stdlib::Ensure::Service     $service_ensure                      = 'running',
-  Boolean                     $service_enable                      = true,
-  Optional[String[1]]         $service_provider                    = undef,
+  Boolean                           $run_local_kafka_broker_and_zk       = false,
+  String[1]                         $service_name                        = 'confluent-kafka-connect',
+  Stdlib::Ensure::Service           $service_ensure                      = 'running',
+  Boolean                           $service_enable                      = true,
+  Optional[String[1]]               $service_provider                    = undef,
 
   # kafka_connect::manage_connectors
-  Optional[Array[String[1]]]  $connectors_absent                   = undef,
-  Optional[Array[String[1]]]  $connectors_paused                   = undef,
-  Stdlib::Absolutepath        $connector_config_dir                = '/etc/kafka-connect',
-  Variant[String[1], Integer] $owner                               = 'cp-kafka-connect',
-  Variant[String[1], Integer] $group                               = 'confluent',
-  Stdlib::Filemode            $connector_config_file_mode          = '0640',
-  Stdlib::Filemode            $connector_secret_file_mode          = '0600',
-  String[1]                   $hostname                            = 'localhost',
-  Stdlib::Port                $rest_port                           = 8083,
-  Boolean                     $enable_delete                       = false,
-  Boolean                     $restart_on_failed_state             = false,
+  Optional[Array[String[1]]]        $connectors_absent                   = undef,
+  Optional[Array[String[1]]]        $connectors_paused                   = undef,
+  Stdlib::Absolutepath              $connector_config_dir                = '/etc/kafka-connect',
+  Variant[String[1], Integer]       $owner                               = 'cp-kafka-connect',
+  Variant[String[1], Integer]       $group                               = 'confluent',
+  Stdlib::Filemode                  $connector_config_file_mode          = '0640',
+  Stdlib::Filemode                  $connector_secret_file_mode          = '0600',
+  String[1]                         $hostname                            = 'localhost',
+  Stdlib::Port                      $rest_port                           = 8083,
+  Boolean                           $enable_delete                       = false,
+  Boolean                           $restart_on_failed_state             = false,
 ) {
   if $include_java {
     include 'java'

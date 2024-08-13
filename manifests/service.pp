@@ -21,6 +21,21 @@ class kafka_connect::service {
     $_service_enable = $kafka_connect::service_enable
   }
 
+  if $kafka_connect::run_local_kafka_broker_and_zk {
+    if $kafka_connect::service_name =~ /^confluent-.*$/ {
+      $service_prefix = 'confluent-'
+    } else {
+      $service_prefix = ''
+    }
+
+    service { ["${service_prefix}zookeeper", "${service_prefix}kafka"]:
+      ensure   => $_service_ensure,
+      enable   => $_service_enable,
+      provider => $kafka_connect::service_provider,
+      before   => Service[$kafka_connect::service_name],
+    }
+  }
+
   service { $kafka_connect::service_name :
     ensure   => $_service_ensure,
     enable   => $_service_enable,
