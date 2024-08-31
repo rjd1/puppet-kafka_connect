@@ -54,6 +54,9 @@ describe 'kafka_connect' do
         it { is_expected.to contain_file('/etc/kafka/connect-standalone.properties') }
         it { is_expected.to contain_service('confluent-kafka') }
         it { is_expected.to contain_service('confluent-zookeeper') }
+
+        it { is_expected.not_to contain_file('/etc/kafka/connect-distributed.properties') }
+        it { is_expected.not_to contain_file('/usr/bin/connect-distributed') }
       end
 
       describe 'with java' do
