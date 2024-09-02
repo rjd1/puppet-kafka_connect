@@ -2,6 +2,13 @@
 
 Release notes for the rjd1-kafka_connect module.
 
+## Release 2.5.0
+
+2024-09-03 - Support standalone mode
+
+ - Add support for standalone mode setup
+ - Allow puppetlabs-java 11.x
+
 ## Release 2.4.1
 
 2024-06-19 - Update deprecated function

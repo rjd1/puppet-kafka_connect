@@ -48,6 +48,17 @@ describe 'kafka_connect' do
         it { is_expected.not_to contain_class 'kafka_connect::service' }
       end
 
+      describe 'with standalone mode and local kafka & zk services' do
+        let(:params) { { config_mode: 'standalone', run_local_kafka_broker_and_zk: true } }
+
+        it { is_expected.to contain_file('/etc/kafka/connect-standalone.properties') }
+        it { is_expected.to contain_service('confluent-kafka') }
+        it { is_expected.to contain_service('confluent-zookeeper') }
+
+        it { is_expected.not_to contain_file('/etc/kafka/connect-distributed.properties') }
+        it { is_expected.not_to contain_file('/usr/bin/connect-distributed') }
+      end
+
       describe 'with java' do
         let(:params) { { include_java: true } }
 

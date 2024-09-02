@@ -238,8 +238,6 @@ $ puppet resource kc_connector some-kc-connector-name ensure=absent enable_delet
 
 Tested with Confluent 7.x on Amazon Linux 2 and Ubuntu 22.04.
 
-Currently only distributed mode setup is supported.
-
 ### Known Issues
 
 In certain situations, for example when a connector is set to absent and the `enable_delete` parameter is false (the default), Puppet will report a system state change when actually none has occured (i.e., it lies). There are warnings output along with the change notices in these scenarios.
