@@ -84,6 +84,15 @@ class { 'kafka_connect':
 }
 ```
 
+##### 
+
+```puppet
+class { 'kafka_connect':
+  config_mode                   => 'standalone',
+  run_local_kafka_broker_and_zk => true,
+}
+```
+
 #### Parameters
 
 The following parameters are available in the `kafka_connect` class:
@@ -103,6 +112,7 @@ The following parameters are available in the `kafka_connect` class:
 * [`confluent_hub_plugins`](#confluent_hub_plugins)
 * [`confluent_hub_client_package_name`](#confluent_hub_client_package_name)
 * [`confluent_common_package_name`](#confluent_common_package_name)
+* [`config_mode`](#config_mode)
 * [`kafka_heap_options`](#kafka_heap_options)
 * [`kc_config_dir`](#kc_config_dir)
 * [`config_storage_replication_factor`](#config_storage_replication_factor)
@@ -120,6 +130,7 @@ The following parameters are available in the `kafka_connect` class:
 * [`log4j_enable_stdout`](#log4j_enable_stdout)
 * [`log4j_custom_config_lines`](#log4j_custom_config_lines)
 * [`log4j_loglevel_rootlogger`](#log4j_loglevel_rootlogger)
+* [`offset_storage_file_filename`](#offset_storage_file_filename)
 * [`offset_flush_interval_ms`](#offset_flush_interval_ms)
 * [`offset_storage_topic`](#offset_storage_topic)
 * [`offset_storage_replication_factor`](#offset_storage_replication_factor)
@@ -131,6 +142,7 @@ The following parameters are available in the `kafka_connect` class:
 * [`value_converter`](#value_converter)
 * [`value_converter_schema_registry_url`](#value_converter_schema_registry_url)
 * [`value_converter_schemas_enable`](#value_converter_schemas_enable)
+* [`run_local_kafka_broker_and_zk`](#run_local_kafka_broker_and_zk)
 * [`service_name`](#service_name)
 * [`service_ensure`](#service_ensure)
 * [`service_enable`](#service_enable)
@@ -269,6 +281,14 @@ Data type: `String[1]`
 Name of the Confluent Common package.
 
 Default value: `'confluent-common'`
+
+##### <a name="config_mode"></a>`config_mode`
+
+Data type: `Enum['distributed', 'standalone']`
+
+Configuration mode to use for the setup.
+
+Default value: `'distributed'`
 
 ##### <a name="kafka_heap_options"></a>`kafka_heap_options`
 
@@ -411,6 +431,15 @@ Config value to set for 'log4j.rootLogger'.
 
 Default value: `'INFO'`
 
+##### <a name="offset_storage_file_filename"></a>`offset_storage_file_filename`
+
+Data type: `String[1]`
+
+Config value to set for 'offset.storage.file.filename'.
+Only used in standalone mode.
+
+Default value: `'/tmp/connect.offsets'`
+
 ##### <a name="offset_flush_interval_ms"></a>`offset_flush_interval_ms`
 
 Data type: `Integer`
@@ -498,6 +527,15 @@ Data type: `Boolean`
 Config value to set for 'value.converter.schemas.enable'.
 
 Default value: ``true``
+
+##### <a name="run_local_kafka_broker_and_zk"></a>`run_local_kafka_broker_and_zk`
+
+Data type: `Boolean`
+
+Flag for running local kafka broker and zookeeper services.
+Intended only for use with standalone config mode.
+
+Default value: ``false``
 
 ##### <a name="service_name"></a>`service_name`
 
