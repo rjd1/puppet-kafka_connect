@@ -1,0 +1,15 @@
+[Unit]
+Description=Apache Kafka Connect - <%= scope['kafka_connect::config_mode'] %>
+Documentation=<%= @sysd_doc_link %>
+After=network.target <%= @service_prefix %>kafka.target
+
+[Service]
+Type=simple
+User=<%= @_owner %>
+Group=<%= scope['kafka_connect::group'] %>
+ExecStart=<%= @bin_dir %>/connect-<%= scope['kafka_connect::config_mode'] %><%= @bin_file_suffix %> /etc/kafka/connect-<%= scope['kafka_connect::config_mode'] %>.properties
+TimeoutStopSec=180
+Restart=no
+
+[Install]
+WantedBy=multi-user.target

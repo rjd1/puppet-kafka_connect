@@ -1,0 +1,16 @@
+[Unit]
+Description=Apache Kafka - ZooKeeper
+Documentation=<%= @sysd_doc_link %>
+After=network.target
+
+[Service]
+Type=simple
+User=<%= @zk_and_kafka_user %>
+Group=<%= scope['kafka_connect::group'] %>
+ExecStart=<%= @bin_dir %>/zookeeper-server-start<%= @bin_file_suffix %> /etc/kafka/zookeeper.properties
+LimitNOFILE=100000
+TimeoutStopSec=180
+Restart=no
+
+[Install]
+WantedBy=multi-user.target

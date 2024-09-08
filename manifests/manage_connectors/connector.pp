@@ -64,9 +64,15 @@ class kafka_connect::manage_connectors::connector (
         \n Validation error on ${connector_name} data, please correct. \n")
     }
 
+    if $kafka_connect::owner {
+      $_owner = $kafka_connect::owner
+    } else {
+      $_owner = $kafka_connect::user
+    }
+
     file { "${kafka_connect::connector_config_dir}/${connector_file_name}" :
       ensure  => $_connector_ensure,
-      owner   => $kafka_connect::owner,
+      owner   => $kafka_connect::_owner,
       group   => $kafka_connect::group,
       mode    => $kafka_connect::connector_config_file_mode,
       content => stdlib::to_json($connector_full_config),

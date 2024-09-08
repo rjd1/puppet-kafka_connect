@@ -1,0 +1,16 @@
+[Unit]
+Description=Apache Kafka - broker
+Documentation=<%= @sysd_doc_link %>
+After=network.target <%= @service_prefix %>zookeeper.target
+
+[Service]
+Type=simple
+User=<%= @zk_and_kafka_user %>
+Group=<%= scope['kafka_connect::group'] %>
+ExecStart=<%= @bin_dir %>/kafka-server-start<%= @bin_file_suffix %> /etc/kafka/server.properties
+LimitNOFILE=1000000
+TimeoutStopSec=180
+Restart=no
+
+[Install]
+WantedBy=multi-user.target
