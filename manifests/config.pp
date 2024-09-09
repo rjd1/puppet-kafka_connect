@@ -7,7 +7,7 @@ class kafka_connect::config {
 
   $kafka_servers = join( $kafka_connect::bootstrap_servers, ',')
 
-  if  $kafka_connect::install_source == 'package' {
+  if $kafka_connect::install_source == 'package' {
     $bin_dir           = '/usr/bin'
     $bin_file_suffix   = ''
     $service_prefix    = 'confluent-'

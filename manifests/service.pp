@@ -6,8 +6,7 @@ class kafka_connect::service {
   assert_private()
 
   if ($kafka_connect::install_source == 'package' and
-  $kafka_connect::service_ensure == 'running' and
-  $kafka_connect::package_ensure =~ /^(absent|purged)$/) {
+  $kafka_connect::service_ensure == 'running' and  $kafka_connect::package_ensure =~ /^(absent|purged)$/) {
     warning("Ignoring service_ensure 'running' value since package_ensure is set to ${kafka_connect::package_ensure}")
 
     $_service_ensure = 'stopped'
@@ -16,8 +15,7 @@ class kafka_connect::service {
   }
 
   if ($kafka_connect::install_source == 'package' and
-  $kafka_connect::service_enable == true and
-  $kafka_connect::package_ensure =~ /^(absent|purged)$/) {
+  $kafka_connect::service_enable == true and $kafka_connect::package_ensure =~ /^(absent|purged)$/) {
     warning("Ignoring service_enable true value since package_ensure is set to ${kafka_connect::package_ensure}")
 
     $_service_enable = undef
