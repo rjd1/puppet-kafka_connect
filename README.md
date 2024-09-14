@@ -33,6 +33,8 @@ Welcome to the kafka_connect Puppet module!
 
 Manages the setup of Kafka Connect.
 
+Supports running through either Confluent package or Apache .tgz archive.
+
 Includes a Type, Provider, and helper class for management of individual KC connectors.
 
 ## Setup
@@ -52,6 +54,8 @@ class { 'kafka_connect': }
 
 ## Usage
 
+See the [manifest documentation](https://www.puppetmodule.info/modules/rjd1-kafka_connect/puppet_classes/kafka_connect) for various examples.
+
 ### Typical deployment
 
 For a typical distributed mode deployment, most of the default settings should be fine. However, a normal setup will involve connecting to a cluster of Kafka brokers and the replication factor config values for storage topics should be increased. Here is a real-world example that also specifies version and includes the Confluent JDBC plugin:
@@ -70,6 +74,7 @@ For a typical distributed mode deployment, most of the default settings should b
     ],
     confluent_hub_plugins             => [ 'confluentinc/kafka-connect-jdbc:10.7.4' ],
     package_ensure                    => '7.5.2-1',
+    repo_version                      => '7.5',
   }
 ```
 
@@ -236,7 +241,7 @@ $ puppet resource kc_connector some-kc-connector-name ensure=absent enable_delet
 
 ## Limitations
 
-Tested with Confluent 7.x on Amazon Linux 2 and Ubuntu 22.04.
+Tested with Confluent 7.x and Apache Kafka 3.8.0 on the Operating Systems noted in [metadata.json](https://github.com/rjd1/puppet-kafka_connect/blob/main/metadata.json).
 
 ### Known Issues
 

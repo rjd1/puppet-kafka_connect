@@ -5,7 +5,7 @@
 class kafka_connect::install::archive {
   assert_private()
 
-  $tgz_file = regsubst($kafka_connect::archive_source, '^http.*(kafka.*.tgz)$','\\1')
+  $tgz_file = regsubst($kafka_connect::archive_source, '^http.*(kafka.*.tgz)$', '\1')
 
   if $kafka_connect::owner {
     $_owner = $kafka_connect::owner
@@ -17,6 +17,7 @@ class kafka_connect::install::archive {
     ensure => 'directory',
     owner  => $_owner,
     group  => $kafka_connect::group,
+    mode   => '0755',
     before => Archive["/tmp/${tgz_file}"],
   }
 

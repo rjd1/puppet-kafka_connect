@@ -1,13 +1,13 @@
-# @summary Defined type for Confluent plugin installations.
+# @summary Defined type for Confluent Hub plugin installation.
 #
 # @param plugin
-#  Name of plugin to install.
+#  Plugin to install, in the form 'author/name:(semantic-version|latest)'.
 #
 define kafka_connect::install::plugin (
   String[1] $plugin = $title,
 ) {
-  $author = regsubst($plugin,'^(\w+)\/.+:.+$','\1')
-  $name   = regsubst($plugin,'^(\w+)\/([a-zA-z0-9]{1,}[a-zA-z0-9\-]{0,}):.+$','\2')
+  $author = regsubst($plugin, '^(\w+)\/.+:.+$', '\1')
+  $name   = regsubst($plugin, '^(\w+)\/([a-zA-z0-9]{1,}[a-zA-z0-9\-]{0,}):.+$', '\2')
 
   exec { "install_plugin_${author}-${name}":
     command => "confluent-hub install ${plugin} --no-prompt",
