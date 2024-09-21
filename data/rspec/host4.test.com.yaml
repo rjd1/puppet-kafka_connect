@@ -1,0 +1,9 @@
+---
+kafka_connect::install_source: 'archive'
+kafka_connect::archive_source: 'https://downloads.apache.org/kafka/3.7.0/kafka_2.13-3.7.0.tgz'
+kafka_connect::manage_confluent_repo: false
+kafka_connect::user: 'kafka'
+kafka_connect::group: 'kafka'
+kafka_connect::service_name: 'kafka-connect'
+kafka_connect::manage_user_and_group: true
+kafka_connect::manage_confluent_repo: false
