@@ -15,5 +15,9 @@ class kafka_connect::install {
     }
   } else {
     contain kafka_connect::install::archive
+
+    unless $kafka_connect::confluent_hub_plugins.empty {
+      warning('Confluent Hub plugin installation is only supported on package-based setups, ignoring list.')
+    }
   }
 }
