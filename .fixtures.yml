@@ -9,5 +9,3 @@ fixtures:
     stdlib: "puppetlabs/stdlib"
     apt: "puppetlabs/apt"
     archive: "puppet/archive"
-    java: "puppetlabs/java"
-    yumrepo_core: "puppetlabs/yumrepo_core"
