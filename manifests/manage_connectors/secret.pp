@@ -47,11 +47,17 @@ class kafka_connect::manage_connectors::secret (
       }
     }
 
+    if $kafka_connect::owner {
+      $_owner = $kafka_connect::owner
+    } else {
+      $_owner = $kafka_connect::user
+    }
+
     file { $secret_file_name :
       ensure  => $secret_file_ensure,
       path    => "${kafka_connect::connector_config_dir}/${secret_file_name}",
       content => $secret_content,
-      owner   => $kafka_connect::owner,
+      owner   => $_owner,
       group   => $kafka_connect::group,
       mode    => $kafka_connect::connector_secret_file_mode,
       notify  => $secret_notify,

@@ -6,6 +6,9 @@
 # @param manage_confluent_repo
 #   Flag for including the confluent repo class.
 #
+# @param manage_user_and_group
+#   Flag for managing the service user & group.
+#
 # @param include_java
 #   Flag for including class java.
 #
@@ -17,6 +20,9 @@
 #
 # @param repo_version
 #   Version of the Confluent repo to configure.
+#
+# @param install_source
+#   Installation source to use, either Confluent package or Apache archive.
 #
 # @param package_name
 #   Name of the main KC package to manage.
@@ -47,6 +53,12 @@
 #
 # @param confluent_common_package_name
 #   Name of the Confluent Common package.
+#
+# @param archive_install_dir
+#   Install directory to use for Apache archive-based setup.
+#
+# @param archive_source
+#   Download source to use for Apache archive-based setup.
 #
 # @param config_mode
 #   Configuration mode to use for the setup.
@@ -144,9 +156,8 @@
 # @param value_converter_schemas_enable
 #   Config value to set for 'value.converter.schemas.enable'.
 #
-# @param run_local_kafka_broker_and_zk
-#   Flag for running local kafka broker and zookeeper services.
-#   Intended only for use with standalone config mode.
+# @param manage_systemd_service_file
+#   Flag for managing systemd service unit file(s).
 #
 # @param service_name
 #   Name of the service to manage.
@@ -160,22 +171,25 @@
 # @param service_provider
 #   Backend provider to use for the service resource.
 #
-# @param connectors_absent
-#   List of connectors to ensure absent.
-#   *Deprecated*: use the 'ensure' hash key in the connector data instead.
+# @param run_local_kafka_broker_and_zk
+#   Flag for running local kafka broker and zookeeper services.
+#   Intended only for use with standalone config mode.
 #
-# @param connectors_paused
-#   List of connectors to ensure paused.
-#   *Deprecated*: use the 'ensure' hash key in the connector data instead.
+# @param user
+#   User to run service as, set owner on config files, etc.
 #
-# @param connector_config_dir
-#   Configuration directory for connector properties files.
+# @param group
+#   Group the service will run as.
+#
+# @param user_and_group_ensure
+#   Value to set for ensure on user & group, if managed.
 #
 # @param owner
 #   Owner to set on config files.
+#   *Deprecated*: use the 'user' parameter instead.
 #
-# @param group
-#   Group to set on config files.
+# @param connector_config_dir
+#   Configuration directory for connector properties files.
 #
 # @param connector_config_file_mode
 #   Mode to set on connector config file.
@@ -196,10 +210,10 @@
 # @param restart_on_failed_state
 #   Allow the provider to auto restart on FAILED connector state.
 #
-# @example
+# @example Basic setup.
 #   include kafka_connect
 #
-# @example
+# @example Typical deployment with a 3 node Kafka cluster, S3 plugin, and Schema Registry config.
 #   class { 'kafka_connect':
 #     config_storage_replication_factor   => 3,
 #     offset_storage_replication_factor   => 3,
@@ -209,14 +223,14 @@
 #     value_converter_schema_registry_url => "http://schemaregistry-elb.${facts['networking']['domain']}:8081",
 #   }
 #
-# @example
+# @example Custom logging options, with the Elasticsearch plugin.
 #   class { 'kafka_connect':
 #     log4j_enable_stdout       => true,
 #     log4j_custom_config_lines => [ 'log4j.logger.io.confluent.connect.elasticsearch=DEBUG' ],
 #     confluent_hub_plugins     => [ 'confluentinc/kafka-connect-elasticsearch:latest' ],
 #   }
 #
-# @example
+# @example Only manage connectors, not the full setup (i.e. without install/config/service classes).
 #   class { 'kafka_connect':
 #     manage_connectors_only => true,
 #     connector_config_dir   => '/opt/kafka-connect/etc',
@@ -224,10 +238,21 @@
 #     enable_delete          => true,
 #   }
 #
-# @example
+# @example Standalone mode with local Kakfa and Zookeeper services.
 #   class { 'kafka_connect':
 #     config_mode                   => 'standalone',
 #     run_local_kafka_broker_and_zk => true,
+#   }
+#
+# @example Apache archive source install.
+#   class { 'kafka_connect':
+#     install_source        => 'archive',
+#     connector_config_dir  => '/opt/kafka/config/connectors',
+#     user                  => 'kafka',
+#     group                 => 'kafka',
+#     service_name          => 'kafka-connect',
+#     manage_user_and_group => true,
+#     manage_confluent_repo => false,
 #   }
 #
 # @author https://github.com/rjd1/puppet-kafka_connect/graphs/contributors
@@ -236,16 +261,18 @@ class kafka_connect (
   # kafka_connect
   Boolean                           $manage_connectors_only              = false,
   Boolean                           $manage_confluent_repo               = true,
+  Boolean                           $manage_user_and_group               = false,
   Boolean                           $include_java                        = false,
 
   # kafka_connect::confluent_repo
   Enum['present', 'absent']         $repo_ensure                         = 'present',
   Boolean                           $repo_enabled                        = true,
-  Pattern[/^(\d+\.\d+|\d+)$/]       $repo_version                        = '7.5',
+  Pattern[/^(\d+\.\d+|\d+)$/]       $repo_version                        = '7.7',
 
   # kafka_connect::install
+  Enum['package', 'archive']        $install_source                      = 'package',
   String[1]                         $package_name                        = 'confluent-kafka',
-  String[1]                         $package_ensure                      = '7.5.1-1',
+  String[1]                         $package_ensure                      = '7.7.1-1',
   Boolean                           $manage_schema_registry_package      = true,
   String[1]                         $schema_registry_package_name        = 'confluent-schema-registry',
   String[1]                         $confluent_rest_utils_package_name   = 'confluent-rest-utils',
@@ -253,6 +280,8 @@ class kafka_connect (
   Kafka_connect::HubPlugins         $confluent_hub_plugins               = [],
   String[1]                         $confluent_hub_client_package_name   = 'confluent-hub-client',
   String[1]                         $confluent_common_package_name       = 'confluent-common',
+  Stdlib::Absolutepath              $archive_install_dir                 = '/opt/kafka',
+  Stdlib::HTTPUrl                   $archive_source                      = 'https://downloads.apache.org/kafka/3.8.0/kafka_2.13-3.8.0.tgz',
 
   # kafka_connect::config
   Enum['distributed', 'standalone'] $config_mode                         = 'distributed',
@@ -285,20 +314,25 @@ class kafka_connect (
   String[1]                         $value_converter                     = 'org.apache.kafka.connect.json.JsonConverter',
   Optional[Stdlib::HTTPUrl]         $value_converter_schema_registry_url = undef,
   Boolean                           $value_converter_schemas_enable      = true,
+  Boolean                           $manage_systemd_service_file         = true,
 
   # kafka_connect::service
-  Boolean                           $run_local_kafka_broker_and_zk       = false,
   String[1]                         $service_name                        = 'confluent-kafka-connect',
   Stdlib::Ensure::Service           $service_ensure                      = 'running',
   Boolean                           $service_enable                      = true,
   Optional[String[1]]               $service_provider                    = undef,
+  Boolean                           $run_local_kafka_broker_and_zk       = false,
+
+  # kafka_connect::user
+  Variant[String[1], Integer]       $user                                = 'cp-kafka-connect',
+  Variant[String[1], Integer]       $group                               = 'confluent',
+  Enum['present', 'absent']         $user_and_group_ensure               = 'present',
+  Optional[
+    Variant[String[1], Integer]
+  ]                                 $owner                               = undef, # deprecated, use $user
 
   # kafka_connect::manage_connectors
-  Optional[Array[String[1]]]        $connectors_absent                   = undef,
-  Optional[Array[String[1]]]        $connectors_paused                   = undef,
   Stdlib::Absolutepath              $connector_config_dir                = '/etc/kafka-connect',
-  Variant[String[1], Integer]       $owner                               = 'cp-kafka-connect',
-  Variant[String[1], Integer]       $group                               = 'confluent',
   Stdlib::Filemode                  $connector_config_file_mode          = '0640',
   Stdlib::Filemode                  $connector_secret_file_mode          = '0600',
   String[1]                         $hostname                            = 'localhost',
@@ -310,6 +344,11 @@ class kafka_connect (
     include 'java'
   }
 
+  if $owner {
+    deprecation('kafka_connect::owner',
+    'The $owner parameter is deprecated, please use $user instead.')
+  }
+
   if $manage_connectors_only {
     contain kafka_connect::manage_connectors
   } else {
@@ -317,6 +356,13 @@ class kafka_connect (
       contain kafka_connect::confluent_repo
 
       Class['kafka_connect::confluent_repo']
+      -> Class['kafka_connect::install']
+    }
+
+    if $manage_user_and_group {
+      contain kafka_connect::user
+
+      Class['kafka_connect::user']
       -> Class['kafka_connect::install']
     }
 

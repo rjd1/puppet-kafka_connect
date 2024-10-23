@@ -18,6 +18,7 @@ describe 'kafka_connect' do
         it { is_expected.to contain_class 'kafka_connect::service' }
         it { is_expected.to contain_class 'kafka_connect::manage_connectors' }
 
+        it { is_expected.not_to contain_class 'kafka_connect::user' }
         it { is_expected.not_to contain_class 'java' }
 
         it { is_expected.to contain_exec('wait_30s_for_service_start') }
@@ -25,6 +26,7 @@ describe 'kafka_connect' do
         it { is_expected.to contain_file('/etc/kafka-connect') }
         it { is_expected.to contain_file('/etc/kafka/connect-distributed.properties') }
         it { is_expected.to contain_file('/etc/kafka/connect-log4j.properties') }
+        it { is_expected.to contain_file('/usr/lib/systemd/system/confluent-kafka-connect.service') }
         it { is_expected.to contain_file('/usr/bin/connect-distributed') }
 
         it { is_expected.to contain_package('confluent-kafka') }
@@ -52,6 +54,8 @@ describe 'kafka_connect' do
         let(:params) { { config_mode: 'standalone', run_local_kafka_broker_and_zk: true } }
 
         it { is_expected.to contain_file('/etc/kafka/connect-standalone.properties') }
+        it { is_expected.to contain_file('/usr/lib/systemd/system/confluent-kafka.service') }
+        it { is_expected.to contain_file('/usr/lib/systemd/system/confluent-zookeeper.service') }
         it { is_expected.to contain_service('confluent-kafka') }
         it { is_expected.to contain_service('confluent-zookeeper') }
 
@@ -141,6 +145,15 @@ describe 'kafka_connect' do
       describe 'with service_name set to valid value' do
         let(:params) { { service_name: 'testing-svc-name' } }
 
+        it {
+          is_expected
+            .to contain_file('/usr/lib/systemd/system/testing-svc-name.service')
+            .with_ensure('present')
+            .with_owner('root')
+            .with_group('root')
+            .with_mode('0644')
+        }
+
         it { is_expected.to contain_service('testing-svc-name') }
       end
 
@@ -156,10 +169,64 @@ describe 'kafka_connect' do
         it { is_expected.to contain_service('confluent-kafka-connect').with_ensure('stopped') }
       end
 
-      describe 'with plugin install' do
+      describe 'with user and group managed' do
+        let(:params) { { manage_user_and_group: true } }
+
+        it { is_expected.to contain_class 'kafka_connect::user' }
+
+        it {
+          is_expected.to contain_group('confluent')
+            .with_ensure('present')
+            .with_system(true)
+        }
+
+        it {
+          is_expected.to contain_user('cp-kafka-connect')
+            .with_ensure('present')
+            .with_gid('confluent')
+            .with_home('/var/empty')
+            .with_shell('/sbin/nologin')
+            .with_system(true)
+            .that_requires('Group[confluent]')
+        }
+      end
+
+      describe 'with user and group managed and absent' do
+        let(:params) { { manage_user_and_group: true, user_and_group_ensure: 'absent' } }
+
+        it { is_expected.to contain_class 'kafka_connect::user' }
+
+        it { is_expected.to contain_group('confluent').with_ensure('absent') }
+        it { is_expected.to contain_user('cp-kafka-connect').with_ensure('absent').that_requires('Group[confluent]') }
+      end
+
+      describe 'with alt user and group managed' do
+        let(:params) { { manage_user_and_group: true, user: 'kafka', group: 'kafka' } }
+
+        it { is_expected.to contain_class 'kafka_connect::user' }
+
+        it {
+          is_expected.to contain_group('kafka')
+            .with_ensure('present')
+            .with_system(true)
+        }
+
+        it {
+          is_expected.to contain_user('kafka')
+            .with_ensure('present')
+            .with_gid('kafka')
+            .with_home('/var/empty')
+            .with_shell('/sbin/nologin')
+            .with_system(true)
+            .that_requires('Group[kafka]')
+        }
+      end
+
+      describe 'with acme/fancy-plugin:0.1.0 plugin install' do
         let(:params) { { confluent_hub_plugins: ['acme/fancy-plugin:0.1.0'] } }
 
-        it { is_expected.to contain_package('confluent-common') }
+        it { is_expected.to contain_kafka_connect__install__plugin('acme/fancy-plugin:0.1.0') }
+
         it { is_expected.to contain_package('confluent-hub-client') }
 
         it {
@@ -168,6 +235,8 @@ describe 'kafka_connect' do
             .with_command('confluent-hub install acme/fancy-plugin:0.1.0 --no-prompt')
             .with_creates('/usr/share/confluent-hub-components/acme-fancy-plugin')
             .with_path(['/bin', '/usr/bin', '/usr/local/bin'])
+            .that_requires('Package[confluent-hub-client]')
+            .that_notifies('Class[Kafka_connect::Service]')
         }
       end
 
