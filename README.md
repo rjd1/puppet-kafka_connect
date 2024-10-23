@@ -241,7 +241,7 @@ $ puppet resource kc_connector some-kc-connector-name ensure=absent enable_delet
 
 ## Limitations
 
-Tested with Confluent 7.x and Apache Kafka 3.8.0 on the Operating Systems noted in [metadata.json](https://github.com/rjd1/puppet-kafka_connect/blob/main/metadata.json).
+Tested with Confluent Platform 7.x and Apache Kafka 3.8.0 on the Operating Systems noted in [metadata.json](https://github.com/rjd1/puppet-kafka_connect/blob/main/metadata.json).
 
 ### Known Issues
 
