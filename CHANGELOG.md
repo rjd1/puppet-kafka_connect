@@ -2,6 +2,20 @@
 
 Release notes for the rjd1-kafka_connect module.
 
+## Release 3.0.0
+
+2024-10-23 - Support Apache archive install source + other enhancements
+
+ - Add support for installing from archive source (Apache .tgz)
+ - Add optional management of user & group resources
+ - Add optional management of systemd service unit file(s)
+ - Use new defined type for hub plugin installs
+ - Remove deprecated $connectors_absent & $connectors_paused class params
+ - Deprecate $owner in favor of new $user param
+ - Set default package version to 7.7.1
+ - Add support for Ubuntu 24.04
+ - Update module dependencies
+
 ## Release 2.5.0
 
 2024-09-03 - Support standalone mode
