@@ -25,13 +25,8 @@
     {
       "operatingsystem": "Amazon",
       "operatingsystemrelease": [
-        "2"
-      ]
-    },
-    {
-      "operatingsystem": "CentOS",
-      "operatingsystemrelease": [
-        "7"
+        "2",
+        "2023"
       ]
     },
     {
