@@ -23,6 +23,13 @@
   ],
   "operatingsystem_support": [
     {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "8",
+        "9"
+      ]
+    },
+    {
       "operatingsystem": "Amazon",
       "operatingsystemrelease": [
         "2",
@@ -34,6 +41,13 @@
       "operatingsystemrelease": [
         "22.04",
         "24.04"
+      ]
+    },
+    {
+      "operatingsystem": "Rocky",
+      "operatingsystemrelease": [
+        "8",
+        "9"
       ]
     }
   ],
