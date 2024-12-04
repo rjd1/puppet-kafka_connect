@@ -1,6 +1,6 @@
 {
   "name": "rjd1-kafka_connect",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "author": "rjd1",
   "summary": "Puppet module to manage Kafka Connect.",
   "license": "Apache-2.0",
@@ -23,15 +23,17 @@
   ],
   "operatingsystem_support": [
     {
-      "operatingsystem": "Amazon",
+      "operatingsystem": "RedHat",
       "operatingsystemrelease": [
-        "2"
+        "8",
+        "9"
       ]
     },
     {
-      "operatingsystem": "CentOS",
+      "operatingsystem": "Amazon",
       "operatingsystemrelease": [
-        "7"
+        "2",
+        "2023"
       ]
     },
     {
@@ -39,6 +41,13 @@
       "operatingsystemrelease": [
         "22.04",
         "24.04"
+      ]
+    },
+    {
+      "operatingsystem": "Rocky",
+      "operatingsystemrelease": [
+        "8",
+        "9"
       ]
     }
   ],

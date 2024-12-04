@@ -2,6 +2,14 @@
 
 Release notes for the rjd1-kafka_connect module.
 
+## Release 3.1.0
+
+2024-12-04 - Update supported Operating Systems
+
+ - Add Amazon Linux 2023
+ - Add RedHat, Rocky 8 & 9
+ - Drop EOL CentOS
+
 ## Release 3.0.0
 
 2024-10-23 - Support Apache archive install source + other enhancements
