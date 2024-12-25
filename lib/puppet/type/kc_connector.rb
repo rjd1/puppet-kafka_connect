@@ -67,7 +67,7 @@ Puppet::Type.newtype(:kc_connector) do
     provider.restart
   end
 
-  autorequire(:properties_file) do
+  autorequire(:file) do
     [self[:config_file]]
   end
 end
