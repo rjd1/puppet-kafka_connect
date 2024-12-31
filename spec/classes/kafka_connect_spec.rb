@@ -11,51 +11,153 @@ describe 'kafka_connect' do
       it { is_expected.to compile.with_all_deps }
 
       describe 'default' do
-        it { is_expected.to contain_class 'kafka_connect' }
-        it { is_expected.to contain_class 'kafka_connect::confluent_repo' }
-        it { is_expected.to contain_class 'kafka_connect::install' }
-        it { is_expected.to contain_class 'kafka_connect::config' }
-        it { is_expected.to contain_class 'kafka_connect::service' }
-        it { is_expected.to contain_class 'kafka_connect::manage_connectors' }
+        it { is_expected.to contain_class('kafka_connect') }
+        it { is_expected.to contain_class('kafka_connect::confluent_repo').that_comes_before('Class[kafka_connect::install]') }
+        it {
+          is_expected
+            .to contain_class('kafka_connect::config')
+            .that_requires(['Class[kafka_connect::install]'])
+            .that_notifies(['Class[kafka_connect::service]'])
+        }
+        it { is_expected.to contain_class('kafka_connect::install') }
+        it { is_expected.to contain_class('kafka_connect::service').that_comes_before('Class[kafka_connect::manage_connectors]') }
+        it { is_expected.to contain_class('kafka_connect::manage_connectors') }
 
-        it { is_expected.not_to contain_class 'kafka_connect::user' }
-        it { is_expected.not_to contain_class 'java' }
+        it { is_expected.not_to contain_class('kafka_connect::user') }
+        it { is_expected.not_to contain_class('java') }
 
-        it { is_expected.to contain_exec('wait_30s_for_service_start') }
+        it { is_expected.to contain_file('/etc/kafka-connect').with_ensure('directory') }
+        it {
+          is_expected
+            .to contain_file('/etc/kafka/connect-distributed.properties')
+            .with_ensure('present')
+            .with_owner('cp-kafka-connect')
+            .with_group('confluent')
+            .with_mode('0640')
+            .with_content(%r{^bootstrap\.servers=localhost:9092$})
+            .with_content(%r{^group\.id=connect-cluster$})
+            .with_content(%r{^key\.converter=org\.apache\.kafka\.connect\.json\.JsonConverter$})
+            .with_content(%r{^value\.converter=org\.apache\.kafka\.connect\.json\.JsonConverter$})
+            .with_content(%r{^key\.converter\.schemas\.enable=true$})
+            .with_content(%r{^value\.converter\.schemas\.enable=true$})
+            .with_content(%r{^offset\.storage\.topic=connect-offsets$})
+            .with_content(%r{^offset\.storage\.replication\.factor=1$})
+            .with_content(%r{^offset\.storage\.partitions=25$})
+            .with_content(%r{^config\.storage\.topic=connect-configs$})
+            .with_content(%r{^config\.storage\.replication\.factor=1$})
+            .with_content(%r{^status\.storage\.topic=connect-status$})
+            .with_content(%r{^status\.storage\.replication\.factor=1$})
+            .with_content(%r{^status\.storage\.partitions=5$})
+            .with_content(%r{^offset\.flush.interval\.ms=10000$})
+            .with_content(%r{^listeners=HTTP://:8083$})
+            .with_content(%r{^plugin\.path=/usr/share/java,/usr/share/confluent-hub-components$})
+        }
+        it {
+          is_expected
+            .to contain_file('/etc/kafka/connect-log4j.properties')
+            .with_ensure('present')
+            .with_owner('root')
+            .with_group('root')
+            .with_mode('0644')
+            .with_content(%r{^log4j\.rootLogger=INFO, file$})
+            .with_content(%r{^log4j\.appender\.file=org\.apache\.log4j\.RollingFileAppender$})
+            .with_content(%r{^log4j\.appender\.file\.layout=org\.apache\.log4j\.PatternLayout$})
+            .with_content(%r{^log4j\.appender\.file\.File=/var/log/confluent/connect\.log$})
+            .with_content(%r{^log4j\.appender\.file\.MaxFileSize=100MB$})
+            .with_content(%r{^log4j\.appender\.file\.MaxBackupIndex=10$})
+        }
+        it {
+          is_expected
+            .to contain_file('/usr/lib/systemd/system/confluent-kafka-connect.service')
+            .with_ensure('present')
+            .with_owner('root')
+            .with_group('root')
+            .with_mode('0644')
+            .with_content(%r{^Description=Apache Kafka Connect - distributed$})
+            .with_content(%r{^User=cp-kafka-connect$})
+            .with_content(%r{^Group=confluent$})
+            .with_content(%r{^ExecStart=/usr/bin/connect-distributed /etc/kafka/connect-distributed\.properties$})
+        }
+        it { is_expected.to contain_file('/usr/bin/connect-distributed').with_content(%r{export KAFKA_HEAP_OPTS="-Xms256M -Xmx2G"$}) }
 
-        it { is_expected.to contain_file('/etc/kafka-connect') }
-        it { is_expected.to contain_file('/etc/kafka/connect-distributed.properties') }
-        it { is_expected.to contain_file('/etc/kafka/connect-log4j.properties') }
-        it { is_expected.to contain_file('/usr/lib/systemd/system/confluent-kafka-connect.service') }
-        it { is_expected.to contain_file('/usr/bin/connect-distributed') }
-
-        it { is_expected.to contain_package('confluent-kafka') }
-        it { is_expected.to contain_package('confluent-common') }
-        it { is_expected.to contain_package('confluent-rest-utils') }
-        it { is_expected.to contain_package('confluent-schema-registry') }
-
-        it { is_expected.not_to contain_package('confluent-hub-client') }
+        it { is_expected.to contain_package('confluent-kafka').with_ensure('7.5.0-1') }
+        it { is_expected.to contain_package('confluent-common').with_ensure('7.5.0-1') }
+        it { is_expected.to contain_package('confluent-rest-utils').with_ensure('7.5.0-1') }
+        it { is_expected.to contain_package('confluent-schema-registry').with_ensure('7.5.0-1') }
 
         it { is_expected.to contain_service('confluent-kafka-connect') }
+
+        it {
+          is_expected
+            .to contain_exec('wait_30s_for_service_start')
+            .with_command('sleep 30')
+            .with_refreshonly(true)
+            .with_path(['/bin', '/usr/bin', '/usr/local/bin'])
+            .that_subscribes_to('Service[confluent-kafka-connect]')
+        }
+
+        it { is_expected.not_to contain_package('confluent-hub-client') }
       end
 
       describe 'with connector management only' do
         let(:params) { { manage_connectors_only: true } }
 
-        it { is_expected.to contain_class 'kafka_connect::manage_connectors' }
+        it { is_expected.to contain_class('kafka_connect::manage_connectors') }
 
-        it { is_expected.not_to contain_class 'kafka_connect::config' }
-        it { is_expected.not_to contain_class 'kafka_connect::confluent_repo' }
-        it { is_expected.not_to contain_class 'kafka_connect::install' }
-        it { is_expected.not_to contain_class 'kafka_connect::service' }
+        it { is_expected.not_to contain_class('kafka_connect::config') }
+        it { is_expected.not_to contain_class('kafka_connect::confluent_repo') }
+        it { is_expected.not_to contain_class('kafka_connect::install') }
+        it { is_expected.not_to contain_class('kafka_connect::service') }
       end
 
       describe 'with standalone mode and local kafka & zk services' do
         let(:params) { { config_mode: 'standalone', run_local_kafka_broker_and_zk: true } }
 
-        it { is_expected.to contain_file('/etc/kafka/connect-standalone.properties') }
-        it { is_expected.to contain_file('/usr/lib/systemd/system/confluent-kafka.service') }
-        it { is_expected.to contain_file('/usr/lib/systemd/system/confluent-zookeeper.service') }
+        it {
+          is_expected
+            .to contain_file('/etc/kafka/connect-standalone.properties')
+            .with_ensure('present')
+            .with_owner('cp-kafka-connect')
+            .with_group('confluent')
+            .with_mode('0640')
+            .with_content(%r{^bootstrap\.servers=localhost:9092$})
+            .with_content(%r{^key\.converter=org\.apache\.kafka\.connect\.json\.JsonConverter$})
+            .with_content(%r{^value\.converter=org\.apache\.kafka\.connect\.json\.JsonConverter$})
+            .with_content(%r{^key\.converter\.schemas\.enable=true$})
+            .with_content(%r{^value\.converter\.schemas\.enable=true$})
+            .with_content(%r{^offset\.storage\.file\.filename=/tmp/connect\.offsets$})
+            .with_content(%r{^offset\.flush.interval\.ms=10000$})
+            .with_content(%r{^plugin\.path=/usr/share/java,/usr/share/confluent-hub-components$})
+        }
+        it {
+          is_expected
+            .to contain_file('/usr/lib/systemd/system/confluent-kafka-connect.service')
+            .with_content(%r{^Description=Apache Kafka Connect - standalone$})
+        }
+        it {
+          is_expected
+            .to contain_file('/usr/lib/systemd/system/confluent-kafka.service')
+            .with_ensure('present')
+            .with_owner('root')
+            .with_group('root')
+            .with_mode('0644')
+            .with_content(%r{^Description=Apache Kafka - broker$})
+            .with_content(%r{^User=cp-kafka$})
+            .with_content(%r{^Group=confluent$})
+            .with_content(%r{^ExecStart=/usr/bin/kafka-server-start /etc/kafka/server\.properties$})
+        }
+        it {
+          is_expected
+            .to contain_file('/usr/lib/systemd/system/confluent-zookeeper.service')
+            .with_ensure('present')
+            .with_owner('root')
+            .with_group('root')
+            .with_mode('0644')
+            .with_content(%r{^Description=Apache Kafka - ZooKeeper$})
+            .with_content(%r{^User=cp-kafka$})
+            .with_content(%r{^Group=confluent$})
+            .with_content(%r{^ExecStart=/usr/bin/zookeeper-server-start /etc/kafka/zookeeper\.properties$})
+        }
         it { is_expected.to contain_service('confluent-kafka') }
         it { is_expected.to contain_service('confluent-zookeeper') }
 
@@ -145,14 +247,7 @@ describe 'kafka_connect' do
       describe 'with service_name set to valid value' do
         let(:params) { { service_name: 'testing-svc-name' } }
 
-        it {
-          is_expected
-            .to contain_file('/usr/lib/systemd/system/testing-svc-name.service')
-            .with_ensure('present')
-            .with_owner('root')
-            .with_group('root')
-            .with_mode('0644')
-        }
+        it { is_expected.to contain_file('/usr/lib/systemd/system/testing-svc-name.service') }
 
         it { is_expected.to contain_service('testing-svc-name') }
       end
@@ -172,7 +267,7 @@ describe 'kafka_connect' do
       describe 'with user and group managed' do
         let(:params) { { manage_user_and_group: true } }
 
-        it { is_expected.to contain_class 'kafka_connect::user' }
+        it { is_expected.to contain_class('kafka_connect::user').that_comes_before('Class[kafka_connect::install]') }
 
         it {
           is_expected.to contain_group('confluent')
@@ -197,6 +292,7 @@ describe 'kafka_connect' do
         it { is_expected.to contain_class 'kafka_connect::user' }
 
         it { is_expected.to contain_group('confluent').with_ensure('absent') }
+
         it { is_expected.to contain_user('cp-kafka-connect').with_ensure('absent').that_requires('Group[confluent]') }
       end
 
@@ -300,7 +396,7 @@ describe 'kafka_connect' do
       describe 'with connector data invalid (host1)' do
         let(:facts) { facts.merge({ networking: { fqdn: 'host1.test.com' } }) }
 
-        it { is_expected.to compile.and_raise_error(%r{Connector\sconfig\srequired}) }
+        it { is_expected.to compile.and_raise_error(%r{Connector config required}) }
       end
 
       describe 'with secret k/v string pair present' do
@@ -341,13 +437,13 @@ describe 'kafka_connect' do
       describe 'with secret data invalid (host2)' do
         let(:facts) { facts.merge({ networking: { fqdn: 'host2.test.com' } }) }
 
-        it { is_expected.to compile.and_raise_error(%r{Validation\serror}) }
+        it { is_expected.to compile.and_raise_error(%r{Validation error}) }
       end
 
       describe 'with secret data invalid (host3)' do
         let(:facts) { facts.merge({ networking: { fqdn: 'host3.test.com' } }) }
 
-        it { is_expected.to compile.and_raise_error(%r{Validation\serror}) }
+        it { is_expected.to compile.and_raise_error(%r{Validation error}) }
       end
     end
   end

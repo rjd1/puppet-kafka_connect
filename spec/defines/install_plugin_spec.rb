@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 describe 'kafka_connect::install::plugin', type: :define do
-  on_supported_os.each do |os, os_facts|
+  on_supported_os.each do |os, facts|
     context "on #{os}" do
-      let(:facts) { os_facts }
+      let(:facts) { facts }
       let(:title) { 'test/rspec-plugin:0.0.1' }
       # the required confluent-hub-client package is only included if the plugins list in the main class is not empty
       # need two separate plugins here to satisfy this, pass type validation, & avoid duplicate declaration errors

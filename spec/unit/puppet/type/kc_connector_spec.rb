@@ -142,7 +142,7 @@ describe Puppet::Type.type(:kc_connector) do
     catalog.add_resource file
     catalog.add_resource type
     relationship = type.autorequire.find do |rel|
-      (rel.source.to_s == "File[/tmp/test_config.json]") && (rel.target.to_s == type.to_s)
+      (rel.source.to_s == 'File[/tmp/test_config.json]') && (rel.target.to_s == type.to_s)
     end
     expect(relationship).to be_a Puppet::Relationship
   end

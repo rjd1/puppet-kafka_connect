@@ -56,6 +56,6 @@ describe 'kafka_connect::confluent_repo' do
     let(:facts) { { os: { family: 'SCO' } } }
     let(:pre_condition) { 'include kafka_connect' }
 
-    it { is_expected.to compile.and_raise_error(%r{Confluent\srepository\sis\snot\ssupported\son\sSCO}) }
+    it { is_expected.to compile.and_raise_error(%r{Confluent repository is not supported on SCO}) }
   end
 end
