@@ -2,6 +2,13 @@
 
 Release notes for the rjd1-kafka_connect module.
 
+## Release 3.1.1
+
+2025-01-03 - Fix type autorequire
+
+ - Fix autorequire resource bug for config file in the custom type
+ - Various rspec updates
+
 ## Release 3.1.0
 
 2024-12-04 - Update supported Operating Systems

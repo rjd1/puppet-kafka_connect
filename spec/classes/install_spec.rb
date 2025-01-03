@@ -53,7 +53,18 @@ describe 'kafka_connect::install' do
         }
 
         it { is_expected.to contain_file('/opt/kafka/bin/connect-distributed.sh') }
-        it { is_expected.to contain_file('/usr/lib/systemd/system/kafka-connect.service') }
+        it {
+          is_expected
+            .to contain_file('/usr/lib/systemd/system/kafka-connect.service')
+            .with_ensure('present')
+            .with_owner('root')
+            .with_group('root')
+            .with_mode('0644')
+            .with_content(%r{^User=kafka$})
+            .with_content(%r{^Group=kafka$})
+            .with_content(%r{^ExecStart=/opt/kafka/bin/connect-distributed\.sh /etc/kafka/connect-distributed\.properties$})
+        }
+
         it { is_expected.to contain_service('kafka-connect') }
 
         it { is_expected.not_to contain_class 'kafka_connect::install::package' }
