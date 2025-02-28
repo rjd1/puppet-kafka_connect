@@ -1,4 +1,6 @@
-# @summary Class to manage individual Kafka Connect connectors.
+# @summary Manages individual Kafka Connect connectors.
+#
+# KC connector class.
 #
 # @param connectors_data
 #   Hash of connector names and their corresponding data.

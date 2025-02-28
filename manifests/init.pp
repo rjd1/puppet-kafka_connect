@@ -1,5 +1,7 @@
 # @summary Main kafka_connect class.
 #
+# Manages Kafka Connect.
+#
 # @param manage_connectors_only
 #   Flag for including the connector management class only.
 #

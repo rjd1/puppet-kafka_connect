@@ -1,5 +1,7 @@
 # @summary Manages the Confluent package repository.
 #
+# KC Confluent repo class.
+#
 # @api private
 #
 class kafka_connect::confluent_repo {

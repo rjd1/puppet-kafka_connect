@@ -1,4 +1,8 @@
-# @summary Class to manage individual Kafka Connect connectors and connector secrets.
+# @summary Manages individual Kafka Connect connectors and connector secrets.
+#
+# KC connector management class.
+#
+# @see https://github.com/rjd1/puppet-kafka_connect#managing-connectors-through-the-helper-class
 #
 # @api private
 #

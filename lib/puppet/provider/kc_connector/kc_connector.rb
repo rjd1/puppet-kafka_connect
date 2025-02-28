@@ -4,7 +4,11 @@ require 'net/http'
 require 'uri'
 
 Puppet::Type.type(:kc_connector).provide(:kc_connector) do
-  desc 'Manage live Kafka Connect connectors.'
+  desc <<-DESC
+    '@summary Provider for Kafka Connect connector management.
+
+    Manages live KC connectors.'
+  DESC
 
   def self.instances
     connectors_raw = Net::HTTP.get('localhost', '/connectors', '8083')

@@ -1,4 +1,6 @@
-# @summary Manages the KC user and group.
+# @summary Manages the Kafka Connect user and group.
+#
+# KC user class.
 #
 # @api private
 #

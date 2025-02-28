@@ -2,7 +2,14 @@ require 'puppet/util'
 require 'puppet/parameter/boolean'
 
 Puppet::Type.newtype(:kc_connector) do
-  @doc = 'Manage running Kafka Connect connectors.'
+  @doc = '@summary Native type for Kafka Connect connector management.
+
+    Manages running KC connectors.
+
+    **Autorequires:** If Puppet is managing the connector config file,
+    the kc_connector resource will autorequire that file.
+
+    @see https://github.com/rjd1/puppet-kafka_connect#managing-connectors-directly-through-the-resource-type'
 
   ensurable
 
