@@ -1,5 +1,7 @@
 # @summary Defined type for Confluent Hub plugin installation.
 #
+# KC plugin install defined type.
+#
 # @param plugin
 #  Plugin to install, in the form 'author/name:(semantic-version|latest)'.
 #

@@ -394,7 +394,7 @@ describe 'kafka_connect' do
       end
 
       describe 'with connector data invalid (host1)' do
-        let(:facts) { facts.merge({ networking: { fqdn: 'host1.test.com' } }) }
+        let(:node) { 'host1.test.com' }
 
         it { is_expected.to compile.and_raise_error(%r{Connector config required}) }
       end
@@ -435,13 +435,13 @@ describe 'kafka_connect' do
       end
 
       describe 'with secret data invalid (host2)' do
-        let(:facts) { facts.merge({ networking: { fqdn: 'host2.test.com' } }) }
+        let(:node) { 'host2.test.com' }
 
         it { is_expected.to compile.and_raise_error(%r{Validation error}) }
       end
 
       describe 'with secret data invalid (host3)' do
-        let(:facts) { facts.merge({ networking: { fqdn: 'host3.test.com' } }) }
+        let(:node) { 'host3.test.com' }
 
         it { is_expected.to compile.and_raise_error(%r{Validation error}) }
       end

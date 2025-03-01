@@ -5,13 +5,14 @@
 [![License](https://img.shields.io/github/license/rjd1/puppet-kafka_connect.svg)](https://github.com/rjd1/puppet-kafka_connect/blob/master/LICENSE)
 [![puppetmodule.info docs](http://www.puppetmodule.info/images/badge.png)](http://www.puppetmodule.info/m/rjd1-kafka_connect)
 
-Welcome to the kafka_connect Puppet module!
+Welcome to the `kafka_connect` Puppet module!
 
 ## Table of Contents
 
 1. [Description](#description)
 2. [Setup - The basics of getting started with kafka_connect](#setup)
     * [What kafka_connect affects](#what-kafka_connect-affects)
+    * [Setup requirements](#setup-requirements)
     * [Getting started with_kafka_connect](#getting-started-with-kafka_connect)
 3. [Usage - Configuration options and additional functionality](#usage)
     * [Typical deployment](#typical-deployment)
@@ -43,6 +44,10 @@ Includes a Type, Provider, and helper class for management of individual KC conn
 
 * Manages the KC installation, configuration, and system service.
 * Manages the individual state of running connectors, + their config & secret files.
+
+### Setup Requirements
+
+Requires a working java setup in order for the service to run effectively. There is a parameter, `include_java`, that can be enabled to simply include the java class, but that may be insufficient depending on the platform. Also note that there is no explicit java module dependency - since no options are passed, there's no real need to have it tied to the standard PL module as any alternative could potentially be used.
 
 ### Getting started with kafka_connect
 
@@ -188,7 +193,7 @@ kafka_connect::secrets:
       jdbc-sink-connection-password: 'ENC[PKCS7,encrypted-passwd-value]'
 ```
 
-The `connectors` array should contain a list of connector names that reference it in the config. This allows for automatic update/refresh (via REST API restart POST) if the password value is changed.
+The `connectors` array should contain a list of connector names that reference it in the config. This allows for automatic update/refresh, via REST API restart POST, if the secrets data changes (e.g., on password rotation).
 
 To later remove unused files, use the optional `ensure` hash key and set it to 'absent'.
 

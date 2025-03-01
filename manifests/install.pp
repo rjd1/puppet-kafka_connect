@@ -1,4 +1,6 @@
-# @summary Main class for the Kafka Connect installation.
+# @summary Manages the Kafka Connect installation.
+#
+# KC install class.
 #
 # @api private
 #

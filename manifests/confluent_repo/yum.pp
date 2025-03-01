@@ -1,5 +1,7 @@
 # @summary Manages the Confluent yum package repository.
 #
+# KC Confluent yum repo class.
+#
 # @api private
 #
 class kafka_connect::confluent_repo::yum {

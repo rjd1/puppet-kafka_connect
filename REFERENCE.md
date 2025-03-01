@@ -16,14 +16,14 @@
 * `kafka_connect::confluent_repo`: Manages the Confluent package repository.
 * `kafka_connect::confluent_repo::apt`: Manages the Confluent apt package repository.
 * `kafka_connect::confluent_repo::yum`: Manages the Confluent yum package repository.
-* `kafka_connect::install`: Main class for the Kafka Connect installation.
+* `kafka_connect::install`: Manages the Kafka Connect installation.
 * `kafka_connect::install::archive`: Manages the Kafka Connect archive (.tgz) based installation.
 * `kafka_connect::install::package`: Manages the Kafka Connect package installation.
-* `kafka_connect::manage_connectors`: Class to manage individual Kafka Connect connectors and connector secrets.
-* `kafka_connect::manage_connectors::connector`: Class to manage individual Kafka Connect connectors.
-* `kafka_connect::manage_connectors::secret`: Class to manage individual Kafka Connect connector secrets.
+* `kafka_connect::manage_connectors`: Manages individual Kafka Connect connectors and connector secrets.
+* `kafka_connect::manage_connectors::connector`: Manages individual Kafka Connect connectors.
+* `kafka_connect::manage_connectors::secret`: Manages individual Kafka Connect connector secrets.
 * `kafka_connect::service`: Manages the Kafka Connect service.
-* `kafka_connect::user`: Manages the KC user and group.
+* `kafka_connect::user`: Manages the Kafka Connect user and group.
 
 ### Defined types
 
@@ -31,7 +31,7 @@
 
 ### Resource types
 
-* [`kc_connector`](#kc_connector): Manage running Kafka Connect connectors.
+* [`kc_connector`](#kc_connector): Native type for Kafka Connect connector management.
 
 ### Data types
 
@@ -48,7 +48,7 @@
 
 ### <a name="kafka_connect"></a>`kafka_connect`
 
-Main kafka_connect class.
+Manages Kafka Connect.
 
 #### Examples
 
@@ -736,7 +736,7 @@ Default value: `false`
 
 ### <a name="kafka_connect--install--plugin"></a>`kafka_connect::install::plugin`
 
-Defined type for Confluent Hub plugin installation.
+KC plugin install defined type.
 
 #### Parameters
 
@@ -756,7 +756,13 @@ Default value: `$title`
 
 ### <a name="kc_connector"></a>`kc_connector`
 
-Manage running Kafka Connect connectors.
+Manages running KC connectors.
+
+**Autorequires:** If Puppet is managing the connector config file,
+the kc_connector resource will autorequire that file.
+
+* **See also**
+  * https://github.com/rjd1/puppet-kafka_connect#managing-connectors-directly-through-the-resource-type
 
 #### Properties
 

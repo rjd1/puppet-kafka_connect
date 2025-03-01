@@ -1,5 +1,7 @@
 # @summary Manages the Kafka Connect archive (.tgz) based installation.
 #
+# KC archive install class.
+#
 # @api private
 #
 class kafka_connect::install::archive {

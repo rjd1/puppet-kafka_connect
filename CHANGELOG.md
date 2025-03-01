@@ -2,6 +2,13 @@
 
 Release notes for the rjd1-kafka_connect module.
 
+## Release 3.1.2
+
+2025-03-01 - Update PDK
+
+ - Update PDK to 3.4.0
+ - Various doc updates
+
 ## Release 3.1.1
 
 2025-01-03 - Fix type autorequire

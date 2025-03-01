@@ -18,7 +18,7 @@ describe 'kafka_connect::install' do
 
       describe 'with archive/tgz install source and standard setup' do
         let(:hiera_config) { 'hiera-rspec.yaml' }
-        let(:facts) { facts.merge({ networking: { fqdn: 'host4.test.com' } }) }
+        let(:node) { 'host4.test.com' }
 
         it { is_expected.to contain_class 'kafka_connect::install::archive' }
 

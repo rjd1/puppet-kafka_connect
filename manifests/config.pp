@@ -1,5 +1,7 @@
 # @summary Manages the Kafka Connect configuration.
 #
+# KC config class.
+#
 # @api private
 #
 class kafka_connect::config {

@@ -1,5 +1,7 @@
 # @summary Manages the Kafka Connect package installation.
 #
+# KC package install class.
+#
 # @api private
 #
 class kafka_connect::install::package {

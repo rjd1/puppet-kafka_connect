@@ -1,5 +1,7 @@
 # @summary Manages the Kafka Connect service.
 #
+# KC service class.
+#
 # @api private
 #
 class kafka_connect::service {

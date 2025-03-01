@@ -1,4 +1,6 @@
-# @summary Class to manage individual Kafka Connect connector secrets.
+# @summary Manages individual Kafka Connect connector secrets.
+#
+# KC connector secret class.
 #
 # @param secrets_data
 #   Hash of secret file names and their corresponding data.
