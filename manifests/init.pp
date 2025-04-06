@@ -14,6 +14,9 @@
 # @param include_java
 #   Flag for including class java.
 #
+# @param java_class_name
+#   Name of java class to include.
+#
 # @param repo_ensure
 #   Ensure value for the Confluent package repo resource.
 #
@@ -265,6 +268,7 @@ class kafka_connect (
   Boolean                           $manage_confluent_repo               = true,
   Boolean                           $manage_user_and_group               = false,
   Boolean                           $include_java                        = false,
+  String[1]                         $java_class_name                     = 'java',
 
   # kafka_connect::confluent_repo
   Enum['present', 'absent']         $repo_ensure                         = 'present',
@@ -343,7 +347,12 @@ class kafka_connect (
   Boolean                           $restart_on_failed_state             = false,
 ) {
   if $include_java {
-    include 'java'
+    include $java_class_name
+
+    if !$manage_connectors_only {
+      Class[$java_class_name]
+      -> Class['kafka_connect::service']
+    }
   }
 
   if $owner {
