@@ -123,6 +123,7 @@ The following parameters are available in the `kafka_connect` class:
 * [`manage_confluent_repo`](#-kafka_connect--manage_confluent_repo)
 * [`manage_user_and_group`](#-kafka_connect--manage_user_and_group)
 * [`include_java`](#-kafka_connect--include_java)
+* [`java_class_name`](#-kafka_connect--java_class_name)
 * [`repo_ensure`](#-kafka_connect--repo_ensure)
 * [`repo_enabled`](#-kafka_connect--repo_enabled)
 * [`repo_version`](#-kafka_connect--repo_version)
@@ -217,6 +218,14 @@ Data type: `Boolean`
 Flag for including class java.
 
 Default value: `false`
+
+##### <a name="-kafka_connect--java_class_name"></a>`java_class_name`
+
+Data type: `String[1]`
+
+Name of java class to include.
+
+Default value: `'java'`
 
 ##### <a name="-kafka_connect--repo_ensure"></a>`repo_ensure`
 

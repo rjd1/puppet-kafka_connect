@@ -12,6 +12,8 @@ class kafka_connect::manage_connectors::connector (
 ) {
   assert_private()
 
+  $stdlib_version = load_module_metadata('stdlib')['version']
+
   $connectors_data.each |$connector| {
     $connector_file_name = $connector[0]
     $connector_name      = $connector[1]['name']
@@ -20,6 +22,12 @@ class kafka_connect::manage_connectors::connector (
     $connector_full_config = {
       name   => $connector_name,
       config => $connector_config,
+    }
+
+    $connector_full_config_content = if versioncmp($stdlib_version, '9.0.0') < 0 {
+      to_json($connector_full_config)
+    } else {
+      stdlib::to_json($connector_full_config)
     }
 
     $connector_ensure = $connector[1]['ensure'] ? {
@@ -51,7 +59,7 @@ class kafka_connect::manage_connectors::connector (
       owner   => $_owner,
       group   => $kafka_connect::group,
       mode    => $kafka_connect::connector_config_file_mode,
-      content => stdlib::to_json($connector_full_config),
+      content => $connector_full_config_content,
       before  => Kc_connector[$connector_name],
     }
 

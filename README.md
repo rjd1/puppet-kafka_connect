@@ -47,7 +47,7 @@ Includes a Type, Provider, and helper class for management of individual KC conn
 
 ### Setup Requirements
 
-Requires a working java setup in order for the service to run effectively. There is a parameter, `include_java`, that can be enabled to simply include the java class, but that may be insufficient depending on the platform. Also note that there is no explicit java module dependency - since no options are passed, there's no real need to have it tied to the standard PL module as any alternative could potentially be used.
+Requires a working java setup in order for the service to run effectively. There is a parameter, `include_java`, that can be enabled to simply include the java class, but that may be insufficient depending on the platform. Use `java_class_name` to specify an alternative/custom class.
 
 ### Getting started with kafka_connect
 
