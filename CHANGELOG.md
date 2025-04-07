@@ -2,6 +2,14 @@
 
 Release notes for the rjd1-kafka_connect module.
 
+## Release 3.2.0
+
+2025-04-06 - Support alt java class + dep updates
+
+ - Support including an alternative/custom java class, via new $java_class_name param
+ - Use load_module_metadata() to support older puppetlabs-stdlib versions
+ - Allow puppetlabs-apt 10.x
+
 ## Release 3.1.2
 
 2025-03-01 - Update PDK

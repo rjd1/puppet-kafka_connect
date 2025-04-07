@@ -5,7 +5,7 @@ fixtures:
   forge_modules:
     kafka_connect:
        repo: "rjd1/kafka_connect"
-       ref: "3.1.2"
+       ref: "3.2.0"
     stdlib: "puppetlabs/stdlib"
     apt: "puppetlabs/apt"
     archive: "puppet/archive"
