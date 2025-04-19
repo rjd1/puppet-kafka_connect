@@ -30,6 +30,10 @@ if [ "x$KAFKA_HEAP_OPTS" = "x" ]; then
   export KAFKA_HEAP_OPTS="<%= scope['kafka_connect::kafka_heap_options'] -%>"
 fi
 
+<% if scope['kafka_connect::kafka_jvm_performance_options'] -%>
+export KAFKA_JVM_PERFORMANCE_OPTS="<%= scope['kafka_connect::kafka_jvm_performance_options'] %>"
+
+<% end -%>
 EXTRA_ARGS=${EXTRA_ARGS-'-name connectDistributed'}
 
 COMMAND=$1

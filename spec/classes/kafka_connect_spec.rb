@@ -177,6 +177,12 @@ describe 'kafka_connect' do
         it { is_expected.not_to contain_class 'kafka_connect::confluent_repo' }
       end
 
+      describe 'with kafka_jvm_performance_options config' do
+        let(:params) { { kafka_jvm_performance_options: '-server -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:InitiatingHeapOccupancyPercent=50 -XX:+ExplicitGCInvokesConcurrent -XX:MaxInlineLevel=15 -Djava.awt.headless=true' } } # rubocop:disable Layout/LineLength
+
+        it { is_expected.to contain_file('/usr/bin/connect-distributed').with_content(%r{^export KAFKA_JVM_PERFORMANCE_OPTS="-server -XX:\+UseG1GC -XX:MaxGCPauseMillis=100 -XX:InitiatingHeapOccupancyPercent=50 -XX:\+ExplicitGCInvokesConcurrent -XX:MaxInlineLevel=15 -Djava.awt.headless=true"$}) } # rubocop:disable Layout/LineLength
+      end
+
       describe 'with owner set to valid string value' do
         let(:params) { { owner: 'test-owner' } }
 
