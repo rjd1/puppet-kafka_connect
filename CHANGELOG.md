@@ -2,6 +2,14 @@
 
 Release notes for the rjd1-kafka_connect module.
 
+## Release 3.3.0
+
+2025-04-28 - Support setting performance opts var + jvm options in standalone mode
+
+ - Add support for setting KAFKA_JVM_PERFORMANCE_OPTS value via new $kafka_jvm_performance_options param
+ - Add support for setting heap & performance opts configs in standalone mode
+
+
 ## Release 3.2.0
 
 2025-04-07 - Support alt java class + dep updates

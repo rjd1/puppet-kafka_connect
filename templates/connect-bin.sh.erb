@@ -16,7 +16,11 @@
 
 if [ $# -lt 1 ];
 then
+<% if scope['kafka_connect::config_mode'] == 'distributed' -%>
         echo "USAGE: $0 [-daemon] connect-distributed.properties"
+<% else -%>
+        echo "USAGE: $0 [-daemon] connect-standalone.properties [connector1.properties connector2.json ...]"
+<% end -%>
         exit 1
 fi
 
@@ -30,7 +34,15 @@ if [ "x$KAFKA_HEAP_OPTS" = "x" ]; then
   export KAFKA_HEAP_OPTS="<%= scope['kafka_connect::kafka_heap_options'] -%>"
 fi
 
+<% if scope['kafka_connect::kafka_jvm_performance_options'] -%>
+export KAFKA_JVM_PERFORMANCE_OPTS="<%= scope['kafka_connect::kafka_jvm_performance_options'] %>"
+
+<% end -%>
+<% if scope['kafka_connect::config_mode'] == 'distributed' -%>
 EXTRA_ARGS=${EXTRA_ARGS-'-name connectDistributed'}
+<% else -%>
+EXTRA_ARGS=${EXTRA_ARGS-'-name connectStandalone'}
+<% end -%>
 
 COMMAND=$1
 case $COMMAND in
@@ -42,4 +54,8 @@ case $COMMAND in
     ;;
 esac
 
+<% if scope['kafka_connect::config_mode'] == 'distributed' -%>
 exec $(dirname $0)/kafka-run-class.sh $EXTRA_ARGS org.apache.kafka.connect.cli.ConnectDistributed "$@"
+<% else -%>
+exec $(dirname $0)/kafka-run-class.sh $EXTRA_ARGS org.apache.kafka.connect.cli.ConnectStandalone "$@"
+<% end -%>

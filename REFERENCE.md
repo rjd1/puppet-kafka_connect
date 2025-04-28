@@ -141,6 +141,7 @@ The following parameters are available in the `kafka_connect` class:
 * [`archive_source`](#-kafka_connect--archive_source)
 * [`config_mode`](#-kafka_connect--config_mode)
 * [`kafka_heap_options`](#-kafka_connect--kafka_heap_options)
+* [`kafka_jvm_performance_options`](#-kafka_connect--kafka_jvm_performance_options)
 * [`kc_config_dir`](#-kafka_connect--kc_config_dir)
 * [`config_storage_replication_factor`](#-kafka_connect--config_storage_replication_factor)
 * [`config_storage_topic`](#-kafka_connect--config_storage_topic)
@@ -365,6 +366,14 @@ Data type: `String[1]`
 Value to set for 'KAFKA_HEAP_OPTS' export.
 
 Default value: `'-Xms256M -Xmx2G'`
+
+##### <a name="-kafka_connect--kafka_jvm_performance_options"></a>`kafka_jvm_performance_options`
+
+Data type: `Optional[String[1]]`
+
+Value to set for 'KAFKA_JVM_PERFORMANCE_OPTS' export.
+
+Default value: `undef`
 
 ##### <a name="-kafka_connect--kc_config_dir"></a>`kc_config_dir`
 

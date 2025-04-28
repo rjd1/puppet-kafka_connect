@@ -40,14 +40,12 @@ class kafka_connect::config {
     }
   }
 
-  if $kafka_connect::config_mode == 'distributed' {
-    file { "${bin_dir}/connect-distributed${bin_file_suffix}" :
-      ensure  => $file_ensure,
-      content => template("kafka_connect/connect-distributed${bin_file_suffix}.erb"),
-      owner   => 'root',
-      group   => 'root',
-      mode    => '0755',
-    }
+  file { "${bin_dir}/connect-${kafka_connect::config_mode}${bin_file_suffix}" :
+    ensure  => $file_ensure,
+    content => template("kafka_connect/connect-bin${bin_file_suffix}.erb"),
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0755',
   }
 
   if $kafka_connect::owner {
