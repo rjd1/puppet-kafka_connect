@@ -1,7 +1,7 @@
 # @summary Validate the individual connector data.
 type Kafka_connect::Connector = Struct[
   {
-    Optional['ensure'] => Enum['absent', 'present', 'running', 'paused'],
+    Optional['ensure'] => Enum['absent', 'present', 'running', 'paused', 'stopped'],
     'name'             => String[1],
     Optional['config'] => Hash[String[1], String],
   }

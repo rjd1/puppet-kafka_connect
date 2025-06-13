@@ -399,6 +399,22 @@ describe 'kafka_connect' do
         }
       end
 
+      describe 'with connector stopped' do
+        it {
+          is_expected
+            .to contain_file('/etc/kafka-connect/connector-empat.json')
+            .with_ensure('present')
+            .that_comes_before('Kc_connector[connector-yang-rusak]')
+        }
+
+        it {
+          is_expected
+            .to contain_kc_connector('connector-yang-rusak')
+            .with_ensure('present')
+            .with_connector_state_ensure('STOPPED')
+        }
+      end
+
       describe 'with connector data invalid (host1)' do
         let(:node) { 'host1.test.com' }
 

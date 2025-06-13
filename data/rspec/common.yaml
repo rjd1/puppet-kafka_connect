@@ -14,8 +14,9 @@ kafka_connect::connectors:
   connector-tiga.json:
     name: 'my-not-yet-cool-connector'
     ensure: 'paused'
-    config:
-      some.key: "some.value"
+  connector-empat.json:
+    name: 'connector-yang-rusak'
+    ensure: 'stopped'
 kafka_connect::secrets:
   my-super-secret-file.properties:
     connectors:

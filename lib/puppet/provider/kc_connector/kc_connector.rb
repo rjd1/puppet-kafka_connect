@@ -201,21 +201,29 @@ Puppet::Type.type(:kc_connector).provide(:kc_connector) do
 
     http = Net::HTTP.new(@resource.value(:hostname).to_s, @resource.value(:port).to_s)
 
-    if current_state == 'RUNNING' && value == 'PAUSED'
-      Puppet.debug("Attempting to change from RUNNING state to PAUSED for #{@resource[:name]}...")
+    if ['RUNNING', 'STOPPED'].include?(current_state) && value == 'PAUSED'
+      Puppet.debug("Attempting to change from #{current_state} state to PAUSED for #{@resource[:name]}...")
 
       response = http.send_request('PUT', "/connectors/#{@resource[:name]}/pause")
 
       unless response.is_a?(Net::HTTPAccepted)
         Puppet.warning("Unexpected response encountered on pause attempt: #{response}\n ")
       end
-    elsif current_state == 'PAUSED' && value == 'RUNNING'
-      Puppet.debug("Attempting to change from PAUSED state to RUNNING for #{@resource[:name]}...")
+    elsif ['PAUSED', 'STOPPED'].include?(current_state) && value == 'RUNNING'
+      Puppet.debug("Attempting to change from #{current_state} state to RUNNING for #{@resource[:name]}...")
 
       response = http.send_request('PUT', "/connectors/#{@resource[:name]}/resume")
 
       unless response.is_a?(Net::HTTPAccepted)
         Puppet.warning("Unexpected response encountered on resume attempt: #{response}\n ")
+      end
+    elsif ['RUNNING', 'PAUSED', 'FAILED'].include?(current_state) && value == 'STOPPED'
+      Puppet.debug("Attempting to change from #{current_state} state to STOPPED for #{@resource[:name]}...")
+
+      response = http.send_request('PUT', "/connectors/#{@resource[:name]}/stop")
+
+      unless response.is_a?(Net::HTTPNoContent) || response.is_a?(Net::HTTPAccepted)
+        Puppet.warning("Unexpected response encountered on stop attempt: #{response}\n ")
       end
     elsif current_state == 'FAILED' && resource[:restart_on_failed_state]
       restart
