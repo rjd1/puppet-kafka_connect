@@ -21,6 +21,7 @@ Welcome to the `kafka_connect` Puppet module!
     * * [Update an existing connector](#update-an-existing-connector)
     * * [Remove a connector](#remove-a-connector)
     * * [Pause a connector](#pause-a-connector)
+    * * [Stop a connector](#stop-a-connector)
     * * [Managing secrets config data](#managing-secrets-config-data)
     * [Managing connectors directly through the resource type](#managing-connectors-directly-through-the-resource-type)
     * * [WARNING: Breaking change in v2.0.0](#warning-breaking-change-in-v200)
@@ -139,7 +140,7 @@ NOTE: be sure to remove it from the secrets array list as well, if present.
 
 #### Pause a Connector
 
-The provider supports ensuring the connector state is either running (default) or paused. Similar to removing, use the `ensure` key in the connector data hash and set it to 'paused'.
+The provider supports ensuring the connector state is either running (default), paused, or stopped. Similar to removing, use the `ensure` key in the connector data hash and set it to 'paused'.
 
 ```yaml
 kafka_connect::connectors:
@@ -152,6 +153,19 @@ kafka_connect::connectors:
 ```
 
 Remove the ensure line or set it to 'running' to unpause/resume.
+
+#### Stop a Connector
+
+Stopping a connector will stop and remove tasks immediately, vs. pausing which suspends tasks (i.e., they stay running until completed). As with pausing or removing, use the `ensure` key:
+
+```yaml
+kafka_connect::connectors:
+  my-connector.json:
+    name: 'my-jdbc-connector'
+    ensure: 'stopped'
+```
+
+NOTE: This feature requires Confluent Platform >= 7.5.0 or Apache Kafka >= 3.5.0.
 
 #### Managing Secrets Config Data
 
