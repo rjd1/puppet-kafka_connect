@@ -158,17 +158,12 @@ describe 'kafka_connect' do
             .with_content(%r{^Group=confluent$})
             .with_content(%r{^ExecStart=/usr/bin/zookeeper-server-start /etc/kafka/zookeeper\.properties$})
         }
+        it { is_expected.to contain_file('/usr/bin/connect-standalone').with_content(%r{export KAFKA_HEAP_OPTS="-Xms256M -Xmx2G"$}) }
         it { is_expected.to contain_service('confluent-kafka') }
         it { is_expected.to contain_service('confluent-zookeeper') }
 
         it { is_expected.not_to contain_file('/etc/kafka/connect-distributed.properties') }
         it { is_expected.not_to contain_file('/usr/bin/connect-distributed') }
-      end
-
-      describe 'with java' do
-        let(:params) { { include_java: true } }
-
-        it { is_expected.to contain_class 'java' }
       end
 
       describe 'without managed repo' do
@@ -396,6 +391,22 @@ describe 'kafka_connect' do
             .to contain_kc_connector('my-not-yet-cool-connector')
             .with_ensure('present')
             .with_connector_state_ensure('PAUSED')
+        }
+      end
+
+      describe 'with connector stopped' do
+        it {
+          is_expected
+            .to contain_file('/etc/kafka-connect/connector-empat.json')
+            .with_ensure('present')
+            .that_comes_before('Kc_connector[connector-yang-rusak]')
+        }
+
+        it {
+          is_expected
+            .to contain_kc_connector('connector-yang-rusak')
+            .with_ensure('present')
+            .with_connector_state_ensure('STOPPED')
         }
       end
 

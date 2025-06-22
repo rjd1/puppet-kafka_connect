@@ -60,7 +60,7 @@ Puppet::Type.newtype(:kc_connector) do
 
   newproperty(:connector_state_ensure) do
     desc 'State of the connector to ensure.'
-    newvalues(:RUNNING, :PAUSED)
+    newvalues(:RUNNING, :PAUSED, :STOPPED)
     defaultto(:RUNNING)
   end
 

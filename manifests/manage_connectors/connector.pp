@@ -31,21 +31,37 @@ class kafka_connect::manage_connectors::connector (
     }
 
     $connector_ensure = $connector[1]['ensure'] ? {
-      /^(present|running|paused)$/ => 'present',
-      'absent'                     => 'absent',
-      default                      => 'present',
+      /^(present|running|paused|stopped)$/ => 'present',
+      'absent'                             => 'absent',
+      default                              => 'present',
     }
 
     $connector_state_ensure = $connector[1]['ensure'] ? {
       /^(present|running)$/ => 'RUNNING',
       'paused'              => 'PAUSED',
+      'stopped'             => 'STOPPED',
       'absent'              => undef,
       default               => undef,
     }
 
-    if ($connector_ensure == 'present' and !$connector_config) {
-      fail("Connector config required, unless ensure is set to absent. \
+    if ($connector_state_ensure == 'RUNNING' or $connector_state_ensure == undef)
+    and ($connector_ensure != 'absent')
+    and !$connector_config {
+      fail("Connector config required, unless ensure is set to absent/paused/stopped. \
         \n Validation error on ${connector_name} data, please correct. \n")
+    }
+
+    if ($connector_state_ensure == 'STOPPED')
+    and ($kafka_connect::install_source == 'package')
+    and (versioncmp($kafka_connect::package_ensure, '7.5.0') < 0) {
+      warning("It appears you are running Confluent Platform < v7.5.0 (${kafka_connect::package_ensure}) \
+        \n and trying to stop a connector - this will probably fail!")
+    }
+
+    unless ($connector_config == undef) {
+      $final_config_content = $connector_full_config_content
+    } else {
+      $final_config_content = undef
     }
 
     if $kafka_connect::owner {
@@ -59,7 +75,7 @@ class kafka_connect::manage_connectors::connector (
       owner   => $_owner,
       group   => $kafka_connect::group,
       mode    => $kafka_connect::connector_config_file_mode,
-      content => $connector_full_config_content,
+      content => $final_config_content,
       before  => Kc_connector[$connector_name],
     }
 

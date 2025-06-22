@@ -796,7 +796,7 @@ Default value: `yes`
 
 ##### `connector_state_ensure`
 
-Valid values: `RUNNING`, `PAUSED`
+Valid values: `RUNNING`, `PAUSED`, `STOPPED`
 
 State of the connector to ensure.
 
@@ -883,7 +883,7 @@ Alias of
 
 ```puppet
 Struct[{
-    Optional['ensure'] => Enum['absent', 'present', 'running', 'paused'],
+    Optional['ensure'] => Enum['absent', 'present', 'running', 'paused', 'stopped'],
     'name'             => String[1],
     Optional['config'] => Hash[String[1], String],
   }]

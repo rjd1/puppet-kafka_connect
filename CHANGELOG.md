@@ -2,13 +2,20 @@
 
 Release notes for the rjd1-kafka_connect module.
 
+## Release 3.4.0
+
+2025-06-22 - Support stopping connectors
+
+ - Add support for setting connector state to stopped
+ - Update logic in helper class to not require config data for paused or stopped states
+ - Add openvox to metadata.json
+
 ## Release 3.3.0
 
 2025-04-28 - Support setting performance opts var + jvm options in standalone mode
 
  - Add support for setting KAFKA_JVM_PERFORMANCE_OPTS value via new $kafka_jvm_performance_options param
  - Add support for setting heap & performance opts configs in standalone mode
-
 
 ## Release 3.2.0
 
