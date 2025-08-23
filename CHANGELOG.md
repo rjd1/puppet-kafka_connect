@@ -2,6 +2,13 @@
 
 Release notes for the rjd1-kafka_connect module.
 
+## Release 3.5.0
+
+2025-08-23 - Update default package version
+
+ - Set default package version to 7.9.2
+ - Allow puppet-archive 8.x
+
 ## Release 3.4.0
 
 2025-06-22 - Support stopping connectors

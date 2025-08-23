@@ -250,7 +250,7 @@ Data type: `Pattern[/^(\d+\.\d+|\d+)$/]`
 
 Version of the Confluent repo to configure.
 
-Default value: `'7.7'`
+Default value: `'7.9'`
 
 ##### <a name="-kafka_connect--install_source"></a>`install_source`
 
@@ -275,7 +275,7 @@ Data type: `String[1]`
 State of the package to ensure.
 Note that this may be used by more than one resource, depending on the setup.
 
-Default value: `'7.7.1-1'`
+Default value: `'7.9.2-1'`
 
 ##### <a name="-kafka_connect--manage_schema_registry_package"></a>`manage_schema_registry_package`
 
