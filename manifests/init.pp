@@ -276,12 +276,12 @@ class kafka_connect (
   # kafka_connect::confluent_repo
   Enum['present', 'absent']         $repo_ensure                         = 'present',
   Boolean                           $repo_enabled                        = true,
-  Pattern[/^(\d+\.\d+|\d+)$/]       $repo_version                        = '7.7',
+  Pattern[/^(\d+\.\d+|\d+)$/]       $repo_version                        = '7.9',
 
   # kafka_connect::install
   Enum['package', 'archive']        $install_source                      = 'package',
   String[1]                         $package_name                        = 'confluent-kafka',
-  String[1]                         $package_ensure                      = '7.7.1-1',
+  String[1]                         $package_ensure                      = '7.9.2-1',
   Boolean                           $manage_schema_registry_package      = true,
   String[1]                         $schema_registry_package_name        = 'confluent-schema-registry',
   String[1]                         $confluent_rest_utils_package_name   = 'confluent-rest-utils',
