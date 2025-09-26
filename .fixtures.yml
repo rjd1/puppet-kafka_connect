@@ -9,3 +9,4 @@ fixtures:
     stdlib: "puppetlabs/stdlib"
     apt: "puppetlabs/apt"
     archive: "puppet/archive"
+    extlib: "puppet/extlib"

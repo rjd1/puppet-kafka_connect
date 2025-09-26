@@ -218,6 +218,9 @@
 # @param restart_on_failed_state
 #   Allow the provider to auto restart on FAILED connector state.
 #
+# @param disable_node_encrypt
+#   Flag to override check for, and possible use of, the node_encrypt module.
+#
 # @example Basic setup.
 #   include kafka_connect
 #
@@ -349,6 +352,7 @@ class kafka_connect (
   Stdlib::Port                      $rest_port                           = 8083,
   Boolean                           $enable_delete                       = false,
   Boolean                           $restart_on_failed_state             = false,
+  Boolean                           $disable_node_encrypt                = false,
 ) {
   if $include_java {
     include $java_class_name

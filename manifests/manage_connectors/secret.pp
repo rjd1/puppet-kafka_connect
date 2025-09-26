@@ -42,10 +42,20 @@ class kafka_connect::manage_connectors::secret (
       }
 
       if $secret_kv_data {
-        $secret_data    = join($secret_kv_data.map |$key,$value| { "${key}=${value}" }, "\n")
-        $secret_content = Sensitive("${secret_data}\n")
+        $_secret_kv_data = join($secret_kv_data.map |$key,$value| { "${key}=${value}" }, "\n")
+        $secret_data     = "${_secret_kv_data}\n"
       } else {
-        $secret_content = Sensitive("${secret_key}=${secret_value}\n")
+        $secret_data     = "${secret_key}=${secret_value}\n"
+      }
+
+      unless $kafka_connect::disable_node_encrypt {
+        if (extlib::has_module('puppetlabs/node_encrypt') or extlib::has_module('binford2k/node_encrypt')) {
+          $secret_content = Sensitive($secret_data).node_encrypt::secret
+        } else {
+          $secret_content = Sensitive($secret_data)
+        }
+      } else {
+        $secret_content = Sensitive($secret_data)
       }
     }
 
@@ -56,13 +66,14 @@ class kafka_connect::manage_connectors::secret (
     }
 
     file { $secret_file_name :
-      ensure  => $secret_file_ensure,
-      path    => "${kafka_connect::connector_config_dir}/${secret_file_name}",
-      content => $secret_content,
-      owner   => $_owner,
-      group   => $kafka_connect::group,
-      mode    => $kafka_connect::connector_secret_file_mode,
-      notify  => $secret_notify,
+      ensure    => $secret_file_ensure,
+      path      => "${kafka_connect::connector_config_dir}/${secret_file_name}",
+      content   => $secret_content,
+      owner     => $_owner,
+      group     => $kafka_connect::group,
+      mode      => $kafka_connect::connector_secret_file_mode,
+      show_diff => false,
+      notify    => $secret_notify,
     }
   }
 }
