@@ -23,7 +23,7 @@ class kafka_connect::manage_connectors::secret (
     if $secret_ensure {
       $secret_file_ensure = $secret_ensure
     } else {
-      $secret_file_ensure = 'present'
+      $secret_file_ensure = 'file'
     }
 
     if $secret_file_ensure == 'absent' {

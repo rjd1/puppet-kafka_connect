@@ -30,7 +30,7 @@ describe 'kafka_connect' do
         it {
           is_expected
             .to contain_file('/etc/kafka/connect-distributed.properties')
-            .with_ensure('present')
+            .with_ensure('file')
             .with_owner('cp-kafka-connect')
             .with_group('confluent')
             .with_mode('0640')
@@ -55,7 +55,7 @@ describe 'kafka_connect' do
         it {
           is_expected
             .to contain_file('/etc/kafka/connect-log4j.properties')
-            .with_ensure('present')
+            .with_ensure('file')
             .with_owner('root')
             .with_group('root')
             .with_mode('0644')
@@ -69,7 +69,7 @@ describe 'kafka_connect' do
         it {
           is_expected
             .to contain_file('/usr/lib/systemd/system/confluent-kafka-connect.service')
-            .with_ensure('present')
+            .with_ensure('file')
             .with_owner('root')
             .with_group('root')
             .with_mode('0644')
@@ -116,7 +116,7 @@ describe 'kafka_connect' do
         it {
           is_expected
             .to contain_file('/etc/kafka/connect-standalone.properties')
-            .with_ensure('present')
+            .with_ensure('file')
             .with_owner('cp-kafka-connect')
             .with_group('confluent')
             .with_mode('0640')
@@ -137,7 +137,7 @@ describe 'kafka_connect' do
         it {
           is_expected
             .to contain_file('/usr/lib/systemd/system/confluent-kafka.service')
-            .with_ensure('present')
+            .with_ensure('file')
             .with_owner('root')
             .with_group('root')
             .with_mode('0644')
@@ -149,7 +149,7 @@ describe 'kafka_connect' do
         it {
           is_expected
             .to contain_file('/usr/lib/systemd/system/confluent-zookeeper.service')
-            .with_ensure('present')
+            .with_ensure('file')
             .with_owner('root')
             .with_group('root')
             .with_mode('0644')
@@ -341,7 +341,7 @@ describe 'kafka_connect' do
         it {
           is_expected
             .to contain_file('/etc/kafka-connect/connector-satu.json')
-            .with_ensure('present')
+            .with_ensure('file')
             .with_owner('cp-kafka-connect')
             .with_group('confluent')
             .with_mode('0640')
@@ -382,7 +382,7 @@ describe 'kafka_connect' do
         it {
           is_expected
             .to contain_file('/etc/kafka-connect/connector-tiga.json')
-            .with_ensure('present')
+            .with_ensure('file')
             .that_comes_before('Kc_connector[my-not-yet-cool-connector]')
         }
 
@@ -398,7 +398,7 @@ describe 'kafka_connect' do
         it {
           is_expected
             .to contain_file('/etc/kafka-connect/connector-empat.json')
-            .with_ensure('present')
+            .with_ensure('file')
             .that_comes_before('Kc_connector[connector-yang-rusak]')
         }
 
@@ -420,7 +420,7 @@ describe 'kafka_connect' do
         it {
           is_expected
             .to contain_file('my-super-secret-file.properties')
-            .with_ensure('present')
+            .with_ensure('file')
             .with_path('/etc/kafka-connect/my-super-secret-file.properties')
             .with_content(sensitive("some-connection-passwd=passwd-value\n"))
             .with_owner('cp-kafka-connect')
@@ -433,7 +433,7 @@ describe 'kafka_connect' do
         it {
           is_expected
             .to contain_file('my-super-duper-secret-file.properties')
-            .with_ensure('present')
+            .with_ensure('file')
             .with_path('/etc/kafka-connect/my-super-duper-secret-file.properties')
             .with_content(sensitive("db-url=my-db.example.com\ndb-user=some-user\ndb-passwd=some-passwd\n"))
             .with_owner('cp-kafka-connect')

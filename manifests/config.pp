@@ -18,7 +18,7 @@ class kafka_connect::config {
 
     $file_ensure = $kafka_connect::package_ensure ? {
       /^(absent|purged)$/ => 'absent',
-      default             => 'present',
+      default             => 'file',
     }
   } else {
     $file_ensure       = 'present'
@@ -38,14 +38,6 @@ class kafka_connect::config {
         ],
       }
     }
-  }
-
-  file { "${bin_dir}/connect-${kafka_connect::config_mode}${bin_file_suffix}" :
-    ensure  => $file_ensure,
-    content => template("kafka_connect/connect-bin${bin_file_suffix}.erb"),
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0755',
   }
 
   if $kafka_connect::owner {
@@ -68,6 +60,14 @@ class kafka_connect::config {
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
+  }
+
+  file { "${bin_dir}/connect-${kafka_connect::config_mode}${bin_file_suffix}" :
+    ensure  => $file_ensure,
+    content => template("kafka_connect/connect-bin${bin_file_suffix}.erb"),
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0755',
   }
 
   if $kafka_connect::manage_systemd_service_file {
