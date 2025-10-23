@@ -21,7 +21,7 @@ class kafka_connect::config {
       default             => 'file',
     }
   } else {
-    $file_ensure       = 'present'
+    $file_ensure       = 'file'
     $bin_dir           = "${kafka_connect::archive_install_dir}/bin"
     $bin_file_suffix   = '.sh'
     $service_prefix    = ''
