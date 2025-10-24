@@ -23,6 +23,7 @@ Welcome to the `kafka_connect` Puppet module!
     * * [Pause a connector](#pause-a-connector)
     * * [Stop a connector](#stop-a-connector)
     * * [Managing secrets config data](#managing-secrets-config-data)
+    * * * [Support for node_encrypt](#support-for-node_encrypt)
     * [Managing connectors directly through the resource type](#managing-connectors-directly-through-the-resource-type)
     * * [WARNING: Breaking change in v2.0.0](#warning-breaking-change-in-v200)
     * * [Examples](#examples)
