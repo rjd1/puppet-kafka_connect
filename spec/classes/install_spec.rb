@@ -56,7 +56,7 @@ describe 'kafka_connect::install' do
         it {
           is_expected
             .to contain_file('/usr/lib/systemd/system/kafka-connect.service')
-            .with_ensure('present')
+            .with_ensure('file')
             .with_owner('root')
             .with_group('root')
             .with_mode('0644')

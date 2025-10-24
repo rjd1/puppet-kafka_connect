@@ -187,6 +187,7 @@ The following parameters are available in the `kafka_connect` class:
 * [`rest_port`](#-kafka_connect--rest_port)
 * [`enable_delete`](#-kafka_connect--enable_delete)
 * [`restart_on_failed_state`](#-kafka_connect--restart_on_failed_state)
+* [`disable_node_encrypt`](#-kafka_connect--disable_node_encrypt)
 
 ##### <a name="-kafka_connect--manage_connectors_only"></a>`manage_connectors_only`
 
@@ -747,6 +748,14 @@ Default value: `false`
 Data type: `Boolean`
 
 Allow the provider to auto restart on FAILED connector state.
+
+Default value: `false`
+
+##### <a name="-kafka_connect--disable_node_encrypt"></a>`disable_node_encrypt`
+
+Data type: `Boolean`
+
+Flag to override check for, and possible use of, the node_encrypt module.
 
 Default value: `false`
 

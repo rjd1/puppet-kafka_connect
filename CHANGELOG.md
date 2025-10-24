@@ -2,9 +2,17 @@
 
 Release notes for the rjd1-kafka_connect module.
 
+## Release 3.6.0
+
+2025-10-24 - Support node_encrypt
+
+ - Support optional use of node_encrypt::secret() for secrets data if that module is present
+ - Disable show_diff on secret file resources
+ - Add puppet-extlib dep
+
 ## Release 3.5.0
 
-2025-08-23 - Update default package version
+2025-08-23 - Version updates
 
  - Set default package version to 7.9.2
  - Allow puppet-archive 8.x

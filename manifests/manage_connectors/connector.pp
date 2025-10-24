@@ -70,8 +70,14 @@ class kafka_connect::manage_connectors::connector (
       $_owner = $kafka_connect::user
     }
 
+    if $connector_ensure == 'present' {
+      $connector_file_ensure = 'file'
+    } else {
+      $connector_file_ensure = 'absent'
+    }
+
     file { "${kafka_connect::connector_config_dir}/${connector_file_name}" :
-      ensure  => $connector_ensure,
+      ensure  => $connector_file_ensure,
       owner   => $_owner,
       group   => $kafka_connect::group,
       mode    => $kafka_connect::connector_config_file_mode,
