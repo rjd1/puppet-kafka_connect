@@ -217,6 +217,10 @@ kafka_connect::secrets:
     ensure: 'absent'
 ```
 
+##### Support for node_encrypt
+
+As of v3.6.0, if managing secrets data it will automatically check for the presence of the [node_encrypt](https://github.com/puppetlabs/puppetlabs-node_encrypt) module and, if found, call `node_encrypt::secret()` to encrypt the file contents in the puppet catalog. To disable this, and effectively eliminate `puppet-extlib` as a dependency, use the `disable_node_encrypt` flag.
+
 ### Managing connectors directly through the resource type
 
 #### WARNING: Breaking change in v2.0.0
@@ -255,7 +259,13 @@ To remove:
 Command to remove through the Puppet RAL:
 
 ```bash
-$ puppet resource kc_connector some-kc-connector-name ensure=absent enable_delete=true
+# puppet resource kc_connector some-kc-connector-name ensure=absent enable_delete=true
+```
+
+Use the RAL to restart a failing connector and/or failing tasks:
+
+```bash
+# puppet resource kc_connector some-failing-kc-connector restart_on_failed_state=true
 ```
 
 ## Limitations
