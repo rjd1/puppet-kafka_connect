@@ -167,6 +167,9 @@
 # @param manage_systemd_service_file
 #   Flag for managing systemd service unit file(s).
 #
+# @param sysd_start_conn_properties_files
+#   List of connector properties files to add to the systemd start command.
+#
 # @param service_name
 #   Name of the service to manage.
 #
@@ -249,10 +252,12 @@
 #     enable_delete          => true,
 #   }
 #
-# @example Standalone mode with local Kakfa and Zookeeper services.
+# @example Standalone mode with local Kafka and Zookeeper services + test file connectors.
 #   class { 'kafka_connect':
-#     config_mode                   => 'standalone',
-#     run_local_kafka_broker_and_zk => true,
+#     config_mode                      => 'standalone',
+#     plugin_path                      => '/usr/share/java,/usr/share/filestream-connectors',
+#     sysd_start_conn_properties_files => [ '/etc/kafka/connect-file-source.properties', '/etc/kafka/connect-file-sink.properties' ],
+#     run_local_kafka_broker_and_zk    => true,
 #   }
 #
 # @example Apache archive source install.
@@ -328,6 +333,7 @@ class kafka_connect (
   Optional[Stdlib::HTTPUrl]         $value_converter_schema_registry_url = undef,
   Boolean                           $value_converter_schemas_enable      = true,
   Boolean                           $manage_systemd_service_file         = true,
+  Optional[Array[String[1]]]        $sysd_start_conn_properties_files    = undef,
 
   # kafka_connect::service
   String[1]                         $service_name                        = 'confluent-kafka-connect',
