@@ -2,6 +2,13 @@
 
 Release notes for the rjd1-kafka_connect module.
 
+## Release 3.7.0
+
+2026-02-16 - Support setting connector properties files at service start
+
+ - Support adding connector properties files to systemd start command
+ - Allow puppetlabs-apt 11.x
+
 ## Release 3.6.0
 
 2025-10-24 - Support node_encrypt
