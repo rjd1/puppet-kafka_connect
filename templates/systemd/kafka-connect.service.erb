@@ -7,7 +7,7 @@ After=network.target <%= @service_prefix %>kafka.target
 Type=simple
 User=<%= @_owner %>
 Group=<%= scope['kafka_connect::group'] %>
-ExecStart=<%= @bin_dir %>/connect-<%= scope['kafka_connect::config_mode'] %><%= @bin_file_suffix %> /etc/kafka/connect-<%= scope['kafka_connect::config_mode'] %>.properties
+ExecStart=<%= @bin_dir %>/connect-<%= scope['kafka_connect::config_mode'] %><%= @bin_file_suffix %> /etc/kafka/connect-<%= scope['kafka_connect::config_mode'] %>.properties<%- unless scope['kafka_connect::sysd_start_conn_properties_files'].nil? %><%- scope['kafka_connect::sysd_start_conn_properties_files'].each do |file| %> <%= file %><%- end %><%- end %>
 TimeoutStopSec=180
 Restart=no
 

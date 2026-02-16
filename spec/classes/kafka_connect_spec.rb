@@ -166,6 +166,16 @@ describe 'kafka_connect' do
         it { is_expected.not_to contain_file('/usr/bin/connect-distributed') }
       end
 
+      describe 'with standalone mode and connector properties files added to service start' do
+        let(:params) { { config_mode: 'standalone', sysd_start_conn_properties_files: [ '/etc/kafka/connect-file-source.properties', '/etc/kafka/connect-file-sink.properties' ] } }
+
+        it {
+          is_expected
+            .to contain_file('/usr/lib/systemd/system/confluent-kafka-connect.service')
+            .with_content(%r{^ExecStart=/usr/bin/connect-standalone /etc/kafka/connect-standalone.properties /etc/kafka/connect-file-source.properties /etc/kafka/connect-file-sink.properties$})
+        }
+      end
+
       describe 'without managed repo' do
         let(:params) { { manage_confluent_repo: false } }
 

@@ -92,12 +92,14 @@ class { 'kafka_connect':
 }
 ```
 
-##### Standalone mode with local Kakfa and Zookeeper services.
+##### Standalone mode with local Kafka and Zookeeper services + test file connectors.
 
 ```puppet
 class { 'kafka_connect':
-  config_mode                   => 'standalone',
-  run_local_kafka_broker_and_zk => true,
+  config_mode                      => 'standalone',
+  plugin_path                      => '/usr/share/java,/usr/share/filestream-connectors',
+  sysd_start_conn_properties_files => [ '/etc/kafka/connect-file-source.properties', '/etc/kafka/connect-file-sink.properties' ],
+  run_local_kafka_broker_and_zk    => true,
 }
 ```
 
@@ -171,6 +173,7 @@ The following parameters are available in the `kafka_connect` class:
 * [`value_converter_schema_registry_url`](#-kafka_connect--value_converter_schema_registry_url)
 * [`value_converter_schemas_enable`](#-kafka_connect--value_converter_schemas_enable)
 * [`manage_systemd_service_file`](#-kafka_connect--manage_systemd_service_file)
+* [`sysd_start_conn_properties_files`](#-kafka_connect--sysd_start_conn_properties_files)
 * [`service_name`](#-kafka_connect--service_name)
 * [`service_ensure`](#-kafka_connect--service_ensure)
 * [`service_enable`](#-kafka_connect--service_enable)
@@ -613,6 +616,14 @@ Data type: `Boolean`
 Flag for managing systemd service unit file(s).
 
 Default value: `true`
+
+##### <a name="-kafka_connect--sysd_start_conn_properties_files"></a>`sysd_start_conn_properties_files`
+
+Data type: `Optional[Array[String[1]]]`
+
+List of connector properties files to add to the systemd start command.
+
+Default value: `undef`
 
 ##### <a name="-kafka_connect--service_name"></a>`service_name`
 
