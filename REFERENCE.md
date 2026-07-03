@@ -279,7 +279,7 @@ Data type: `String[1]`
 State of the package to ensure.
 Note that this may be used by more than one resource, depending on the setup.
 
-Default value: `'7.9.2-1'`
+Default value: `'7.9.8-1'`
 
 ##### <a name="-kafka_connect--manage_schema_registry_package"></a>`manage_schema_registry_package`
 
@@ -353,7 +353,7 @@ Data type: `Stdlib::HTTPUrl`
 
 Download source to use for Apache archive-based setup.
 
-Default value: `'https://downloads.apache.org/kafka/3.8.0/kafka_2.13-3.8.0.tgz'`
+Default value: `'https://downloads.apache.org/kafka/3.9.2/kafka_2.13-3.9.2.tgz'`
 
 ##### <a name="-kafka_connect--config_mode"></a>`config_mode`
 
