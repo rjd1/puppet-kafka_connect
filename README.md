@@ -2,7 +2,7 @@
 
 [![Puppet Forge](https://img.shields.io/puppetforge/v/rjd1/kafka_connect.svg)](https://forge.puppetlabs.com/rjd1/kafka_connect)
 [![Puppet Forge - downloads](https://img.shields.io/puppetforge/dt/rjd1/kafka_connect.svg)](https://forge.puppetlabs.com/rjd1/kafka_connect)
-[![License](https://img.shields.io/github/license/rjd1/puppet-kafka_connect.svg)](https://github.com/rjd1/puppet-kafka_connect/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/rjd1/puppet-kafka_connect.svg)](https://github.com/rjd1/puppet-kafka_connect/blob/main/LICENSE)
 [![puppetmodule.info docs](http://www.puppetmodule.info/images/badge.png)](http://www.puppetmodule.info/m/rjd1-kafka_connect)
 
 Welcome to the `kafka_connect` Puppet module!
@@ -271,7 +271,7 @@ Use the RAL to restart a failing connector and/or failing tasks:
 
 ## Limitations
 
-Tested with Confluent Platform 7.x and Apache Kafka 3.8.0 on the Operating Systems noted in [metadata.json](https://github.com/rjd1/puppet-kafka_connect/blob/main/metadata.json).
+Tested with Confluent Platform 7.x and Apache Kafka 3.x on the Operating Systems noted in [metadata.json](https://github.com/rjd1/puppet-kafka_connect/blob/main/metadata.json).
 
 ### Known Issues
 

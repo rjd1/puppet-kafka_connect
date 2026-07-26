@@ -289,7 +289,7 @@ class kafka_connect (
   # kafka_connect::install
   Enum['package', 'archive']        $install_source                      = 'package',
   String[1]                         $package_name                        = 'confluent-kafka',
-  String[1]                         $package_ensure                      = '7.9.2-1',
+  String[1]                         $package_ensure                      = '7.9.8-1',
   Boolean                           $manage_schema_registry_package      = true,
   String[1]                         $schema_registry_package_name        = 'confluent-schema-registry',
   String[1]                         $confluent_rest_utils_package_name   = 'confluent-rest-utils',
@@ -298,7 +298,7 @@ class kafka_connect (
   String[1]                         $confluent_hub_client_package_name   = 'confluent-hub-client',
   String[1]                         $confluent_common_package_name       = 'confluent-common',
   Stdlib::Absolutepath              $archive_install_dir                 = '/opt/kafka',
-  Stdlib::HTTPUrl                   $archive_source                      = 'https://downloads.apache.org/kafka/3.8.0/kafka_2.13-3.8.0.tgz',
+  Stdlib::HTTPUrl                   $archive_source                      = 'https://archive.apache.org/dist/kafka/3.9.2/kafka_2.13-3.9.2.tgz',
 
   # kafka_connect::config
   Enum['distributed', 'standalone'] $config_mode                         = 'distributed',
