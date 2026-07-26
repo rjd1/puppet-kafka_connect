@@ -353,7 +353,7 @@ Data type: `Stdlib::HTTPUrl`
 
 Download source to use for Apache archive-based setup.
 
-Default value: `'https://archive.apache.org/dist/kafka/3.9.2/kafka_2.12-3.9.2.tgz'`
+Default value: `'https://archive.apache.org/dist/kafka/3.9.2/kafka_2.13-3.9.2.tgz'`
 
 ##### <a name="-kafka_connect--config_mode"></a>`config_mode`
 
