@@ -2,6 +2,16 @@
 
 Release notes for the rjd1-kafka_connect module.
 
+## Release 3.8.0
+
+2026-07-26 - Version & dependency updates
+
+ - Set default package version to CP 7.9.8
+ - Set default archive version to Apache 3.9.2
+ - Allow puppet-extlib 8.x
+ - Allow puppetlabs-stdlib 10.x
+ - Update Apache .tgz source URL
+
 ## Release 3.7.0
 
 2026-02-16 - Support setting connector properties files at service start
